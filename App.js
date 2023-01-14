@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 import { Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import TabNavigator from './TabNavigator';
 
 export default function App() {
   return (
-    <View className="flex-1 justify-center items-center">
-      <Ionicons name="golf" size={30} color="green" />
-    </View>
+    <NavigationContainer>
+      <TabNavigator />
+    </NavigationContainer>
   );
 }
