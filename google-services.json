@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1013459442897",
+    "project_id": "golfapp-ca492",
+    "storage_bucket": "golfapp-ca492.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013459442897:android:881dac266a7aa2fc53f9f0",
+        "android_client_info": {
+          "package_name": "host.exp.exponent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013459442897-hkam3ia8eqhah5es4nmorqc24kpmndrv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFbBKYtY0FGJXswcTqFAspU5spp2bbNlY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013459442897-hkam3ia8eqhah5es4nmorqc24kpmndrv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1013459442897-rfh4frat8l9f5u9hafc7hp735luvbdjr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

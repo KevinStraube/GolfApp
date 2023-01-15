@@ -2,11 +2,12 @@ import React from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginPage from "./Pages/LoginPage";
 import TabNavigator from "./TabNavigator";
+import useAuth from "./hooks/useAuth";
 
 const Stack = createNativeStackNavigator();
 
 const LoginStack = () => {
-    const user = false;
+    const { user } = useAuth();
 
     return (
         <Stack.Navigator>
