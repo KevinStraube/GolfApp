@@ -2,10 +2,15 @@ import React, { useState } from "react";
 import { View, Text, KeyboardAvoidingView, TextInput, Button, Pressable, Alert } from "react-native";
 import { styled } from 'nativewind';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { auth } from "../firebase";
 
 const LoginPage = () => {
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSignUp = () => {
+        
+    }
 
     return (
         <SafeAreaView className="h-full">
