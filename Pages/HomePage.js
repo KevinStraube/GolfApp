@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, SafeAreaView } from "react-native";
 import { auth } from '../firebase';
+import { Ionicons } from '@expo/vector-icons';
 
 const HomePage = () => {
 
@@ -13,10 +14,15 @@ const HomePage = () => {
     }
 
     return (
-        <View className="flex-1 justify-center items-center">
-            <Text>Email: {auth.currentUser?.email}</Text>
-            <Button title="Log out" onPress={handleSignOut}/>
-        </View>
+        <SafeAreaView className="flex-1 justify-center items-center">
+            <View className="flex-row items-center">
+                <Ionicons name="golf-sharp" size={30} color="blue" />
+            </View>
+            <View className="flex-1 -mt-6">
+                <Text className="flex-1 justify-center items-center">Email: {auth.currentUser?.email}</Text>
+                <Button title="Log out" onPress={handleSignOut}/>
+            </View>
+        </SafeAreaView>
     );
 };
 

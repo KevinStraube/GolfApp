@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, TextInput, Pressable, Alert, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
@@ -7,15 +7,6 @@ import { auth } from '../firebase';
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log("Authenticated as", user.email);
-            }
-        })
-        return unsubscribe
-    }, [])
 
     const handleSignUp = () => {
         createUserWithEmailAndPassword(auth, email, password)
@@ -58,19 +49,21 @@ const LoginPage = () => {
                     onChangeText={text => setPassword(text)} 
                     secureTextEntry
                 />
-                <Pressable 
-                    accessibilityRole="button"
+                <TouchableOpacity
                     className="bg-indigo-600 p-3 self-center rounded-lg" 
                     onPress={handleLogin}
                 >
                     <Text className="text-slate-50">Login</Text>
-                </Pressable>
-                <Pressable 
-                    className="bg-indigo-600 p-3 self-center rounded-lg"
+                </TouchableOpacity>
+            </View>
+            <View className="flex-row justify-center">
+                <Text className="font-semibold leading-8">Don't have an account? </Text>
+                <TouchableOpacity
+                    className="bg-indigo-600 p-2 rounded-lg"
                     onPress={handleSignUp}
                     >
                     <Text className="text-slate-50">Sign Up</Text>
-                </Pressable>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );
