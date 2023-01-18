@@ -1,15 +1,45 @@
-import React, { useState } from "react";
-import { View, Text, KeyboardAvoidingView, TextInput, Button, Pressable, Alert } from "react-native";
-import { styled } from 'nativewind';
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { useNavigation } from "@react-navigation/native";
+import { auth } from '../firebase';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Authenticated as", user.email);
+                navigation.navigate("TabNavigator", {screen: "chat"});
+            }
+        })
+        return unsubscribe
+    }, [])
+
     const handleSignUp = () => {
-        
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                //Signed in
+                const user = userCredential.user;
+                console.log("Registered with: ", user.email);
+            })
+            .catch((error) => alert(error.message))
+    }
+
+    const handleLogin = () => {
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                //Signed in
+                const user = userCredential.user;
+                console.log("Logged in with: ", user.email);
+                navigation.navigate("TabNavigator", {screen: "chat"});
+            })
+            .catch((error) => alert(error.message))
     }
 
     return (
@@ -36,11 +66,14 @@ const LoginPage = () => {
                 <Pressable 
                     accessibilityRole="button"
                     className="bg-indigo-600 p-3 self-center rounded-lg" 
-                    onPress={() => Alert.alert('Logged In')}
+                    onPress={handleLogin}
                 >
                     <Text className="text-slate-50">Login</Text>
                 </Pressable>
-                <Pressable className="bg-indigo-600 p-3 self-center rounded-lg">
+                <Pressable 
+                    className="bg-indigo-600 p-3 self-center rounded-lg"
+                    onPress={handleSignUp}
+                    >
                     <Text className="text-slate-50">Sign Up</Text>
                 </Pressable>
             </View>

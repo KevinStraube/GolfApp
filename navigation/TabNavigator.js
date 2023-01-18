@@ -1,9 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomePage from "./Pages/HomePage";
+import HomePage from "../Pages/HomePage";
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import ProfilePage from "./Pages/ProfilePage";
-import ChatPage from "./Pages/ChatPage";
+import ProfilePage from "../Pages/ProfilePage";
+import ChatPage from "../Pages/ChatPage";
 
 const Tab = createBottomTabNavigator();
 
@@ -11,7 +11,7 @@ const TabNavigator = () => {
     return (
         <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen 
-                name="Home" 
+                name="HomePage" 
                 component={HomePage} 
                 options={{
                     tabBarShowLabel: false,
