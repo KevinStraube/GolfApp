@@ -2,20 +2,16 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { useNavigation } from "@react-navigation/native";
 import { auth } from '../firebase';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const navigation = useNavigation();
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 console.log("Authenticated as", user.email);
-                navigation.navigate("TabNavigator", {screen: "chat"});
             }
         })
         return unsubscribe
@@ -37,7 +33,6 @@ const LoginPage = () => {
                 //Signed in
                 const user = userCredential.user;
                 console.log("Logged in with: ", user.email);
-                navigation.navigate("TabNavigator", {screen: "chat"});
             })
             .catch((error) => alert(error.message))
     }
