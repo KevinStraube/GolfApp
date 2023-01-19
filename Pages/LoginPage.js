@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Pressable, Alert, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
+import { useNavigation } from "@react-navigation/native";
 
-const LoginPage = () => {
+const LoginPage = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -17,6 +18,7 @@ const LoginPage = () => {
             })
             .catch((error) => alert(error.message))
     }
+    
 
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, email, password)
@@ -27,6 +29,7 @@ const LoginPage = () => {
             })
             .catch((error) => alert(error.message))
     }
+
 
     return (
         <SafeAreaView className="h-full">
@@ -39,19 +42,19 @@ const LoginPage = () => {
                 <TextInput 
                     className="py-3 px-2 rounded-lg bg-white w-80"
                     placeholder="Email" 
-                    value={email} 
                     onChangeText={text => setEmail(text)} 
+                    value={email} 
                 />
                 <TextInput
                     className="py-3 px-2 rounded-lg bg-white w-80"
                     placeholder="Password"
-                    value={password}
                     onChangeText={text => setPassword(text)} 
+                    onPress={handleLogin}
                     secureTextEntry
                 />
                 <TouchableOpacity
                     className="bg-indigo-600 p-3 self-center rounded-lg" 
-                    onPress={handleLogin}
+                    value={password}
                 >
                     <Text className="text-slate-50">Login</Text>
                 </TouchableOpacity>
@@ -60,7 +63,7 @@ const LoginPage = () => {
                 <Text className="font-semibold leading-8">Don't have an account? </Text>
                 <TouchableOpacity
                     className="bg-indigo-600 p-2 rounded-lg"
-                    onPress={handleSignUp}
+                    onPress={() => navigation.navigate('SignUp')}
                     >
                     <Text className="text-slate-50">Sign Up</Text>
                 </TouchableOpacity>
@@ -68,5 +71,9 @@ const LoginPage = () => {
         </SafeAreaView>
     );
 };
+
+
+
+
 
 export default LoginPage;
