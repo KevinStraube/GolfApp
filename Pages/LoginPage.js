@@ -1,24 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
 
 const LoginPage = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const handleSignUp = () => {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                //Signed in
-                const user = userCredential.user;
-                console.log("Registered with: ", user.email);
-            })
-            .catch((error) => alert(error.message))
-    }
-    
 
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, email, password)

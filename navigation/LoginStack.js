@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginPage from "../Pages/LoginPage";
 import SignUpPage from "../Pages/SignUpPage";
+import Onboarding from "../registration/Onboarding";
 
 const Stack = createNativeStackNavigator();
 
@@ -16,5 +17,3 @@ const LoginStack = () => {
 };
 
 export default LoginStack;
-
-//<Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }}/>
