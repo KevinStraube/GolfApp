@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TabNavigator from "./TabNavigator";
-import Onboarding from "../registration/Onboarding";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingPage from "../Pages/LoadingPage";
+import OnboardingStack from "./OnboardingStack";
 
 export default function OnboardNavigator() {
-    const onboarded = undefined;
-    //const { onboarded } = onboard();
+    const [loading, setLoading] = useState(true);
+    const [viewedOnboarding, setViewedOnboarding] = useState(false);
 
-    return onboarded ? <TabNavigator /> : <Onboarding />
+    const checkOnboarding = async () => {
+        try {
+            const value = await AsyncStorage.getItem('@viewedOnboarding');
+    
+            if (value !== null) {
+                setViewedOnboarding(true);
+            }
+        } catch (error) {
+            console.log('Error @checkOnboarding', error)
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        checkOnboarding();
+    }, [])
+
+    return loading ? <LoadingPage /> : viewedOnboarding ? <TabNavigator /> : <OnboardingStack />
 }

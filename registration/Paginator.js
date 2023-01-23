@@ -7,6 +7,7 @@ const Paginator = ({ data, scrollX }) => {
     return (
         <View className="flex-row h-10">
             {data.map((_, i) => {
+                //Calculate the indices of the previous, current and next dots
                 const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
                 
                 /*
@@ -17,7 +18,8 @@ const Paginator = ({ data, scrollX }) => {
                     extrapolate: 'clamp',
                 })
                 */
-
+                
+                //Set the opacity of the focused dot
                 const opacity = scrollX.interpolate({
                     inputRange,
                     outputRange: [0.3, 1, 0.3],
