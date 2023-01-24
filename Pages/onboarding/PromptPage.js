@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Platform, SafeAreaView, Text, TextInput, TouchableOpacity } from "react-native";
-import MaskInput, { Masks } from "react-native-mask-input";
+import { Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import { Slider } from "@miblanchard/react-native-slider";
 
 const playStyleData = [
     { label: 'Casual', value: 'casual' },
@@ -11,7 +11,7 @@ const playStyleData = [
 
 const PromptPage = ({navigation}) => {
     const [playStyle, setPlayStyle] = useState('');
-    const [handicap, setHandicap] = useState('');
+    const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
 
     return (
@@ -29,21 +29,32 @@ const PromptPage = ({navigation}) => {
                 placeholder="Select play style"
                 className="bg-white mx-5 w-36"
             />
-            <Text className="mt-10 mx-5">Handicap (0-25+)</Text>
-            <TextInput 
-                className="bg-white w-80 rounded-lg p-2 mx-5 my-2" 
-                keyboardType="numeric"
-            />
+            <Text className="mt-10 mx-5">Handicap (0-25+): {handicap}</Text>
+            <View className="px-5 mt-3">
+                <Slider 
+                    value={handicap}
+                    onValueChange={value => setHandicap(value)}
+                    minimumValue={0}
+                    maximumValue={25}
+                    step={1}
+                />
+            </View>
             <Text className="mt-8 mx-5">What are you doing after a round?</Text>
             <TextInput 
                 className="bg-white w-80 rounded-lg p-2 mx-5 my-2" 
             />
-
-            <TouchableOpacity 
-            className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
-            >
-                <Text className="self-center">Submit</Text>
-            </TouchableOpacity>
+            <View className="flex-row justify-around">
+                <TouchableOpacity 
+                    className="mt-10 rounded-lg bg-slate-400 p-3 w-20"
+                    onPress={() => navigation.navigate('Images')}>
+                    <Text className="self-center">Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                >
+                    <Text className="self-center">Submit</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     ); 
 };

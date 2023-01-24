@@ -38,11 +38,11 @@ const LoginPage = ({navigation}) => {
                     className="py-3 px-2 rounded-lg bg-white w-80"
                     placeholder="Password"
                     onChangeText={text => setPassword(text)} 
-                    onPress={handleLogin}
                     secureTextEntry
                 />
                 <TouchableOpacity
                     className="bg-indigo-600 p-3 self-center rounded-lg" 
+                    onPress={handleLogin}
                     value={password}
                 >
                     <Text className="text-slate-50">Login</Text>

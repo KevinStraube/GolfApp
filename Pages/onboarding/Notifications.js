@@ -1,5 +1,6 @@
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
+import * as Device from 'expo-device';
 
 const Notifications = ({ navigation }) => {
     const [enableNotifications, setEnableNotifications] = useState(false);
@@ -21,12 +22,19 @@ const Notifications = ({ navigation }) => {
                     <Text>Disable Notifications</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity 
-                    className="mt-60 mx-5 rounded-lg bg-slate-400 p-3 w-20"
-                    onPress={() => navigation.navigate('Location')}
-                >
-                <Text className="self-center">Next</Text>
-            </TouchableOpacity>
+            <View className="flex-row justify-around">
+                <TouchableOpacity 
+                    className="mt-60 rounded-lg bg-slate-400 p-3 w-20"
+                    onPress={() => navigation.navigate('BasicInfo')}>
+                    <Text className="self-center">Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                        className="mt-60 rounded-lg bg-slate-400 p-3 w-20"
+                        onPress={() => navigation.navigate('Location')}
+                    >
+                    <Text className="self-center">Next</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };

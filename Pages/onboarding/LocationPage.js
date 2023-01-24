@@ -13,12 +13,19 @@ const LocationPage = ({ navigation }) => {
                 >
                 <Text>Enable Location</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-                className="mt-60 mx-5 rounded-lg bg-slate-400 p-3 w-20"
-                onPress={() => navigation.navigate('Images')}
-                >
-                <Text className="self-center">Next</Text>
-            </TouchableOpacity>
+            <View className="flex-row justify-around">
+                <TouchableOpacity 
+                    className="mt-60 rounded-lg bg-slate-400 p-3 w-20"
+                    onPress={() => navigation.navigate('Notifications')}>
+                    <Text className="self-center">Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    className="mt-60 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                    onPress={() => navigation.navigate('Images')}
+                    >
+                    <Text className="self-center">Next</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };

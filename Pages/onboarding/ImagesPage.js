@@ -24,12 +24,19 @@ const ImagesPage = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
         </View>
-        <TouchableOpacity 
-            className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
-            onPress={() => navigation.navigate('Prompts')}
-            >
-            <Text className="self-center">Next</Text>
-        </TouchableOpacity>
+        <View className="flex-row justify-around">
+            <TouchableOpacity 
+                className="mt-10 rounded-lg bg-slate-400 p-3 w-20"
+                onPress={() => navigation.navigate('Location')}>
+                <Text className="self-center">Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+                className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                onPress={() => navigation.navigate('Prompts')}
+                >
+                <Text className="self-center">Next</Text>
+            </TouchableOpacity>
+        </View>
     </SafeAreaView>
   );
 };
