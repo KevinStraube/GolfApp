@@ -11,6 +11,8 @@ const genderData = [
 ];
 
 const BasicInfoPage = ({navigation}) => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [date, setDate] = useState('');
     const [gender, setGender] = useState('');
 
@@ -18,11 +20,13 @@ const BasicInfoPage = ({navigation}) => {
         <SafeAreaView className="flex-1">
             <Text className="mt-10 mx-5">First Name</Text>
             <TextInput 
-                className="bg-white w-80 rounded-lg p-2 mx-5 my-2" 
+                className="bg-white w-80 rounded-lg p-2 mx-5 my-2"
+                onChangeText={text => setFirstName(text)}
             />
             <Text className="mt-8 mx-5">Last Name</Text>
             <TextInput 
                 className="bg-white w-80 rounded-lg p-2 mx-5 my-2" 
+                onChangeText={text => setLastName(text)}
             />
             <Text className="mt-8 mx-5">Date of Birth (dd/mm/yyyy)</Text>
             <MaskInput

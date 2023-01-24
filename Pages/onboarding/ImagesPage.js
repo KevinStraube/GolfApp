@@ -2,7 +2,7 @@ import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { AntDesign } from '@expo/vector-icons';
 
-const ImagesPage = () => {
+const ImagesPage = ({ navigation }) => {
   return (
     <SafeAreaView>
         <Text className="text-xl font-semibold mt-8 self-center">Pick your photos</Text>
@@ -24,7 +24,10 @@ const ImagesPage = () => {
                 </TouchableOpacity>
             </View>
         </View>
-        <TouchableOpacity className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20">
+        <TouchableOpacity 
+            className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+            onPress={() => navigation.navigate('Prompts')}
+            >
             <Text className="self-center">Next</Text>
         </TouchableOpacity>
     </SafeAreaView>
