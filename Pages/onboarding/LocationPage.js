@@ -1,15 +1,36 @@
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
+import * as Location from 'expo-location';
+
+async function registerForLocationAsync() {
+    let location;
+
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+        alert('Please enable location services to proceed.');
+        return;
+    }
+
+    location = await Location.getCurrentPositionAsync({});
+    return location;
+}
 
 const LocationPage = ({ navigation }) => {
-    const [enableLocation, setEnableLocation] = useState(false);
+    const [location, setLocation] = useState(false);
+
+    const handleLocationEnable = () => {
+        let loc = registerForLocationAsync();
+        setLocation(loc);
+        console.log(JSON.stringify(location));
+        navigation.navigate('Images');
+    }
 
     return (
         <SafeAreaView>
             <Text className="text-xl font-semibold mt-8 self-center">Where do you live?</Text>
             <TouchableOpacity 
                 className="mt-10 self-center bg-slate-300 p-3 rounded-2xl"
-                onPress={setEnableLocation}
+                onPress={handleLocationEnable}
                 >
                 <Text>Enable Location</Text>
             </TouchableOpacity>
