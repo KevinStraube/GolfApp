@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { Slider } from "@miblanchard/react-native-slider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const playStyleData = [
     { label: 'Casual', value: 'casual' },
@@ -9,10 +10,22 @@ const playStyleData = [
     { label: 'Pro', value: 'pro' },
 ];
 
+const viewedOnboarding = async () => {
+    try {
+        await AsyncStorage.setItem('@viewedOnboarding', true);
+    } catch (error) {
+        console.log("Error storing @viewedOnboarding to AsyncStorage: ", error);
+    }
+}
+
 const PromptPage = ({navigation}) => {
     const [playStyle, setPlayStyle] = useState('');
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
+
+    const handleSubmit = () => {
+
+    }
 
     return (
         <SafeAreaView className="flex-1">
@@ -52,7 +65,8 @@ const PromptPage = ({navigation}) => {
                     <Text className="self-center">Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                    onPress={() => navigation.navigate('')}
                 >
                     <Text className="self-center">Submit</Text>
                 </TouchableOpacity>
