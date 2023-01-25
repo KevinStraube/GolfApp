@@ -1,4 +1,4 @@
-import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -9,13 +9,15 @@ const firestore = getFirestore();
 
 async function fetchDocID(imageData) {
     try {
+        //Pull user's document ID from async storage
         const docID = await AsyncStorage.getItem('@userCollectionID');
         if (docID !== null) {
             console.log('Fetched ID:', docID);
             try {
+                //Fetch doc from database
                 const userDoc = doc(firestore, "users", docID);
                 await updateDoc(userDoc, { photos: imageData });
-                console.log("Updated images to database");
+                console.log("Uploaded images to database");
             } catch (e) {
                 console.log('Error uploading images to database', e);
             }
@@ -36,7 +38,10 @@ const ImagesPage = ({ navigation }) => {
     const [thirdIconVisible, setThirdIconVisible] = useState(true);
     const [fourthIconVisible, setFourthIconVisible] = useState(true);
 
+    const [disabled, setDisabled] = useState(true);
+
     const handleNext = () => {
+        //Build an array of image URIs to be passed, only if URI exists. ** MAKE FIRST IMAGE MANDATORY **
         const imageArray = [];
         if (firstImage) {
             imageArray.push(firstImage);
@@ -71,6 +76,7 @@ const ImagesPage = ({ navigation }) => {
 
         if (!result.canceled) {
             setFirstImage(result.assets[0].uri);
+            setDisabled(false);
         }
     }
 
@@ -88,6 +94,7 @@ const ImagesPage = ({ navigation }) => {
 
         if (!result.canceled) {
             setSecondImage(result.assets[0].uri);
+            setDisabled(false);
         }
     }
 
@@ -105,6 +112,7 @@ const ImagesPage = ({ navigation }) => {
 
         if (!result.canceled) {
             setThirdImage(result.assets[0].uri);
+            setDisabled(false);
         }
     }
 
@@ -122,6 +130,7 @@ const ImagesPage = ({ navigation }) => {
 
         if (!result.canceled) {
             setFourthImage(result.assets[0].uri);
+            setDisabled(false);
         }
     }
 
@@ -158,6 +167,8 @@ const ImagesPage = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     className="mt-10 rounded-lg bg-slate-400 p-3 w-20"
+                    disabled={disabled}
+                    style={disabled ? styles.disabled : styles.enabled}
                     onPress={handleNext}
                     >
                     <Text className="self-center">Next</Text>
@@ -166,5 +177,14 @@ const ImagesPage = ({ navigation }) => {
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    enabled: {
+        opacity: 1,
+    },
+    disabled: {
+        opacity: 0.3,
+    },
+});
 
 export default ImagesPage;

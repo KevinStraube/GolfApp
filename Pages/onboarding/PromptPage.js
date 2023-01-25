@@ -1,8 +1,36 @@
-import React, { useState } from "react";
-import { Platform, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { Slider } from "@miblanchard/react-native-slider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import TabNavigator from "../../navigation/TabNavigator";
+
+const firestore = getFirestore();
+
+async function uploadData(playStyle, handicap, afterRound) {
+    try {
+        //Pull user's document ID from async storage
+        const docID = await AsyncStorage.getItem('@userCollectionID');
+        if (docID !== null) {
+            console.log('Fetched ID:', docID);
+            try {
+                //Fetch doc from database
+                const userDoc = doc(firestore, "users", docID);
+                await updateDoc(userDoc, {
+                    playStyle: playStyle,
+                    handicap: handicap[0],
+                    afterRound: afterRound,
+                });
+                console.log("Uploaded personalized data to database");
+            } catch (e) {
+                console.log('Error uploading personalized data to database', e);
+            }
+        }
+    } catch (error) {
+        console.log('Error fetching @userCollectionID', error);
+    }
+}  
 
 const playStyleData = [
     { label: 'Casual', value: 'casual' },
@@ -10,9 +38,10 @@ const playStyleData = [
     { label: 'Pro', value: 'pro' },
 ];
 
-const viewedOnboarding = async () => {
+async function viewOnboarding() {
     try {
-        await AsyncStorage.setItem('@viewedOnboarding', true);
+        await AsyncStorage.setItem('@viewedOnboarding', 'true');
+        console.log("Stored @viewedonboarding");
     } catch (error) {
         console.log("Error storing @viewedOnboarding to AsyncStorage: ", error);
     }
@@ -24,7 +53,13 @@ const PromptPage = ({navigation}) => {
     const [afterRound, setAfterRound] = useState('');
 
     const handleSubmit = () => {
-        viewedOnboarding();
+        viewOnboarding();
+        uploadData(playStyle, handicap, afterRound);
+        navigation.navigate('Home');
+    }
+
+    const validate = () => {
+        return playStyle.length > 0 & afterRound.length > 0;
     }
 
     return (
@@ -66,13 +101,25 @@ const PromptPage = ({navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
-                    onPress={() => navigation.navigate('')}
+                    disabled={!validate()}
+                    onPress={handleSubmit}
+                    style={playStyle.length < 1 || afterRound.length < 1 ? styles.disabled : styles.enabled}
                 >
                     <Text className="self-center">Submit</Text>
                 </TouchableOpacity>
             </View>
-        </SafeAreaView>
-    ); 
+        </SafeAreaView> 
+    );
 };
+
+const styles = StyleSheet.create({
+    enabled: {
+        opacity: 1,
+    },
+    disabled: {
+        opacity: 0.3,
+    },
+});
+
 
 export default PromptPage;

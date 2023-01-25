@@ -36,6 +36,7 @@ async function registerForPushNotificationsAsync() {
 }
 
 const NotificationPage = ({ navigation }) => {
+    const [valid, setValid] = useState(false);
 
     const handleNotifications = () => {
         registerForPushNotificationsAsync();
@@ -44,6 +45,7 @@ const NotificationPage = ({ navigation }) => {
 
     const handleDisableNotifications = () => {
         alert('Notifications disabled');
+        navigation.navigate('Location');
     }
 
     return (
