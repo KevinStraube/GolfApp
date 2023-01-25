@@ -24,7 +24,7 @@ const PromptPage = ({navigation}) => {
     const [afterRound, setAfterRound] = useState('');
 
     const handleSubmit = () => {
-
+        viewedOnboarding();
     }
 
     return (

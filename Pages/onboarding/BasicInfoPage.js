@@ -2,6 +2,29 @@ import React, { useState } from "react";
 import { StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity } from "react-native";
 import MaskInput, { Masks } from "react-native-mask-input";
 import { Dropdown } from "react-native-element-dropdown";
+import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const firestore = getFirestore();
+
+const userCollection = collection(firestore, 'users');
+
+async function addNewUser(first, last, birthday, userGender) {
+    const newDoc = await addDoc(userCollection, {
+        firstName: first,
+        lastName: last,
+        birthday: birthday,
+        gender: userGender,
+    });
+    console.log('New doc was created at: ', newDoc.path);
+
+    try {
+        await AsyncStorage.setItem('@userCollectionID', newDoc.id);
+        console.log('New firebase user doc id added to async storage:', newDoc.id);
+    } catch (e) {
+        console.log('Error uploading firebase doc ID to async storage: ', e);
+    }
+}
 
 const genderData = [
     { label: 'Male', value: 'male' },
@@ -18,6 +41,11 @@ const BasicInfoPage = ({navigation}) => {
     const validate = () => {
         return firstName.length > 0 & lastName.length > 0 & date.length === 10 & gender.length > 0;
     };
+
+    const handleNext = () => {
+        addNewUser(firstName, lastName, date, gender);
+        navigation.navigate('Notifications');
+    }
 
     return (
         <SafeAreaView className="flex-1">
@@ -55,7 +83,7 @@ const BasicInfoPage = ({navigation}) => {
             <TouchableOpacity 
                 className="mt-8 self-end mx-5 rounded-lg bg-slate-400 p-3 w-20"
                 disabled={!validate()}
-                onPress={() => navigation.navigate('Notifications')}
+                onPress={handleNext}
                 style={!firstName || !lastName || date.length < 10 || !gender ? styles.disabled : styles.enabled}
                 >
                 <Text className="self-center">Next</Text>
