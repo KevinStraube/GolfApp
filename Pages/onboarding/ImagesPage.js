@@ -2,6 +2,30 @@ import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { doc, getDoc, getFirestore, updateDoc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+async function fetchDocID() {
+    try {
+        const docID = await AsyncStorage.getItem('@userCollectionID');
+        if (docID !== null) {
+            console.log('Fetched ID:', docID);
+            return docID;
+        }
+    } catch (error) {
+        console.log('Error fetching @userCollectionID', error)
+    }
+}
+
+async function addImagesToDatabase(id, imageData) {
+    try {
+        console.log(id);
+        updateDoc(id, imageData);
+        console.log("Updated images to database");
+    } catch (e) {
+        console.log('Error uploading images to database:', e);
+    }
+}
 
 const ImagesPage = ({ navigation }) => {
     const [firstImage, setFirstImage] = useState(null);
@@ -14,6 +38,29 @@ const ImagesPage = ({ navigation }) => {
     const [thirdIconVisible, setThirdIconVisible] = useState(true);
     const [fourthIconVisible, setFourthIconVisible] = useState(true);
 
+    const handleNext = () => {
+        const imageArray = [];
+        if (firstImage) {
+            imageArray.push(firstImage);
+        }
+        if (secondImage) {
+            imageArray.push(secondImage);
+        }
+        if (thirdImage) {
+            imageArray.push(thirdImage);
+        }
+        if (fourthImage) {
+            imageArray.push(fourthImage);
+        }
+
+        const data = {photos: imageArray};
+
+        const docId = fetchDocID();
+        console.log(docId);
+        addImagesToDatabase(docId, data);
+        
+        navigation.navigate('Prompts')
+    }
 
     /* Simple solution - refactor this later by compressing four functions into one */
     const pickFirstImage = async () => {
@@ -117,7 +164,7 @@ const ImagesPage = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     className="mt-10 rounded-lg bg-slate-400 p-3 w-20"
-                    onPress={() => navigation.navigate('Prompts')}
+                    onPress={handleNext}
                     >
                     <Text className="self-center">Next</Text>
                 </TouchableOpacity>
