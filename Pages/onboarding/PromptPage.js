@@ -41,7 +41,9 @@ const PromptPage = ({navigation}) => {
             </View>
             <Text className="mt-8 mx-5">What are you doing after a round?</Text>
             <TextInput 
-                className="bg-white w-80 rounded-lg p-2 mx-5 my-2" 
+                className="bg-white w-80 rounded-lg p-2 mx-5 my-2"
+                onChangeText={text => setAfterRound(text)}
+                value={afterRound}
             />
             <View className="flex-row justify-around">
                 <TouchableOpacity 
