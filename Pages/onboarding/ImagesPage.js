@@ -2,28 +2,26 @@ import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { doc, getDoc, getFirestore, updateDoc } from 'firebase/firestore';
+import { doc, collection, getFirestore, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-async function fetchDocID() {
+const firestore = getFirestore();
+
+async function fetchDocID(imageData) {
     try {
         const docID = await AsyncStorage.getItem('@userCollectionID');
         if (docID !== null) {
             console.log('Fetched ID:', docID);
-            return docID;
+            try {
+                const userDoc = doc(firestore, "users", docID);
+                await updateDoc(userDoc, { photos: imageData });
+                console.log("Updated images to database");
+            } catch (e) {
+                console.log('Error uploading images to database', e);
+            }
         }
     } catch (error) {
-        console.log('Error fetching @userCollectionID', error)
-    }
-}
-
-async function addImagesToDatabase(id, imageData) {
-    try {
-        console.log(id);
-        updateDoc(id, imageData);
-        console.log("Updated images to database");
-    } catch (e) {
-        console.log('Error uploading images to database:', e);
+        console.log('Error fetching @userCollectionID', error);
     }
 }
 
@@ -53,11 +51,7 @@ const ImagesPage = ({ navigation }) => {
             imageArray.push(fourthImage);
         }
 
-        const data = {photos: imageArray};
-
-        const docId = fetchDocID();
-        console.log(docId);
-        addImagesToDatabase(docId, data);
+        fetchDocID(imageArray);
         
         navigation.navigate('Prompts')
     }
