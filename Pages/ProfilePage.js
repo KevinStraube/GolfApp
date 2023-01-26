@@ -46,6 +46,7 @@ const ProfilePage = () => {
     const [playStyle, setPlayStyle] = useState('');
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
+    const [location, setLocation] = useState('');
 
     const loadData = async () => {
         let data = await getData();
@@ -56,6 +57,7 @@ const ProfilePage = () => {
         setPlayStyle(data.playStyle);
         setHandicap(data.handicap);
         setAfterRound(data.afterRound);
+        setLocation(data.city);
     }
 
     useEffect(() => {
@@ -74,7 +76,7 @@ const ProfilePage = () => {
             <View className="flex-row items-center justify-around mt-4">
                 <Text>{age} years old</Text>
                 <Text>{gender}</Text>
-                <Text>Location</Text>
+                <Text>{location}</Text>
             </View>
             <View className="mx-9 mt-16">
                 <Text className="font-bold">Play Style</Text>

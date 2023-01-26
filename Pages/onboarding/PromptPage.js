@@ -4,7 +4,6 @@ import { Dropdown } from "react-native-element-dropdown";
 import { Slider } from "@miblanchard/react-native-slider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, getFirestore, updateDoc } from "firebase/firestore";
-import TabNavigator from "../../navigation/TabNavigator";
 
 const firestore = getFirestore();
 

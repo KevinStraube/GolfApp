@@ -1,6 +1,35 @@
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import * as Location from 'expo-location';
+import { updateDoc, doc, getFirestore } from 'firebase/firestore';
+import { async } from '@firebase/util';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const firestore = getFirestore();
+
+async function uploadLocation(city, location, reverseLocation) {
+    try {
+        //Pull user's document ID from async storage
+        const docID = await AsyncStorage.getItem('@userCollectionID');
+        if (docID !== null) {
+            console.log('Fetched ID:', docID);
+            try {
+                //Fetch doc from database
+                const userDoc = doc(firestore, "users", docID);
+                await updateDoc(userDoc, {
+                    city: city,
+                    location: location,
+                    reverseGeocodedLocation: reverseLocation,
+                });
+                console.log("Uploaded location to database");
+            } catch (e) {
+                console.log('Error uploading location data to database', e);
+            }
+        }
+    } catch (error) {
+        console.log('Error fetching @userCollectionID', error);
+    }
+}  
 
 async function registerForLocationAsync() {
     let location;
@@ -16,12 +45,27 @@ async function registerForLocationAsync() {
 }
 
 const LocationPage = ({ navigation }) => {
-    const [location, setLocation] = useState(false);
+    const [location, setLocation] = useState('');
 
-    const handleLocationEnable = () => {
-        let loc = registerForLocationAsync();
+    const reverseGeocodeLocation = async () => {
+        try {
+            const reverseGeocodedLocation = await Location.reverseGeocodeAsync({
+                latitude:location.coords.latitude,
+                longitude: location.coords.longitude,
+            });
+            console.log(reverseGeocodedLocation);
+            uploadLocation(reverseGeocodedLocation[0].city, location, reverseGeocodedLocation);
+        } 
+        catch (e) {
+            console.log('Error reverse geocoding location:', e);
+        }
+    }
+
+    const handleLocationEnable = async() => {
+        let loc = await registerForLocationAsync();
         setLocation(loc);
-        console.log(JSON.stringify(location));
+        console.log(location);
+        reverseGeocodeLocation();
         navigation.navigate('Images');
     }
 
