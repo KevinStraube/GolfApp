@@ -33,9 +33,9 @@ async function uploadData(playStyle, handicap, afterRound) {
 }  
 
 const playStyleData = [
-    { label: 'Casual', value: 'casual' },
-    { label: 'Intermediate', value: 'intermediate' },
-    { label: 'Pro', value: 'pro' },
+    { label: 'Casual', value: 'Casual' },
+    { label: 'Intermediate', value: 'Intermediate' },
+    { label: 'Pro', value: 'Pro' },
 ];
 
 async function viewOnboarding() {

@@ -9,12 +9,13 @@ const firestore = getFirestore();
 
 const userCollection = collection(firestore, 'users');
 
-async function addNewUser(first, last, birthday, userGender) {
+async function addNewUser(first, last, birthday, userGender, age) {
     const newDoc = await addDoc(userCollection, {
         firstName: first,
         lastName: last,
         birthday: birthday,
         gender: userGender,
+        age: age,
     });
     console.log('New doc was created at: ', newDoc.path);
 
@@ -26,10 +27,22 @@ async function addNewUser(first, last, birthday, userGender) {
     }
 }
 
+const calculate_age = (birthday) => {
+    var today = new Date();
+    var dob = new Date(birthday);
+    var age_now = today.getFullYear() - dob.getFullYear();
+    var month = today.getMonth() - dob.getMonth();
+    if (month < 0 || (month === 0 && today.getDate() < dob.getDate())) {
+        age_now--;
+    }
+    console.log(age_now);
+    return age_now;
+}
+
 const genderData = [
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-    { label: 'Other', value: 'other' },
+    { label: 'Male', value: 'Male' },
+    { label: 'Female', value: 'Female' },
+    { label: 'Other', value: 'Other' },
 ];
 
 const BasicInfoPage = ({navigation}) => {
@@ -43,7 +56,8 @@ const BasicInfoPage = ({navigation}) => {
     };
 
     const handleNext = () => {
-        addNewUser(firstName, lastName, date, gender);
+        let age = calculate_age(date);
+        addNewUser(firstName, lastName, date, gender, age);
         navigation.navigate('Notifications');
     }
 
