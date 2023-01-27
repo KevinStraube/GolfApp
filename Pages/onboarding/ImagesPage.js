@@ -48,12 +48,18 @@ const ImagesPage = ({ navigation }) => {
         }
         if (secondImage) {
             imageArray.push(secondImage);
+        } else {
+            imageArray.push('');
         }
         if (thirdImage) {
             imageArray.push(thirdImage);
+        } else {
+            imageArray.push('');
         }
         if (fourthImage) {
             imageArray.push(fourthImage);
+        } else {
+            imageArray.push('');
         }
 
         fetchDocID(imageArray);

@@ -7,6 +7,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firestore = getFirestore();
 
+/*
+Upload location information to database
+- city refers to name of the city user is in
+- location refers to geocoded data (coordinates, etc.)
+- reverseLocation refers to reverse geocoded data (city, country, street address, etc.)
+*/
+
 async function uploadLocation(city, location, reverseLocation) {
     try {
         //Pull user's document ID from async storage
@@ -31,6 +38,8 @@ async function uploadLocation(city, location, reverseLocation) {
     }
 }  
 
+/* Requests permission from the user to use location services, returns location data */
+
 async function registerForLocationAsync() {
     let location;
 
@@ -44,13 +53,16 @@ async function registerForLocationAsync() {
     return location;
 }
 
+
+
 const LocationPage = ({ navigation }) => {
     const [location, setLocation] = useState('');
 
+    /* Uses original location data to reverse-geocode */
     const reverseGeocodeLocation = async () => {
         try {
             const reverseGeocodedLocation = await Location.reverseGeocodeAsync({
-                latitude:location.coords.latitude,
+                latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
             });
             console.log(reverseGeocodedLocation);
@@ -61,6 +73,7 @@ const LocationPage = ({ navigation }) => {
         }
     }
 
+    
     const handleLocationEnable = async() => {
         let loc = await registerForLocationAsync();
         setLocation(loc);
