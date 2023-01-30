@@ -4,6 +4,7 @@ import * as Location from 'expo-location';
 import { updateDoc, doc, getFirestore } from 'firebase/firestore';
 import { async } from '@firebase/util';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../hooks/useAuth';
 
 const firestore = getFirestore();
 
@@ -14,27 +15,18 @@ Upload location information to database
 - reverseLocation refers to reverse geocoded data (city, country, street address, etc.)
 */
 
-async function uploadLocation(city, location, reverseLocation) {
+async function uploadLocation(uid, city, location, reverseLocation) {
     try {
-        //Pull user's document ID from async storage
-        const docID = await AsyncStorage.getItem('@userCollectionID');
-        if (docID !== null) {
-            console.log('Fetched ID:', docID);
-            try {
-                //Fetch doc from database
-                const userDoc = doc(firestore, "users", docID);
-                await updateDoc(userDoc, {
-                    city: city,
-                    location: location,
-                    reverseGeocodedLocation: reverseLocation,
-                });
-                console.log("Uploaded location to database");
-            } catch (e) {
-                console.log('Error uploading location data to database', e);
-            }
-        }
-    } catch (error) {
-        console.log('Error fetching @userCollectionID', error);
+        //Fetch doc from database
+        const userDoc = doc(firestore, "users", uid);
+        await updateDoc(userDoc, {
+            city: city,
+            location: location,
+            reverseGeocodedLocation: reverseLocation,
+        });
+        console.log("Uploaded location to database");
+    } catch (e) {
+        console.log('Error uploading location data to database', e);
     }
 }  
 
@@ -57,6 +49,8 @@ async function registerForLocationAsync() {
 
 const LocationPage = ({ navigation }) => {
     const [location, setLocation] = useState('');
+    
+    const { user } = useAuth();
 
     /* Uses original location data to reverse-geocode */
     const reverseGeocodeLocation = async () => {
@@ -66,7 +60,7 @@ const LocationPage = ({ navigation }) => {
                 longitude: location.coords.longitude,
             });
             console.log(reverseGeocodedLocation);
-            uploadLocation(reverseGeocodedLocation[0].city, location, reverseGeocodedLocation);
+            uploadLocation(user.uid, reverseGeocodedLocation[0].city, location, reverseGeocodedLocation);
         } 
         catch (e) {
             console.log('Error reverse geocoding location:', e);

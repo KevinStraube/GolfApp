@@ -4,30 +4,22 @@ import { Dropdown } from "react-native-element-dropdown";
 import { Slider } from "@miblanchard/react-native-slider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import { useAuth } from "../../hooks/useAuth";
 
 const firestore = getFirestore();
 
-async function uploadData(playStyle, handicap, afterRound) {
+async function uploadData(uid, playStyle, handicap, afterRound) {
     try {
-        //Pull user's document ID from async storage
-        const docID = await AsyncStorage.getItem('@userCollectionID');
-        if (docID !== null) {
-            console.log('Fetched ID:', docID);
-            try {
-                //Fetch doc from database
-                const userDoc = doc(firestore, "users", docID);
-                await updateDoc(userDoc, {
-                    playStyle: playStyle,
-                    handicap: handicap[0],
-                    afterRound: afterRound,
-                });
-                console.log("Uploaded personalized data to database");
-            } catch (e) {
-                console.log('Error uploading personalized data to database', e);
-            }
-        }
-    } catch (error) {
-        console.log('Error fetching @userCollectionID', error);
+        //Fetch doc from database
+        const userDoc = doc(firestore, "users", uid);
+        await updateDoc(userDoc, {
+            playStyle: playStyle,
+            handicap: handicap[0],
+            afterRound: afterRound,
+        });
+        console.log("Uploaded personalized data to database");
+    } catch (e) {
+        console.log('Error uploading personalized data to database', e);
     }
 }  
 
@@ -50,10 +42,14 @@ const PromptPage = ({navigation}) => {
     const [playStyle, setPlayStyle] = useState('');
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
+    const { user } = useAuth();
 
     const handleSubmit = () => {
         viewOnboarding();
-        uploadData(playStyle, handicap, afterRound);
+        if (!handicap) {
+            setHandicap(0);
+        }
+        uploadData(user.uid, playStyle, handicap, afterRound);
         navigation.navigate('Home');
     }
 

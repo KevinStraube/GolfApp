@@ -4,29 +4,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { async } from "@firebase/util";
 import slides from "../registration/slides";
+import {useAuth} from "../hooks/useAuth";
+import { getAuth, signOut } from "firebase/auth";
 
 const firestore = getFirestore();
 
-async function getData() {
+async function getData(uid) {
     try {
-        const docID = await AsyncStorage.getItem('@userCollectionID');
-        if (docID !== null) {
-            console.log('Fetched doc ID:', docID);
-            try {
-                const docRef = doc(firestore, 'users', docID);
-                const docSnap = await getDoc(docRef);
+        const docRef = doc(firestore, 'users', uid);
+        const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    console.log('Successfully retrieved data');
-                    return data;
-                }
-            } catch (e) {
-                console.log('Error getting doc from database', e);
-            }
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            console.log('Successfully retrieved data');
+            return data;
         }
     } catch (e) {
-        console.log('Error fetching @userCollectionID from async storage:', e);
+        console.log('Error getting doc from database', e);
     }
 }
 
@@ -39,7 +33,7 @@ const resetOnboarding = async () => {
     }
 }
 
-const ProfilePage = () => {
+const ProfilePage = ({ navigation }) => {
     const [name, setName] = useState('');
     const [age, setAge] = useState(0);
     const [gender, setGender] = useState('');
@@ -49,8 +43,10 @@ const ProfilePage = () => {
     const [location, setLocation] = useState('');
     const [imageData, setImageData] = useState([]);
 
+    const { user } = useAuth();
+
     const loadData = async () => {
-        let data = await getData();
+        let data = await getData(user.uid);
         setName(data.firstName);
         setAge(data.age);
         setGender(data.gender);
@@ -58,12 +54,21 @@ const ProfilePage = () => {
         setHandicap(data.handicap);
         setAfterRound(data.afterRound);
         setLocation(data.city);
-        setImageData(data.imageObject);
+        setImageData(data.photos);
     }
     
     useEffect(() => {
         loadData();
     }, [])
+
+    const logout = () => {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+            console.log('Signed out successfully');
+        }).catch((error) => {
+            console.log("Error logging out:", error);
+        });
+    }
 
     /* POTENTIALLY ADD PAGINATOR TO FLATLIST */
 
@@ -99,6 +104,8 @@ const ProfilePage = () => {
                 <Text className="font-bold mt-6">What are you doing after a round?</Text>
                 <Text className="mb-24">{afterRound}</Text>
             </View>
+            <Button title="reset onboarding" onPress={resetOnboarding}/>
+            <Button title="logout" onPress={logout} />
         </SafeAreaView>
     );
 };

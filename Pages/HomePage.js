@@ -1,21 +1,144 @@
-import React from "react";
-import { View, Text, Button, SafeAreaView } from "react-native";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { View, Text, Button, SafeAreaView, Image, TouchableOpacity } from "react-native";
 import { auth } from '../firebase';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
+import Swiper from 'react-native-deck-swiper';
+import { onSnapshot } from "firebase/firestore";
+
+const DUMMY_DATA = [
+    {
+        id: 1,
+        firstName: "Kevin",
+        age: 25,
+        gender: "Male",
+        handicap: 24,
+        playStyle: "Casual",
+        afterRound: "Going home",
+        location: "Toronto",
+        photo: require('../assets/LogoFull.jpg'),
+    },
+    {
+        id: 2,
+        firstName: "Aaron",
+        age: 27,
+        gender: "Male",
+        handicap: 7,
+        playStyle: "Intermediate",
+        afterRound: "Drinking",
+        location: "Montreal",
+        photo: require('../assets/LogoFull.jpg'),
+    },
+    {
+        id: 3,
+        firstName: "Noah",
+        age: 23,
+        gender: "Male",
+        handicap: 0,
+        playStyle: "Pro",
+        afterRound: "Playing another round",
+        location: "New York City",
+        photo: require('../assets/LogoFull.jpg'),
+    },
+    {
+        id: 4,
+        firstName: "Amanda",
+        age: 25,
+        gender: "Female",
+        handicap: 1,
+        playStyle: "Pro",
+        afterRound: "Sleeping",
+        location: "Los Angeles",
+        photo: require('../assets/LogoFull.jpg'),
+    },
+];
 
 const HomePage = () => {
+    const swipeRef = useRef(null);
+    const [profiles, setProfiles] = useState([]);
 
-    const { logout } = useAuth();
+
 
     return (
-        <SafeAreaView className="flex-1 justify-center items-center">
-            <View className="flex-row my-5 py-8">
-                <Ionicons name="golf-sharp" size={30} color="blue" />
+        <SafeAreaView className="flex-1">
+            <Image
+                className="h-14 w-14 self-center"
+                source={require('../assets/TransparentLogo.png')}
+            />
+
+            {/* Profile Cards */}
+            <View className="flex-1 -mt-10 ">
+                <Swiper
+                    ref={swipeRef}
+                    containerStyle={{ backgroundColor: "transparent" }}
+                    cards={profiles}
+                    cardIndex={0}
+                    stackSize={5}
+                    animateCardOpacity
+                    verticalSwipe={false}
+                    onSwipedLeft={() => {
+                        console.log("Swiped next");
+                    }}
+                    onSwipedRight={() => {
+                        console.log("Swiped yes");
+                    }}
+                    overlayLabels={{
+                        left: {
+                            title: "NEXT",
+                            style: {
+                                label: {
+                                    textAlign: "right",
+                                    color: "red"
+                                },
+                            },
+                        },
+                        right: {
+                            title: "YES",
+                            style: {
+                                label: {
+                                    textAlign: "left",
+                                    color: "green"
+                                },
+                            },
+                        },
+                    }}
+                    renderCard={card => card ? (
+                            <View key={card.id} className="relative bg-white h-3/4 rounded-xl">
+                                <Image 
+                                    className="absolute top-0 h-full w-full rounded-xl"
+                                    source={card.photo} 
+                                />
+                                <View className="absolute bottom-0 bg-white w-full h-20 rounded-b-xl">
+                                    <View>
+                                        <Text>{card.firstName}, {card.age}</Text>
+                                    </View>
+                                    <View>
+                                        <Text>{card.playStyle}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        ) : (
+                            <View className="relative bg-white h-3/4 rounded-xl justify-center items-center">
+                                <Text className="font-bold pb-5">No more profiles!</Text>
+                                <Text>Please try again later</Text>
+                            </View>
+                        )
+                    }
+                />
             </View>
-            <View className="flex-1 -mt-6 justify-center">
-                <Text className="">Email: {auth.currentUser?.email}</Text>
-                <Button title="Log out" onPress={logout}/>
+            <View className="flex flex-row justify-between mb-3 mx-10">
+                <TouchableOpacity 
+                    className="items-center justify-center rounded-full w-16 h-16 bg-red-200"
+                    onPress={() => swipeRef.current.swipeLeft()}
+                >
+                    <Entypo name="cross" size={24} color="red"/>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    className="items-center justify-center rounded-full w-16 h-16 bg-green-200"
+                    onPress={() => swipeRef.current.swipeRight()}
+                >
+                    <Ionicons name="checkmark" size={24} color="green"/>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );

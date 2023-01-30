@@ -2,29 +2,22 @@ import React, { useState } from "react";
 import { StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity } from "react-native";
 import MaskInput, { Masks } from "react-native-mask-input";
 import { Dropdown } from "react-native-element-dropdown";
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import { setDoc, collection, getFirestore, serverTimestamp, doc } from 'firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../hooks/useAuth";
 
 const firestore = getFirestore();
 
-const userCollection = collection(firestore, 'users');
-
-async function addNewUser(first, last, birthday, userGender, age) {
-    const newDoc = await addDoc(userCollection, {
+async function addNewUser(uid, first, last, birthday, userGender, age) {
+    await setDoc(doc(firestore, 'users', uid), {
+        uid: uid,
         firstName: first,
         lastName: last,
         birthday: birthday,
         gender: userGender,
         age: age,
+        timestamp: serverTimestamp(),
     });
-    console.log('New doc was created at: ', newDoc.path);
-
-    try {
-        await AsyncStorage.setItem('@userCollectionID', newDoc.id);
-        console.log('New firebase user doc id added to async storage:', newDoc.id);
-    } catch (e) {
-        console.log('Error uploading firebase doc ID to async storage: ', e);
-    }
 }
 
 const calculate_age = (birthday) => {
@@ -46,6 +39,7 @@ const genderData = [
 ];
 
 const BasicInfoPage = ({navigation}) => {
+    const { user } = useAuth();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [date, setDate] = useState('');
@@ -57,7 +51,7 @@ const BasicInfoPage = ({navigation}) => {
 
     const handleNext = () => {
         let age = calculate_age(date);
-        addNewUser(firstName, lastName, date, gender, age);
+        addNewUser(user.uid, firstName, lastName, date, gender, age);
         navigation.navigate('Notifications');
     }
 

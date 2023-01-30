@@ -4,26 +4,18 @@ import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { doc, collection, getFirestore, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../hooks/useAuth';
 
 const firestore = getFirestore();
 
-async function fetchDocID(imageData) {
+async function fetchDocID(imageData, uid) {
     try {
-        //Pull user's document ID from async storage
-        const docID = await AsyncStorage.getItem('@userCollectionID');
-        if (docID !== null) {
-            console.log('Fetched ID:', docID);
-            try {
-                //Fetch doc from database
-                const userDoc = doc(firestore, "users", docID);
-                await updateDoc(userDoc, { photos: imageData });
-                console.log("Uploaded images to database");
-            } catch (e) {
-                console.log('Error uploading images to database', e);
-            }
-        }
-    } catch (error) {
-        console.log('Error fetching @userCollectionID', error);
+        //Fetch doc from database
+        const userDoc = doc(firestore, "users", uid);
+        await updateDoc(userDoc, { photos: imageData });
+        console.log("Uploaded images to database");
+    } catch (e) {
+        console.log('Error uploading images to database', e);
     }
 }
 
@@ -40,29 +32,39 @@ const ImagesPage = ({ navigation }) => {
 
     const [disabled, setDisabled] = useState(true);
 
+    const { user } = useAuth();
+
     const handleNext = () => {
         //Build an array of image URIs to be passed, only if URI exists. ** MAKE FIRST IMAGE MANDATORY **
         const imageArray = [];
+
         if (firstImage) {
             imageArray.push(firstImage);
         }
         if (secondImage) {
             imageArray.push(secondImage);
-        } else {
-            imageArray.push('');
-        }
+        } 
         if (thirdImage) {
             imageArray.push(thirdImage);
-        } else {
-            imageArray.push('');
-        }
+        } 
         if (fourthImage) {
             imageArray.push(fourthImage);
-        } else {
-            imageArray.push('');
         }
 
-        fetchDocID(imageArray);
+        const imageObject = [];
+
+        for (let i = 0; i < imageArray.length; i++) {
+            imageObject.push(
+                {
+                    "id": i,
+                    "uri": imageArray[i]
+                }
+            );
+        }
+
+        console.log(imageObject);
+
+        fetchDocID(imageObject, user.uid);
         
         navigation.navigate('Prompts')
     }
