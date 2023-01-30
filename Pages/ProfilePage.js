@@ -40,17 +40,6 @@ const resetOnboarding = async () => {
 }
 
 const ProfilePage = () => {
-    const data = [
-        {
-            id: '1',
-            uri: firstImage,
-        },
-    ];
-
-    const [firstImage, setFirstImage] = useState('');
-    const [secondImage, setSecondImage] = useState('');
-    const [thirdImage, setThirdImage] = useState('');
-    const [fourthImage, setFourthImage] = useState('');
     const [name, setName] = useState('');
     const [age, setAge] = useState(0);
     const [gender, setGender] = useState('');
@@ -58,31 +47,10 @@ const ProfilePage = () => {
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
     const [location, setLocation] = useState('');
-    const [dataState, setDataState] = useState(data);
-
-    const populateImages = () => {
-        setDataState([{id: '1', uri: firstImage}]);
-
-        if (secondImage.length > 0) {
-            var newArray = [...dataState, {id: '2', uri: secondImage}];
-            setDataState(newArray);
-        }
-        if (thirdImage.length > 0) {
-            var newArray = [...dataState, {id: '3', uri: thirdImage}];
-            setDataState(newArray);
-        }
-        if (fourthImage.length > 0) {
-            var newArray = [...dataState, {id: '4', uri: fourthImage}];
-            setDataState(newArray);
-        }
-    }
+    const [imageData, setImageData] = useState([]);
 
     const loadData = async () => {
         let data = await getData();
-        setFirstImage(data.photos[0]);
-        setSecondImage(data.photos[1]);
-        setThirdImage(data.photos[2]);
-        setFourthImage(data.photos[3]);
         setName(data.firstName);
         setAge(data.age);
         setGender(data.gender);
@@ -90,19 +58,21 @@ const ProfilePage = () => {
         setHandicap(data.handicap);
         setAfterRound(data.afterRound);
         setLocation(data.city);
-        populateImages();
+        setImageData(data.imageObject);
     }
     
     useEffect(() => {
         loadData();
     }, [])
 
+    /* POTENTIALLY ADD PAGINATOR TO FLATLIST */
+
     return (
         <SafeAreaView className="flex-1">
             <Text className="text-2xl font-semibold mx-9 mt-4">{name}</Text>
-            <View className="border-solid border-black border-2 h-60 w-80 self-center mt-3">
+            <View className="border-solid border-black border-none h-60 w-80 self-center mt-3">
                 <FlatList 
-                    data={dataState} 
+                    data={imageData} 
                     renderItem={(item) => {
                         return (
                             <View className="w-80 justify-center items-center">
@@ -124,9 +94,9 @@ const ProfilePage = () => {
             <View className="mx-9 mt-16">
                 <Text className="font-bold">Play Style</Text>
                 <Text>{playStyle}</Text>
-                <Text className="font-bold mt-4">Handicap</Text>
+                <Text className="font-bold mt-6">Handicap</Text>
                 <Text>{handicap}</Text>
-                <Text className="font-bold mt-4">What are you doing after a round?</Text>
+                <Text className="font-bold mt-6">What are you doing after a round?</Text>
                 <Text className="mb-24">{afterRound}</Text>
             </View>
         </SafeAreaView>

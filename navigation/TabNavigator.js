@@ -15,8 +15,8 @@ const TabNavigator = ({ navigation }) => {
                 component={HomePage} 
                 options={{
                     tabBarShowLabel: false,
-                    tabBarIcon: () => (
-                        <Ionicons name="home" size={24} color="grey" />
+                    tabBarIcon: ({ focused }) => (
+                        <Ionicons name="home" size={24} color={ focused ? "black" : "grey" }/>
                     )
                 }}
             />
@@ -26,8 +26,8 @@ const TabNavigator = ({ navigation }) => {
                 component={ChatPage} 
                 options={{
                     tabBarShowLabel: false,
-                    tabBarIcon: () => (
-                        <MaterialCommunityIcons name="chat" size={24} color="grey" />
+                    tabBarIcon: ({ focused }) => (
+                        <MaterialCommunityIcons name="chat" size={24} color={ focused ? "black" : "grey" } />
                     )
                 }}
             />
@@ -37,8 +37,8 @@ const TabNavigator = ({ navigation }) => {
                 component={ProfilePage} 
                 options={{
                     tabBarShowLabel: false,
-                    tabBarIcon: () => (
-                        <MaterialCommunityIcons name="face-man" size={24} color="grey" />
+                    tabBarIcon: ({ focused }) => (
+                        <MaterialCommunityIcons name="face-man" size={24} color={ focused ? "black" : "grey" } />
                     )
                 }}
             />

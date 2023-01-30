@@ -2,16 +2,11 @@ import React from "react";
 import { View, Text, Button, SafeAreaView } from "react-native";
 import { auth } from '../firebase';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../hooks/useAuth';
 
 const HomePage = () => {
 
-    const handleSignOut = () => {
-        auth.signOut()
-            .then(() => {
-                console.log("Signed out.")
-            })
-            .catch(error => alert(error.message))
-    }
+    const { logout } = useAuth();
 
     return (
         <SafeAreaView className="flex-1 justify-center items-center">
@@ -20,7 +15,7 @@ const HomePage = () => {
             </View>
             <View className="flex-1 -mt-6 justify-center">
                 <Text className="">Email: {auth.currentUser?.email}</Text>
-                <Button title="Log out" onPress={handleSignOut}/>
+                <Button title="Log out" onPress={logout}/>
             </View>
         </SafeAreaView>
     );
