@@ -1,23 +1,13 @@
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import { Alert, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { doc, collection, getFirestore, updateDoc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../hooks/useAuth';
+import { async } from '@firebase/util';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 
-const firestore = getFirestore();
-
-async function fetchDocID(imageData, uid) {
-    try {
-        //Fetch doc from database
-        const userDoc = doc(firestore, "users", uid);
-        await updateDoc(userDoc, { photos: imageData });
-        console.log("Uploaded images to database");
-    } catch (e) {
-        console.log('Error uploading images to database', e);
-    }
-}
+const storage = getStorage();
 
 const ImagesPage = ({ navigation }) => {
     const [firstImage, setFirstImage] = useState(null);
@@ -34,8 +24,8 @@ const ImagesPage = ({ navigation }) => {
 
     const { user } = useAuth();
 
-    const handleNext = () => {
-        //Build an array of image URIs to be passed, only if URI exists. ** MAKE FIRST IMAGE MANDATORY **
+    const handleNext = async () => {
+        //Build an array of image URIs to be passed, only if URI exists
         const imageArray = [];
 
         if (firstImage) {
@@ -50,23 +40,71 @@ const ImagesPage = ({ navigation }) => {
         if (fourthImage) {
             imageArray.push(fourthImage);
         }
+        
+        const fileName = imageArray[0].substring(imageArray[0].lastIndexOf('/')+1, imageArray[0].lastIndexOf('.'));
+    
+        const blobImage = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                resolve(xhr.response);
+            };
+            xhr.onerror = function() {
+                reject(new TypeError("Network request failed"));
+            };
+            xhr.responseType = "blob";
+            xhr.open("GET", imageArray[0], true);
+            xhr.send(null);
+        });
 
-        const imageObject = [];
-
-        for (let i = 0; i < imageArray.length; i++) {
-            imageObject.push(
-                {
-                    "id": i,
-                    "uri": imageArray[i]
-                }
-            );
+        //Create the file metadata
+        /** @type {any} */
+        const metadata = {
+            contentType: 'image/jpeg'
         }
 
-        console.log(imageObject);
+        //Upload image to storage
+        const storageRef = ref(storage, fileName+'-'+Date.now());
+        const uploadTask = uploadBytesResumable(storageRef, blobImage, metadata);
 
-        fetchDocID(imageObject, user.uid);
+        //Listen for state changes, errors, and completion of the upload
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                //Get task progress
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                    
+                }
+            },
+            (error) => {
+                switch (error.code) {
+                    case 'storage/unauthorized':
+                        break;
+                    case 'storage/canceled':
+                        console.log('User cancelled the upload.');
+                        break;
+                    case 'storage/unknown':
+                        console.log('Unknown error occurred. Check error.serverResponse');
+                        break;
+                }
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log('File available at:', downloadURL);
+                });
+            });
+
+        for (let i = 0; i < imageArray.length; i++) {
+            console.log(imageArray[i]);
+        }
         
-        navigation.navigate('Prompts')
+        //navigation.navigate('Prompts')
     }
 
     /* Simple solution - refactor this later by compressing four functions into one */

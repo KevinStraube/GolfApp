@@ -13,7 +13,7 @@ const Onboarding = ({ navigation }) => {
             <Text className="text-xl font-semibold my-12">We just need to ask a few questions</Text>
             <TouchableOpacity 
                 className="bg-slate-400 m-2 p-3 rounded w-20"
-                onPress={() => navigation.navigate('BasicInfo')}
+                onPress={() => navigation.navigate('Images')}
                 >
                 <Text className="self-center">Next</Text>
             </TouchableOpacity>
@@ -22,8 +22,6 @@ const Onboarding = ({ navigation }) => {
 };
 
 export default Onboarding;
-
-
 
 /*
 ** CODE USING FLATLIST **
