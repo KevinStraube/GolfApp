@@ -1,4 +1,4 @@
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import * as Location from 'expo-location';
 import { updateDoc, doc, getFirestore } from 'firebase/firestore';
@@ -47,7 +47,6 @@ async function registerForLocationAsync() {
 const LocationPage = ({ navigation }) => {
     const [location, setLocation] = useState('');
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
     const [city, setCity] = useState('');
 
     const { user } = useAuth();
@@ -58,7 +57,7 @@ const LocationPage = ({ navigation }) => {
         /* Requests permission from the user to use location services, returns location data */
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-            setErrorMessage('Permission to access location was denied');
+            Alert.alert("Error", "Please enable location services to continue");
         }
 
         let location = await Location.getCurrentPositionAsync({}); 
@@ -82,18 +81,13 @@ const LocationPage = ({ navigation }) => {
         }
     }
 
-    let text;
-    if (errorMessage) {
-        text = errorMessage;
-    } else if (location) {
-        text = JSON.stringify(location);
-    }
-
     return (
         <SafeAreaView>
             <Text className="text-xl font-semibold mt-8 self-center">Where do you live?</Text>
             <TouchableOpacity 
                 className="mt-10 self-center bg-slate-300 p-3 rounded-2xl"
+                disabled={city.length > 0}
+                style={city.length > 0 ? styles.disabled : styles.enabled}
                 onPress={handleLocationEnable}
                 >
                 <Text>Enable Location</Text>
