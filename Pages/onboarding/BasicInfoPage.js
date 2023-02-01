@@ -28,7 +28,6 @@ const calculate_age = (birthday) => {
     if (month < 0 || (month === 0 && today.getDate() < dob.getDate())) {
         age_now--;
     }
-    console.log(age_now);
     return age_now;
 }
 

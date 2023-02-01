@@ -1,10 +1,11 @@
-import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import * as Location from 'expo-location';
 import { updateDoc, doc, getFirestore } from 'firebase/firestore';
 import { async } from '@firebase/util';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../hooks/useAuth';
+import LoadingPage from '../LoadingPage';
 
 const firestore = getFirestore();
 
@@ -30,14 +31,11 @@ async function uploadLocation(uid, city, location, reverseLocation) {
     }
 }  
 
-/* Requests permission from the user to use location services, returns location data */
-
 async function registerForLocationAsync() {
     let location;
 
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-        alert('Please enable location services to proceed.');
         console.log("status not shown as granted");
         return;
     }
@@ -46,15 +44,30 @@ async function registerForLocationAsync() {
     return location;
 }
 
-
-
 const LocationPage = ({ navigation }) => {
     const [location, setLocation] = useState('');
-    
-    const { user } = useAuth();
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [city, setCity] = useState('');
 
-    /* Uses original location data to reverse-geocode */
-    const reverseGeocodeLocation = async () => {
+    const { user } = useAuth();
+    
+    const handleLocationEnable = async() => {
+        setLoading(true);
+        
+        /* Requests permission from the user to use location services, returns location data */
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            setErrorMessage('Permission to access location was denied');
+        }
+
+        let location = await Location.getCurrentPositionAsync({}); 
+        setLocation(location);
+        setLoading(false);
+
+        console.log(location);
+
+        /* Uses original location data to reverse-geocode */
         try {
             const reverseGeocodedLocation = await Location.reverseGeocodeAsync({
                 latitude: location.coords.latitude,
@@ -62,19 +75,18 @@ const LocationPage = ({ navigation }) => {
             });
             console.log(reverseGeocodedLocation);
             uploadLocation(user.uid, reverseGeocodedLocation[0].city, location, reverseGeocodedLocation);
+            setCity(reverseGeocodedLocation[0].city);
         } 
         catch (e) {
             console.log('Error reverse geocoding location:', e);
         }
     }
 
-    
-    const handleLocationEnable = async() => {
-        let loc = await registerForLocationAsync();
-        setLocation(loc);
-        console.log(location);
-        reverseGeocodeLocation();
-        navigation.navigate('Images');
+    let text;
+    if (errorMessage) {
+        text = errorMessage;
+    } else if (location) {
+        text = JSON.stringify(location);
     }
 
     return (
@@ -86,6 +98,10 @@ const LocationPage = ({ navigation }) => {
                 >
                 <Text>Enable Location</Text>
             </TouchableOpacity>
+            {loading && (
+                <ActivityIndicator size="large" className="self-center" />
+            )}
+            <Text className="self-center mt-7">{city}</Text>
             <View className="flex-row justify-around">
                 <TouchableOpacity 
                     className="mt-60 rounded-lg bg-slate-400 p-3 w-20"
@@ -93,7 +109,9 @@ const LocationPage = ({ navigation }) => {
                     <Text className="self-center">Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    className="mt-60 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-60 rounded-lg bg-slate-400 p-3 w-20"
+                    disabled={location.length < 1}
+                    style={location.length < 1 ? styles.disabled : styles.enabled}
                     onPress={() => navigation.navigate('Images')}
                     >
                     <Text className="self-center">Next</Text>
@@ -102,5 +120,14 @@ const LocationPage = ({ navigation }) => {
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    enabled: {
+        opacity: 1,
+    },
+    disabled: {
+        opacity: 0.3,
+    },
+});
 
 export default LocationPage;
