@@ -4,7 +4,9 @@ import { auth } from '../firebase';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import Swiper from 'react-native-deck-swiper';
-import { onSnapshot } from "firebase/firestore";
+import { onSnapshot, getFirestore, doc, collection } from "firebase/firestore";
+
+const db = getFirestore();
 
 const DUMMY_DATA = [
     {
@@ -57,7 +59,28 @@ const HomePage = () => {
     const swipeRef = useRef(null);
     const [profiles, setProfiles] = useState([]);
 
+    useEffect(() => {
 
+
+        let unsubscribe;
+
+        const fetchCards = async () => {
+            unsubscribe = onSnapshot(collection(db, 'users'), snapshot => {
+                setProfiles(
+                    snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+                );
+            });
+        };
+
+        fetchCards();
+        
+        console.log(profiles);
+
+        return unsubscribe;
+    }, [])
 
     return (
         <SafeAreaView className="flex-1">
@@ -65,7 +88,6 @@ const HomePage = () => {
                 className="h-14 w-14 self-center"
                 source={require('../assets/TransparentLogo.png')}
             />
-
             {/* Profile Cards */}
             <View className="flex-1 -mt-10 ">
                 <Swiper
@@ -103,17 +125,22 @@ const HomePage = () => {
                         },
                     }}
                     renderCard={card => card ? (
-                            <View key={card.id} className="relative bg-white h-3/4 rounded-xl">
+                            <View key={card.id} className="bg-white h-3/4 rounded-xl">
                                 <Image 
-                                    className="absolute top-0 h-full w-full rounded-xl"
-                                    source={card.photo} 
+                                    className="top-0 h-1/2 w-full rounded-xl"
+                                    source={require('../assets/Blank-Profile-Picture.jpeg')} 
                                 />
-                                <View className="absolute bottom-0 bg-white w-full h-20 rounded-b-xl">
+                                <View className="bg-white w-full h-20 rounded-b-xl">
                                     <View>
-                                        <Text>{card.firstName}, {card.age}</Text>
+                                        <Text className="font-bold">{card.firstName}, {card.age}</Text>
+                                        
                                     </View>
                                     <View>
-                                        <Text>{card.playStyle}</Text>
+                                        <Text>{card.city}</Text>
+                                        <Text>Playstyle: {card.playStyle}</Text>
+                                        <Text>Handicap: {card.handicap}</Text>
+                                        <Text>What are you doing after a round?</Text>
+                                        <Text>{card.afterRound}</Text>
                                     </View>
                                 </View>
                             </View>

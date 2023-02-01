@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginPage from "../Pages/LoginPage";
 import SignUpPage from "../Pages/SignUpPage";
-import Onboarding from "../registration/Onboarding";
+import OnboardingStack from '../navigation/OnboardingStack';
 
 const Stack = createNativeStackNavigator();
 

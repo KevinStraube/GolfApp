@@ -38,6 +38,7 @@ async function registerForLocationAsync() {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
         alert('Please enable location services to proceed.');
+        console.log("status not shown as granted");
         return;
     }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomePage from "../Pages/HomePage";
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import ProfilePage from "../Pages/ProfilePage";
 import ChatPage from "../Pages/ChatPage";
 
@@ -38,7 +38,7 @@ const TabNavigator = ({ navigation }) => {
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
-                        <MaterialCommunityIcons name="face-man" size={24} color={ focused ? "black" : "grey" } />
+                        <AntDesign name="user" size={24} color={ focused ? "black" : "grey" } />
                     )
                 }}
             />

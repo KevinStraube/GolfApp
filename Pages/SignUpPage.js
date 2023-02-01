@@ -2,7 +2,15 @@ import { Button, KeyboardAvoidingView, SafeAreaView, Alert, Text, TextInput, Tou
 import React, { useState } from 'react'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
-import { Ionicons } from '@expo/vector-icons'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+async function removeOnboarding() {
+    try {
+        await AsyncStorage.removeItem('@viewedOnboarding');
+    } catch (error) {
+        console.log("Error storing @viewedOnboarding to AsyncStorage: ", error);
+    }
+}
 
 const SignUpPage = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -16,6 +24,7 @@ const SignUpPage = ({navigation}) => {
                 "Passwords do not match"
             );
         } else {
+            removeOnboarding();
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     //Signed in

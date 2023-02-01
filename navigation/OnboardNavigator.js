@@ -11,12 +11,12 @@ export default function OnboardNavigator() {
     const checkOnboarding = async () => {
         try {
             const value = await AsyncStorage.getItem('@viewedOnboarding');
-    
+
             if (value !== null) {
                 setViewedOnboarding(true);
             }
         } catch (error) {
-            console.log('Error @checkOnboarding', error)
+            console.log("Error @checkOnboarding:", error);
         } finally {
             setLoading(false);
         }
@@ -24,7 +24,7 @@ export default function OnboardNavigator() {
 
     useEffect(() => {
         checkOnboarding();
-    }, [])
-
+    }, []);
+    
     return loading ? <LoadingPage /> : viewedOnboarding ? <TabNavigator /> : <OnboardingStack />
 }

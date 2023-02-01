@@ -32,7 +32,7 @@ const playStyleData = [
 async function viewOnboarding() {
     try {
         await AsyncStorage.setItem('@viewedOnboarding', 'true');
-        console.log("Stored @viewedonboarding");
+        console.log("Stored @viewedOnboarding");
     } catch (error) {
         console.log("Error storing @viewedOnboarding to AsyncStorage: ", error);
     }

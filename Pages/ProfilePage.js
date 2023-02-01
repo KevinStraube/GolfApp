@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, SafeAreaView, Button, Image, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { async } from "@firebase/util";
+import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 import slides from "../registration/slides";
-import {useAuth} from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import { getAuth, signOut } from "firebase/auth";
+import LoadingPage from './LoadingPage';
+import { async } from "@firebase/util";
+import useIsMount from "../hooks/useIsMount";
 
 const firestore = getFirestore();
 
@@ -24,15 +26,6 @@ async function getData(uid) {
     }
 }
 
-const resetOnboarding = async () => {
-    try {
-        await AsyncStorage.removeItem('@viewedOnboarding');
-        console.log("Removed @viewedonboarding");
-    } catch (error) {
-        console.log("Error removing @viewedOnboarding to AsyncStorage: ", error);
-    }
-}
-
 const ProfilePage = ({ navigation }) => {
     const [name, setName] = useState('');
     const [age, setAge] = useState(0);
@@ -43,9 +36,11 @@ const ProfilePage = ({ navigation }) => {
     const [location, setLocation] = useState('');
     const [imageData, setImageData] = useState([]);
 
+    const isMount = useIsMount();
     const { user } = useAuth();
 
     const loadData = async () => {
+        
         let data = await getData(user.uid);
         setName(data.firstName);
         setAge(data.age);
@@ -59,7 +54,7 @@ const ProfilePage = ({ navigation }) => {
     
     useEffect(() => {
         loadData();
-    }, [])
+    }, []);
 
     const logout = () => {
         const auth = getAuth();
@@ -72,7 +67,8 @@ const ProfilePage = ({ navigation }) => {
 
     /* POTENTIALLY ADD PAGINATOR TO FLATLIST */
 
-    return (
+    return isMount ? <LoadingPage /> 
+        : (
         <SafeAreaView className="flex-1">
             <Text className="text-2xl font-semibold mx-9 mt-4">{name}</Text>
             <View className="border-solid border-black border-none h-60 w-80 self-center mt-3">
@@ -104,7 +100,6 @@ const ProfilePage = ({ navigation }) => {
                 <Text className="font-bold mt-6">What are you doing after a round?</Text>
                 <Text className="mb-24">{afterRound}</Text>
             </View>
-            <Button title="reset onboarding" onPress={resetOnboarding}/>
             <Button title="logout" onPress={logout} />
         </SafeAreaView>
     );
