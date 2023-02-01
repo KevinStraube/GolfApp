@@ -145,6 +145,7 @@ const ImagesPage = ({ navigation }) => {
     return (
         <SafeAreaView>
             <Text className="text-xl font-semibold mt-8 self-center">Pick your photos</Text>
+            <Text className="self-center text-slate-500 mt-3">Please choose at least one</Text>
             <View className="mt-5">
                 <View className="flex-row gap-5 justify-center items-center">
                     <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-28 w-28" onPress={pickFirstImage}>

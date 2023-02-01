@@ -14,5 +14,5 @@ export default function RootNavigator() {
         }
     })
 
-    return user ? <OnboardNavigator /> : <LoginStack />
+    return loading? <LoadingPage /> : user ? <OnboardNavigator /> : <LoginStack />
 }
