@@ -5,9 +5,26 @@ import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../hooks/useAuth';
 import { async } from '@firebase/util';
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 
+const firestore = getFirestore();
 const storage = getStorage();
+
+async function photoURLToDatabase(uid, urls) {
+    try {
+        //Fetch doc from database
+        const userDoc = doc(firestore, "users", uid);
+        await updateDoc(userDoc, {
+            playStyle: playStyle,
+            handicap: handicap[0],
+            afterRound: afterRound,
+        });
+        console.log("Uploaded photo URLs to database");
+    } catch (e) {
+        console.log('Error uploading photo URLs to database', e);
+    }
+}
 
 const ImagesPage = ({ navigation }) => {
     const [firstImage, setFirstImage] = useState(null);
@@ -40,68 +57,63 @@ const ImagesPage = ({ navigation }) => {
         if (fourthImage) {
             imageArray.push(fourthImage);
         }
-        
-        const fileName = imageArray[0].substring(imageArray[0].lastIndexOf('/')+1, imageArray[0].lastIndexOf('.'));
-    
-        const blobImage = await new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function() {
-                resolve(xhr.response);
-            };
-            xhr.onerror = function() {
-                reject(new TypeError("Network request failed"));
-            };
-            xhr.responseType = "blob";
-            xhr.open("GET", imageArray[0], true);
-            xhr.send(null);
-        });
-
-        //Create the file metadata
-        /** @type {any} */
-        const metadata = {
-            contentType: 'image/jpeg'
-        }
-
-        //Upload image to storage
-        const storageRef = ref(storage, fileName+'-'+Date.now());
-        const uploadTask = uploadBytesResumable(storageRef, blobImage, metadata);
-
-        //Listen for state changes, errors, and completion of the upload
-        uploadTask.on('state_changed',
-            (snapshot) => {
-                //Get task progress
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-                switch (snapshot.state) {
-                    case 'paused':
-                        console.log('Upload is paused');
-                        break;
-                    case 'running':
-                        console.log('Upload is running');
-                        break;
-                    
-                }
-            },
-            (error) => {
-                switch (error.code) {
-                    case 'storage/unauthorized':
-                        break;
-                    case 'storage/canceled':
-                        console.log('User cancelled the upload.');
-                        break;
-                    case 'storage/unknown':
-                        console.log('Unknown error occurred. Check error.serverResponse');
-                        break;
-                }
-            },
-            () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    console.log('File available at:', downloadURL);
-                });
-            });
 
         for (let i = 0; i < imageArray.length; i++) {
-            console.log(imageArray[i]);
+            const fileName = imageArray[i].substring(imageArray[0].lastIndexOf('/')+1, imageArray[i].lastIndexOf('.'));
+    
+            const blobImage = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function() {
+                    reject(new TypeError("Network request failed"));
+                };
+                xhr.responseType = "blob";
+                xhr.open("GET", imageArray[i], true);
+                xhr.send(null);
+            });
+    
+            //Create the file metadata
+            /** @type {any} */
+            const metadata = {
+                contentType: 'image/jpeg'
+            }
+    
+            //Upload image to storage
+            const storageRef = ref(storage, fileName+'-'+Date.now());
+            const uploadTask = uploadBytesResumable(storageRef, blobImage, metadata);
+    
+            //Listen for state changes, errors, and completion of the upload
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    //Get task progress
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case 'paused':
+                            console.log('Upload is paused');
+                            break;
+                    }
+                },
+                (error) => {
+                    switch (error.code) {
+                        case 'storage/unauthorized':
+                            break;
+                        case 'storage/canceled':
+                            console.log('User cancelled the upload.');
+                            break;
+                        case 'storage/unknown':
+                            console.log('Unknown error occurred. Check error.serverResponse');
+                            break;
+                    }
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        console.log('File available at:', downloadURL);
+                    });
+                }
+            );
         }
         
         //navigation.navigate('Prompts')
