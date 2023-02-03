@@ -8,8 +8,7 @@ import { getAuth, signOut } from "firebase/auth";
 import LoadingPage from './LoadingPage';
 import { async } from "@firebase/util";
 import useIsMount from "../hooks/useIsMount";
-
-const firestore = getFirestore();
+import { firestore } from "../firebase";
 
 async function getData(uid) {
     try {
@@ -34,9 +33,8 @@ const ProfilePage = ({ navigation }) => {
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
     const [location, setLocation] = useState('');
-    const [imageData, setImageData] = useState([]);
+    const [imageData, setImageData] = useState('');
 
-    const isMount = useIsMount();
     const { user } = useAuth();
 
     const loadData = async () => {
@@ -49,12 +47,27 @@ const ProfilePage = ({ navigation }) => {
         setHandicap(data.handicap);
         setAfterRound(data.afterRound);
         setLocation(data.city);
-        setImageData(data.photos);
+        setImageData(data.images[0]);
+
+        /*
+        for (let i = 0; i < data.images.length; i++) {
+            const tempObject = {...imageData, 
+                id: i,
+                url: data.images[i],
+            }
+            setImageData(tempObject);
+        }
+        console.log(imageData.url);
+        */
     }
     
     useEffect(() => {
-        loadData();
-    }, []);
+        if (!user) {
+            console.log("User is not loaded yet");
+        } else {
+            loadData();
+        }
+    }, [user]);
 
     const logout = () => {
         const auth = getAuth();
@@ -67,17 +80,19 @@ const ProfilePage = ({ navigation }) => {
 
     /* POTENTIALLY ADD PAGINATOR TO FLATLIST */
 
-    return isMount ? <LoadingPage /> 
+    return !user ? <LoadingPage /> 
         : (
         <SafeAreaView className="flex-1">
             <Text className="text-2xl font-semibold mx-9 mt-4">{name}</Text>
             <View className="border-solid border-black border-none h-60 w-80 self-center mt-3">
+                <Image className="w-80 h-60" source={{uri: imageData}}/>
+                {/*
                 <FlatList 
                     data={imageData} 
                     renderItem={(item) => {
                         return (
                             <View className="w-80 justify-center items-center">
-                                <Image className="w-80 h-60" source={{uri:item.item.uri}} />
+                                <Image className="w-80 h-60" source={{uri: item.item.url}} />
                             </View>
                         )
                     }}
@@ -85,7 +100,8 @@ const ProfilePage = ({ navigation }) => {
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
-                />
+                */}
+                
             </View>
             <View className="flex-row items-center justify-around mt-4">
                 <Text>{age} years old</Text>
