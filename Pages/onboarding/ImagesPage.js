@@ -4,8 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../hooks/useAuth';
 import { arrayUnion, doc, getFirestore, updateDoc } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
-import { async } from '@firebase/util';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const firestore = getFirestore();
 const storage = getStorage();
@@ -24,7 +23,6 @@ const ImagesPage = ({ navigation }) => {
 
     const handleNext = async () => {
 
-
         images.map(async (image) => {
             const fileName = image.uri.substring(images[0].uri.lastIndexOf('/')+1, image.uri.lastIndexOf('.'));
             const storageRef = ref(storage, fileName);
@@ -35,7 +33,10 @@ const ImagesPage = ({ navigation }) => {
                 uploadBytes(storageRef, blob).then((snapshot) => {
                     getDownloadURL(snapshot.ref).then(async (url) => {
                         await updateDoc(doc(firestore, "users", user.uid), {
-                            images: arrayUnion(url),
+                            images: arrayUnion({
+                                id: Math.random(), 
+                                url: url,
+                            }),
                         })
                     });
                 });

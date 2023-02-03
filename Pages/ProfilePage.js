@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, SafeAreaView, Button, Image, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
-import slides from "../registration/slides";
+import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "../hooks/useAuth";
 import { getAuth, signOut } from "firebase/auth";
 import LoadingPage from './LoadingPage';
-import { async } from "@firebase/util";
 import useIsMount from "../hooks/useIsMount";
 import { firestore } from "../firebase";
 
@@ -33,7 +31,7 @@ const ProfilePage = ({ navigation }) => {
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
     const [location, setLocation] = useState('');
-    const [imageData, setImageData] = useState('');
+    const [imageData, setImageData] = useState([]);
 
     const { user } = useAuth();
 
@@ -47,18 +45,7 @@ const ProfilePage = ({ navigation }) => {
         setHandicap(data.handicap);
         setAfterRound(data.afterRound);
         setLocation(data.city);
-        setImageData(data.images[0]);
-
-        /*
-        for (let i = 0; i < data.images.length; i++) {
-            const tempObject = {...imageData, 
-                id: i,
-                url: data.images[i],
-            }
-            setImageData(tempObject);
-        }
-        console.log(imageData.url);
-        */
+        setImageData(data.images);
     }
     
     useEffect(() => {
@@ -85,8 +72,6 @@ const ProfilePage = ({ navigation }) => {
         <SafeAreaView className="flex-1">
             <Text className="text-2xl font-semibold mx-9 mt-4">{name}</Text>
             <View className="border-solid border-black border-none h-60 w-80 self-center mt-3">
-                <Image className="w-80 h-60" source={{uri: imageData}}/>
-                {/*
                 <FlatList 
                     data={imageData} 
                     renderItem={(item) => {
@@ -100,8 +85,7 @@ const ProfilePage = ({ navigation }) => {
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
-                */}
-                
+                />
             </View>
             <View className="flex-row items-center justify-around mt-4">
                 <Text>{age} years old</Text>
