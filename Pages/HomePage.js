@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import Swiper from 'react-native-deck-swiper';
-import { onSnapshot, getFirestore, doc, collection } from "firebase/firestore";
+import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where } from "firebase/firestore";
 
 const db = getFirestore();
 
@@ -21,13 +21,26 @@ const HomePage = () => {
             let unsubscribe;
 
             const fetchCards = async () => {
-                unsubscribe = onSnapshot(collection(db, 'users'), snapshot => {
-                    setProfiles(
-                        snapshot.docs.filter((doc) => doc.id !== user.uid)
-                        .map((doc) => ({
-                            id: doc.id,
-                            ...doc.data()
-                        }))
+            
+                const passes = await getDocs(collection(db, 'users', user.uid, 'passes')).then
+                    ((snapshot) => snapshot.docs.map((doc) => doc.id)
+                );
+
+                const passedUserIds = passes.length > 0 ? passes : ["test"];
+
+                unsubscribe = onSnapshot(
+                    query(
+                        collection(db, 'users'),
+                        where('uid', 'not-in', [...passedUserIds])
+                    ),
+                    (snapshot) => {
+                        setProfiles(
+                            snapshot.docs.filter((doc) => doc.id !== user.uid)
+                            .map((doc) => ({
+                                id: doc.id,
+                                ...doc.data()
+                            }
+                        ))
                     );
                 });
             };
@@ -39,6 +52,24 @@ const HomePage = () => {
             return unsubscribe;
         }
     }, [user])
+
+    const swipeLeft = (cardIndex) => {
+        if (!profiles[cardIndex]) return;
+
+        const userSwiped = profiles[cardIndex];
+        console.log(`You swiped NEXT on ${userSwiped.firstName}`);
+
+        setDoc(doc(db, 'users', user.uid, 'passes', userSwiped.uid),
+        {
+            uid: userSwiped.uid,
+            firstName: userSwiped.firstName,
+            age: userSwiped.age,
+        });
+    };
+
+    const swipeRight = async (cardIndex) => {
+
+    }; 
 
     return (
         <SafeAreaView className="flex-1">
@@ -56,11 +87,13 @@ const HomePage = () => {
                     stackSize={5}
                     animateCardOpacity
                     verticalSwipe={false}
-                    onSwipedLeft={() => {
+                    onSwipedLeft={(cardIndex) => {
                         console.log("Swiped next");
+                        swipeLeft(cardIndex);
                     }}
-                    onSwipedRight={() => {
+                    onSwipedRight={(cardIndex) => {
                         console.log("Swiped yes");
+                        swipeRight(cardIndex);
                     }}
                     overlayLabels={{
                         left: {
