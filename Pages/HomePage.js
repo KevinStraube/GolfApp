@@ -8,79 +8,37 @@ import { onSnapshot, getFirestore, doc, collection } from "firebase/firestore";
 
 const db = getFirestore();
 
-const DUMMY_DATA = [
-    {
-        id: 1,
-        firstName: "Kevin",
-        age: 25,
-        gender: "Male",
-        handicap: 24,
-        playStyle: "Casual",
-        afterRound: "Going home",
-        location: "Toronto",
-        photo: require('../assets/LogoFull.jpg'),
-    },
-    {
-        id: 2,
-        firstName: "Aaron",
-        age: 27,
-        gender: "Male",
-        handicap: 7,
-        playStyle: "Intermediate",
-        afterRound: "Drinking",
-        location: "Montreal",
-        photo: require('../assets/LogoFull.jpg'),
-    },
-    {
-        id: 3,
-        firstName: "Noah",
-        age: 23,
-        gender: "Male",
-        handicap: 0,
-        playStyle: "Pro",
-        afterRound: "Playing another round",
-        location: "New York City",
-        photo: require('../assets/LogoFull.jpg'),
-    },
-    {
-        id: 4,
-        firstName: "Amanda",
-        age: 25,
-        gender: "Female",
-        handicap: 1,
-        playStyle: "Pro",
-        afterRound: "Sleeping",
-        location: "Los Angeles",
-        photo: require('../assets/LogoFull.jpg'),
-    },
-];
-
 const HomePage = () => {
     const swipeRef = useRef(null);
     const [profiles, setProfiles] = useState([]);
 
+    const { user } = useAuth();
+
     useEffect(() => {
+        if (!user) {
+            console.log("User not yet loaded");
+        } else {
+            let unsubscribe;
 
-
-        let unsubscribe;
-
-        const fetchCards = async () => {
-            unsubscribe = onSnapshot(collection(db, 'users'), snapshot => {
-                setProfiles(
-                    snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }))
-                );
-            });
-        };
-
-        fetchCards();
-        
-        console.log(profiles);
-
-        return unsubscribe;
-    }, [])
+            const fetchCards = async () => {
+                unsubscribe = onSnapshot(collection(db, 'users'), snapshot => {
+                    setProfiles(
+                        snapshot.docs.filter((doc) => doc.id !== user.uid)
+                        .map((doc) => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }))
+                    );
+                });
+            };
+    
+            fetchCards();
+            
+            console.log(profiles);
+    
+            return unsubscribe;
+        }
+    }, [user])
 
     return (
         <SafeAreaView className="flex-1">
