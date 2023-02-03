@@ -5,14 +5,18 @@ import LoadingPage from "../Pages/LoadingPage";
 import OnboardNavigator from "./OnboardNavigator";
 
 export default function RootNavigator() {
-    const [loading, setLoading] = useState(true);
+    //const [loading, setLoading] = useState(true);
     const { user } = useAuth();
+
+    /*
+    ** COME BACK TO THIS - INITIAL LOAD PERMANENTLY LOADS ON FIRST **
 
     useEffect(() => {
         if (user) {
             setLoading(false);
         }
     })
+    */
 
-    return loading? <LoadingPage /> : user ? <OnboardNavigator /> : <LoginStack />
+    return user ? <OnboardNavigator /> : <LoginStack />
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { View, Text, Button, SafeAreaView, Image, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity } from "react-native";
 import { auth } from '../firebase';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
@@ -126,10 +126,22 @@ const HomePage = () => {
                     }}
                     renderCard={card => card ? (
                             <View key={card.id} className="bg-white h-3/4 rounded-xl">
-                                <Image 
-                                    className="top-0 h-1/2 w-full rounded-xl"
-                                    source={require('../assets/Blank-Profile-Picture.jpeg')} 
-                                />
+                                <View className="top-0 h-1/2 w-full rounded-xl">
+                                    <FlatList 
+                                        data={card.images} 
+                                        renderItem={(item) => {
+                                            return (
+                                                <View className="">
+                                                    <Image className="w-96 h-full self-center" source={{uri: item.item.url}} />
+                                                </View>
+                                            )
+                                        }}
+                                        keyExtractor={item => item.id}
+                                        horizontal
+                                        pagingEnabled
+                                        showsHorizontalScrollIndicator={false}
+                                    />
+                                </View>    
                                 <View className="bg-white w-full h-20 rounded-b-xl">
                                     <View>
                                         <Text className="font-bold">{card.firstName}, {card.age}</Text>
