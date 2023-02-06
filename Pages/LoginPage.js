@@ -4,12 +4,22 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginPage = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    async function setOnboarding() {
+        try {
+            await AsyncStorage.setItem('@viewedOnboarding', 'true');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleLogin = () => {
+        setOnboarding();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 //Signed in

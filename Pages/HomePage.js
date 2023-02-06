@@ -4,11 +4,12 @@ import { auth } from '../firebase';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import Swiper from 'react-native-deck-swiper';
-import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc } from "firebase/firestore";
+import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp } from "firebase/firestore";
+import generateId from '../lib/generateId';
 
 const db = getFirestore();
 
-const HomePage = () => {
+const HomePage = ({ navigation }) => {
     const swipeRef = useRef(null);
     const [profiles, setProfiles] = useState([]);
 
@@ -96,7 +97,20 @@ const HomePage = () => {
                     });
 
                     //Match
-                    
+                    setDoc(doc(db, 'matches', generateId(user.uid, userSwiped.uid)), {
+                        users: {
+                            [user.uid]: user,
+                            [userSwiped.uid]: userSwiped,
+
+                        },
+                        usersMatched: [user.uid, userSwiped.uid],
+                        timestamp: serverTimestamp(),
+                    });
+
+                    navigation.navigate('Match', {
+                        user,
+                        userSwiped,
+                    });
 
                 } else {
                     //Other user has not swiped yes yet, create a new doc in likes 
