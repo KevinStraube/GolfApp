@@ -106,7 +106,7 @@ const HomePage = ({ navigation }) => {
                         timestamp: serverTimestamp(),
                     });
 
-                    navigation.navigate('MatchModal', { screen: 'Match'}, {
+                    navigation.navigate("Match", {
                         loggedInUser,
                         userSwiped,
                     });

@@ -37,8 +37,12 @@ export default function OnboardNavigator() {
     */
     return loading ? <LoadingPage /> : viewedOnboarding ? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Main" component={TabNavigator} options={{gestureEnabled: false}}/>
-            <Stack.Screen name="Match" component={MatchPage}/>
+            <Stack.Group>
+                <Stack.Screen name="Main" component={TabNavigator} options={{gestureEnabled: false}}/>
+            </Stack.Group>
+            <Stack.Group screenOptions={{ presentation: "transparentModal" }}>
+                <Stack.Screen name="Match" component={MatchPage}/>
+            </Stack.Group>
         </Stack.Navigator>
     ) : <OnboardingStack />
 }
