@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native'
 import React from 'react'
 import { Foundation, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -11,8 +11,9 @@ const Header = ({title}) => {
                 className="px-2"
                 onPress={() => navigation.goBack()}
             >
-                <Ionicons name='chevron-back-outline' size={34} color="#FF5864"/>
+                <Ionicons name='chevron-back-outline' size={34} color="#71C547"/>
             </TouchableOpacity>
+
             <Text className="text-2xl font-bold pl-4">{title}</Text>
         </View>
     );
