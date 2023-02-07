@@ -12,7 +12,6 @@ import MatchPage from "../Pages/modals/MatchPage";
 const Stack = createNativeStackNavigator();
 
 const OnboardingStack = () => {
-
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Group>
@@ -23,9 +22,7 @@ const OnboardingStack = () => {
                 <Stack.Screen name="Images" component={ImagesPage} />
                 <Stack.Screen name="Prompts" component={PromptPage} />
                 <Stack.Screen name="Home" component={TabNavigator} options={{gestureEnabled: false}}/>
-            </Stack.Group>
-            <Stack.Group screenOptions={{ presentation: "transparentModal" }}>
-                <Stack.Screen name="Match" component={MatchPage}/>
+                <Stack.Screen name="MatchModal" component={MatchPage}/>
             </Stack.Group>
         </Stack.Navigator>
     );

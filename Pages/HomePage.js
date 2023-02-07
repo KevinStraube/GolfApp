@@ -78,16 +78,16 @@ const HomePage = ({ navigation }) => {
 
         const userSwiped = profiles[cardIndex];
         const loggedInUser = await (
-            await getDoc(db, 'users', user.uid)
+            await getDoc(doc(db, 'users', user.uid))
         ).data();
 
         //Make checking match a cloud function later
 
-        getDoc(doc(db, 'users', userSwiped.id, 'swipes', user.uid)).then(
+        getDoc(doc(db, 'users', userSwiped.id, 'likes', user.uid)).then(
             (documentSnapshot) => {
                 if (documentSnapshot.exists()) {
                     //Other user has already swiped yes on you, create a match!
-                    console.log("It's a match!");
+                    console.log(`You matched with ${userSwiped.firstName}`);
 
                     setDoc(doc(db, 'users', user.uid, 'likes', userSwiped.uid),
                     {
@@ -99,18 +99,18 @@ const HomePage = ({ navigation }) => {
                     //Match
                     setDoc(doc(db, 'matches', generateId(user.uid, userSwiped.uid)), {
                         users: {
-                            [user.uid]: user,
+                            [user.uid]: loggedInUser,
                             [userSwiped.uid]: userSwiped,
-
                         },
                         usersMatched: [user.uid, userSwiped.uid],
                         timestamp: serverTimestamp(),
                     });
 
-                    navigation.navigate('Match', {
-                        user,
+                    navigation.navigate('MatchModal', { screen: 'Match'}, {
+                        loggedInUser,
                         userSwiped,
                     });
+                    
 
                 } else {
                     //Other user has not swiped yes yet, create a new doc in likes 
