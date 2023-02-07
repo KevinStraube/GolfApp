@@ -1,11 +1,13 @@
-import { View, Text } from 'react-native'
+import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
+import Header from '../components/Header';
+import getMatchedUserInfo from '../lib/getMatchedUserInfo';
 
 const MessagePage = () => {
     return (
-        <View>
-            <Text>Message Page!</Text>
-        </View>
+        <SafeAreaView>
+            <Header title="Name"/>
+        </SafeAreaView>
     );
 };
 

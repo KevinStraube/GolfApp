@@ -20,7 +20,9 @@ const ChatRow = ({ matchDetails }) => {
     return (
         <TouchableOpacity 
             className="flex-row border-slate-400 border border-x-0 items-center py-3 bg-white px-5 my-1"
-            onPress={() => navigation.navigate('Message')}
+            onPress={() => navigation.navigate('Message', {
+                matchDetails,
+            })}
         >   
             <Image
                 className="rounded-full h-14 w-14 mr-4"
