@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, Image, Button } from "react-native";
-import useIsMount from "../hooks/useIsMount";
-import { useAuth } from "../hooks/useAuth";
+import { View, Text, SafeAreaView, Image, Button, TouchableOpacity } from "react-native";
 import LoadingPage from "./LoadingPage";
-import { async } from "@firebase/util";
-import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
+import Header from "../components/Header";
+import ChatList from "../components/ChatList";
 
-const ChatPage = ({navigation}) => {
-
-    const goToModal = () => {
-        navigation.navigate('Match');
-    }
-
+const ChatPage = () => {
     return (
-        <SafeAreaView className="flex-1 justify-center items-center">
-            <Button title="Go Modal" onPress={goToModal}/>
+        <SafeAreaView>
+            <View className="items-center mt-3">
+                <Text className="text-2xl font-bold pl-2">Chat</Text>
+            </View>
+            <ChatList />
         </SafeAreaView>
     );
 };
