@@ -7,7 +7,7 @@ import ChatPage from "../Pages/ChatPage";
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = ({ navigation }) => {
+const TabNavigator = () => {
     return (
         <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen
@@ -27,7 +27,7 @@ const TabNavigator = ({ navigation }) => {
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ focused }) => (
-                        <MaterialCommunityIcons name="chat" size={24} color={ focused ? "black" : "grey" } />
+                        <Ionicons name="chatbubbles" size={24} color={ focused ? "black" : "grey" } />
                     )
                 }}
             />
