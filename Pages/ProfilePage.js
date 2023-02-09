@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, SafeAreaView, Button, Image, FlatList } from "react-native";
+import { View, Text, SafeAreaView, Button, Image, FlatList, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "../hooks/useAuth";
 import { getAuth, signOut } from "firebase/auth";
 import LoadingPage from './LoadingPage';
-import useIsMount from "../hooks/useIsMount";
 import { firestore } from "../firebase";
+import { Ionicons } from '@expo/vector-icons';
 
 async function getData(uid) {
     try {
@@ -23,7 +23,7 @@ async function getData(uid) {
     }
 }
 
-const ProfilePage = ({ navigation }) => {
+const ProfilePage = ({navigation}) => {
     const [name, setName] = useState('');
     const [age, setAge] = useState(0);
     const [gender, setGender] = useState('');
@@ -70,7 +70,12 @@ const ProfilePage = ({ navigation }) => {
     return !user ? <LoadingPage /> 
         : (
         <SafeAreaView className="flex-1">
-            <Text className="text-2xl font-semibold mx-9 mt-4">{name}</Text>
+            <View className="flex-row items-center mt-4 justify-between mr-5">
+                <Text className="text-2xl font-semibold mx-9">{name}</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                    <Ionicons name="settings-sharp" size={32} color="black"/>
+                </TouchableOpacity>
+            </View>
             <View className="border-solid border-black border-none h-60 w-80 self-center mt-3">
                 <FlatList 
                     data={imageData} 

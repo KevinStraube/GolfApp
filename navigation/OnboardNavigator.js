@@ -6,6 +6,7 @@ import OnboardingStack from "./OnboardingStack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MatchPage from "../Pages/modals/MatchPage";
 import MessagePage from '../Pages/MessagePage';
+import SettingsPage from '../Pages/SettingsPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ export default function OnboardNavigator() {
             <Stack.Group>
                 <Stack.Screen name="Main" component={TabNavigator} options={{gestureEnabled: false}}/>
                 <Stack.Screen name="Message" component={MessagePage} />
+                <Stack.Screen name="Settings" component={SettingsPage} />
             </Stack.Group>
             <Stack.Group screenOptions={{ presentation: "transparentModal" }}>
                 <Stack.Screen name="Match" component={MatchPage}/>
