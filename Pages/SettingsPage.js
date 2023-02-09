@@ -38,7 +38,7 @@ const SettingsPage = () => {
             className="h-full"
             data={settingsList}
             keyExtractor={item => item.id}
-            renderItem={({item}) => <SettingsRow title={item.title} icon={item.icon}/>}
+            renderItem={({item}) => <SettingsRow title={item.title} icon={item.icon} page={item.page}/>}
           />
         </SafeAreaView>
     );
