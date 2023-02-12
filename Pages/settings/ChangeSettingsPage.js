@@ -1,11 +1,13 @@
-import { View, Text } from 'react-native'
+import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
+import Header from '../../components/Header';
 
 const ChangeSettingsPage = () => {
     return (
-        <View>
-            <Text>ChangeSettingsPage</Text>
-        </View>
+        <SafeAreaView>
+            <Header title={"Settings"}/>
+            <Text></Text>
+        </SafeAreaView>
     );
 };
 

@@ -8,7 +8,7 @@ const SettingsRow = ({title, icon, page}) => {
 
     return (
         <TouchableOpacity 
-            className="flex-row items-center justify-between border border-slate-300 border-x-0 py-3 px-5"
+            className="flex-row items-center justify-between border-b border-slate-300 border-x-0 py-3 px-5"
             onPress={() => navigation.navigate(page)}
         >
             <Text>{title}</Text>

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 const Header = ({title}) => {
     const navigation = useNavigation();
     return (
-        <View className="flex-row items-center">
+        <View className="flex-row items-center border-b border-slate-300 pb-3">
             <TouchableOpacity 
                 className="px-2"
                 onPress={() => navigation.goBack()}
