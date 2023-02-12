@@ -33,7 +33,7 @@ const settingsList = [
 const SettingsPage = () => {
     return (
         <SafeAreaView>
-          <Header title={"Settings"}/>
+          <Header title={"Menu"}/>
           <FlatList
             className="h-full"
             data={settingsList}

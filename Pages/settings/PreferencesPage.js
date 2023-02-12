@@ -11,8 +11,6 @@ const genderData = [
     { label: 'Both', value: 'Both' },
 ]
 
-
-
 const PreferencesPage = () => {
     const [age, setAge] = useState([18, 50]);
     const [gender, setGender] = useState('');

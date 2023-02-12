@@ -73,7 +73,7 @@ const ProfilePage = ({navigation}) => {
             <View className="flex-row items-center mt-4 justify-between mr-5">
                 <Text className="text-2xl font-semibold mx-9">{name}</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-                    <Ionicons name="settings-sharp" size={32} color="black"/>
+                    <Ionicons name="menu" size={32} color="black"/>
                 </TouchableOpacity>
             </View>
             <View className="border-solid border-black border-none h-60 w-80 self-center mt-3">
