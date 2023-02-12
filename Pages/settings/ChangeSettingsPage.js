@@ -6,7 +6,7 @@ const ChangeSettingsPage = () => {
     return (
         <SafeAreaView>
             <Header title={"Settings"}/>
-            <Text></Text>
+            <Text>Settings Page</Text>
         </SafeAreaView>
     );
 };

@@ -1,8 +1,11 @@
-import { View, Text, SafeAreaView, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Slider } from "@miblanchard/react-native-slider";
+import {useAuth} from '../../hooks/useAuth';
+import { firestore } from '../../firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 const playStyleData = [
     { label: 'Casual', value: 'Casual' },
@@ -10,14 +13,51 @@ const playStyleData = [
     { label: 'Pro', value: 'Pro' },
 ];
 
-const EditProfilePage = () => {
+const EditProfilePage = ({navigation}) => {
     const [playStyle, setPlayStyle] = useState('');
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
     const [course, setCourse] = useState('');
 
+    const { user } = useAuth();
+
+    const updateUserInfo = async () => {
+        try {
+            await updateDoc(doc(firestore, 'users', user.uid), {
+                playStyle: playStyle,
+                handicap: handicap,
+                afterRound, afterRound,
+                course, course,
+            });
+            Alert.alert("Success", "Profile updated");
+            navigation.goBack();
+        } catch (error) {
+            console.log("Error updating data:", error);
+        }
+    }
+
+    useEffect(() => {
+        if (!user) {
+            console.log('User loading');
+        } else {
+            const fetchData = async () => {
+                const docRef = doc(firestore, 'users', user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setPlayStyle(data.playStyle);
+                    setHandicap(data.handicap);
+                    setAfterRound(data.afterRound);
+                    setCourse(data.course);
+                }
+            }
+            fetchData();
+        }
+    }, [user]);
+
     return (
-        <SafeAreaView>
+        <SafeAreaView className="flex-1">
             <Header title={"Edit Profile"}/>
             <View>
                 <Text className="font-semibold text-lg mx-4 mt-3">Play Style</Text>
@@ -29,6 +69,7 @@ const EditProfilePage = () => {
                     }}
                     labelField="label"
                     valueField="value"
+                    placeholder={playStyle}
                     className="bg-white px-4 py-2 mx-4 mt-1 w-1/2"
                 />
 
@@ -55,6 +96,14 @@ const EditProfilePage = () => {
                     onChangeText={text => setCourse(text)}
                     value={course}
                 />
+            </View>
+            <View className="flex-1 justify-center items-center">
+                <TouchableOpacity 
+                    className="w-5/6 py-3 px-3 bg-lime-600 rounded-lg"
+                    onPress={updateUserInfo}
+                >
+                    <Text className="self-center text-white font-bold text-base">Apply</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );

@@ -1,11 +1,15 @@
-import { View, Text } from 'react-native'
+import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
+import Header from '../../components/Header';
 
 const HelpPage = () => {
     return (
-        <View>
-            <Text>HelpPage</Text>
-        </View>
+        <SafeAreaView className="flex-1">
+            <Header title={"Help Center"}/>
+            <View className="flex-1 justify-center items-center">
+                <Text className="font-bold text-xl">For any questions, comments or concerns please email ______</Text>
+            </View>
+        </SafeAreaView>
     );
 };
 
