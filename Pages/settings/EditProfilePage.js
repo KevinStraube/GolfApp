@@ -36,6 +36,7 @@ const EditProfilePage = ({navigation}) => {
         }
     }
 
+    //Trigger data fetch once user has loaded
     useEffect(() => {
         if (!user) {
             console.log('User loading');
