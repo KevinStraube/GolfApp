@@ -14,6 +14,7 @@ import HelpPage from "../Pages/settings/HelpPage";
 import ChangeEmailPage from "../Pages/settings/deepersettings/ChangeEmailPage";
 import ChangePasswordPage from "../Pages/settings/deepersettings/ChangePasswordPage";
 import DeleteAccountPage from "../Pages/settings/deepersettings/DeleteAccountPage";
+import ReauthenticatePage from "../Pages/settings/ReauthenticatePage";
 
 const Stack = createNativeStackNavigator();
 
@@ -64,6 +65,7 @@ export default function OnboardNavigator() {
                 <Stack.Screen name="ChangeEmail" component={ChangeEmailPage} />
                 <Stack.Screen name="ChangePassword" component={ChangePasswordPage}/>
                 <Stack.Screen name="DeleteAccount" component={DeleteAccountPage}/>
+                <Stack.Screen name="Reauthenticate" component={ReauthenticatePage} />
             </Stack.Group>
         </Stack.Navigator>
     ) : <OnboardingStack />

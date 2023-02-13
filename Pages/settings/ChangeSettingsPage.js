@@ -8,7 +8,7 @@ const data = [
         id: 0,
         title: "Change email",
         icon: "mail-outline",
-        page: "ChangeEmail",
+        page: "Reauthenticate",
     },
     {
         id: 1,
