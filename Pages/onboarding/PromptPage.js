@@ -8,7 +8,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const firestore = getFirestore();
 
-async function uploadData(uid, playStyle, handicap, afterRound) {
+async function uploadData(uid, playStyle, handicap, afterRound, course) {
     try {
         //Fetch doc from database
         const userDoc = doc(firestore, "users", uid);
@@ -16,6 +16,7 @@ async function uploadData(uid, playStyle, handicap, afterRound) {
             playStyle: playStyle,
             handicap: handicap[0],
             afterRound: afterRound,
+            course: course,
         });
         console.log("Uploaded personalized data to database");
     } catch (e) {
@@ -42,6 +43,8 @@ const PromptPage = ({navigation}) => {
     const [playStyle, setPlayStyle] = useState('');
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
+    const [onboarding, setOnboarding] = useState(false);
+    const [course, setCourse] = useState('');
     const { user } = useAuth();
 
     const handleSubmit = () => {
@@ -49,8 +52,9 @@ const PromptPage = ({navigation}) => {
         if (!handicap) {
             setHandicap(0);
         }
-        uploadData(user.uid, playStyle, handicap, afterRound);
-        navigation.navigate('Home');
+        uploadData(user.uid, playStyle, handicap, afterRound, course);
+        setOnboarding(true);
+        navigation.navigate('Main');
     }
 
     const validate = () => {
@@ -60,7 +64,7 @@ const PromptPage = ({navigation}) => {
     return (
         <SafeAreaView className="flex-1">
             <Text className="text-2xl font-semibold self-center mt-4">Personalize Your Profile</Text>
-            <Text className="mt-8 mx-5 mb-1">Play Style</Text>
+            <Text className="text-base font-semibold mt-8 mx-5 mb-1">Play Style</Text>
             <Dropdown
                 data={playStyleData}
                 value={playStyle}
@@ -72,7 +76,11 @@ const PromptPage = ({navigation}) => {
                 placeholder="Select play style"
                 className="bg-white mx-5 w-36"
             />
-            <Text className="mt-10 mx-5">Handicap (0-25+): {handicap}</Text>
+            {handicap < 25?
+            <Text className="text-base font-semibold mt-10 mx-5">Handicap: {handicap}</Text>
+            :
+            <Text className="text-base font-semibold mt-10 mx-5">Handicap: {handicap}+</Text>
+            }  
             <View className="px-5 mt-3">
                 <Slider 
                     value={handicap}
@@ -82,25 +90,34 @@ const PromptPage = ({navigation}) => {
                     step={1}
                 />
             </View>
-            <Text className="mt-8 mx-5">What are you doing after a round?</Text>
+            <Text className="text-base font-semibold mt-8 mx-5">What are you doing after a round?</Text>
             <TextInput 
-                className="bg-white w-80 rounded-lg p-2 mx-5 my-2"
+                className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2"
                 onChangeText={text => setAfterRound(text)}
                 value={afterRound}
             />
+            <View className="flex-row mt-8">
+                <Text className="text-base font-semibold ml-5">Favourite/Home course?</Text>
+                <Text className="text-xs self-center text-slate-500"> (optional)</Text>
+            </View>
+            <TextInput 
+                className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2"
+                onChangeText={text => setCourse(text)}
+                value={course}
+            />
             <View className="flex-row justify-around">
                 <TouchableOpacity 
-                    className="mt-10 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-10 rounded-lg bg-lime-500 p-3 w-20"
                     onPress={() => navigation.navigate('Images')}>
-                    <Text className="self-center">Back</Text>
+                    <Text className="text-white font-semibold self-center">Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    className="mt-10 mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-10 mx-5 rounded-lg bg-lime-500 p-3 w-20"
                     disabled={!validate()}
                     onPress={handleSubmit}
                     style={playStyle.length < 1 || afterRound.length < 1 ? styles.disabled : styles.enabled}
                 >
-                    <Text className="self-center">Submit</Text>
+                    <Text className="text-white font-semibold self-center">Submit</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView> 

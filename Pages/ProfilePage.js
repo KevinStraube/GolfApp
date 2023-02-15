@@ -60,22 +60,13 @@ const ProfilePage = ({navigation}) => {
         }
     }, [user]);
 
-    const logout = () => {
-        const auth = getAuth();
-        signOut(auth).then(() => {
-            console.log('Signed out successfully');
-        }).catch((error) => {
-            console.log("Error logging out:", error);
-        });
-    }
-
     /* POTENTIALLY ADD PAGINATOR TO FLATLIST */
 
     return !user ? <LoadingPage /> 
         : (
         <SafeAreaView className="flex-1">
             <View className="flex-row items-center mt-4 justify-between mr-5">
-                <Text className="text-2xl font-semibold mx-9">{name}</Text>
+                <Text className="text-2xl font-semibold mx-5">{name}</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
                     <Ionicons name="menu" size={32} color="black"/>
                 </TouchableOpacity>
@@ -149,8 +140,6 @@ const ProfilePage = ({navigation}) => {
                     <Text className="mt-2">{afterRound}</Text>
                 </View>
             </View>
-
-            <Button title="logout" onPress={logout} />
         </SafeAreaView>
     );
 };

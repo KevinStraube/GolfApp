@@ -7,7 +7,6 @@ import { doc, setDoc } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 
 
-
 const PreferencesPage = ({navigation}) => {
     const [maleCheckBox, setMaleCheckBox] = useState(false);
     const [femaleCheckBox, setFemaleCheckBox] = useState(false);
@@ -20,13 +19,13 @@ const PreferencesPage = ({navigation}) => {
 
     const handleNext = () => {
         const genders = [];
-        if (!maleCheckBox) {
+        if (maleCheckBox) {
             genders.push('Male');
         }
-        if (!femaleCheckBox) {
+        if (femaleCheckBox) {
             genders.push('Female');
         }
-        if (!otherCheckBox) {
+        if (otherCheckBox) {
             genders.push('Other');
         }
 

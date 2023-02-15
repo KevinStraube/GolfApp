@@ -3,7 +3,6 @@ import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, StyleSheet
 import { auth } from '../firebase';
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
-import Swiper from 'react-native-deck-swiper';
 import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp } from "firebase/firestore";
 import generateId from '../lib/generateId';
 
@@ -221,17 +220,17 @@ const HomePage = ({ navigation }) => {
                 <View className="flex-1 justify-end mb-5">
                     <View className="flex-row justify-between mx-5">
                         <TouchableOpacity 
-                            className="items-center justify-center rounded-full w-16 h-16 bg-red-200"
+                            className="items-center justify-center rounded-full w-16 h-16 bg-red-500"
                             onPress={swipeLeft}
                         >
-                            <Entypo name="cross" size={24} color="red"/>
+                            <Entypo name="cross" size={30} color="white"/>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                            className="items-center justify-center rounded-full w-16 h-16 bg-green-200"
+                            className="items-center justify-center rounded-full w-16 h-16 bg-green-500"
                             onPress={swipeRight}
                         >
-                            <Ionicons name="checkmark" size={24} color="green"/>
+                            <Ionicons name="checkmark" size={30} color="white"/>
                         </TouchableOpacity>
                     </View>
                 </View>
