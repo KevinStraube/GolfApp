@@ -11,7 +11,6 @@
   "dependencies": {
     "@miblanchard/react-native-slider": "^2.2.0",
     "@react-native-async-storage/async-storage": "~1.17.3",
-    "@react-native-community/checkbox": "^0.5.14",
     "@react-native-community/datetimepicker": "6.5.2",
     "@react-native-firebase/app": "^16.7.0",
     "@react-native-firebase/storage": "^16.7.0",
@@ -30,6 +29,7 @@
     "nativewind": "^2.0.11",
     "react": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-bouncy-checkbox": "^3.0.6",
     "react-native-deck-swiper": "^2.0.12",
     "react-native-element-dropdown": "^2.5.3",
     "react-native-mask-input": "^1.2.2",
