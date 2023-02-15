@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { auth } from '../firebase';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import Swiper from 'react-native-deck-swiper';
 import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp } from "firebase/firestore";
@@ -10,8 +10,9 @@ import generateId from '../lib/generateId';
 const db = getFirestore();
 
 const HomePage = ({ navigation }) => {
-    const swipeRef = useRef(null);
     const [profiles, setProfiles] = useState([]);
+    const [index, setIndex] = useState(0);
+    const [imageData, setImageData] = useState([]);
 
     const { user } = useAuth();
 
@@ -52,17 +53,23 @@ const HomePage = ({ navigation }) => {
             };
     
             fetchCards();
-            
+            setIndex(0);
             console.log(profiles);
     
             return unsubscribe;
         }
-    }, [user])
+    }, [user]);
 
-    const swipeLeft = (cardIndex) => {
-        if (!profiles[cardIndex]) return;
+    useEffect(() => {
+        if (profiles) {
+            setImageData(profiles[index]?.images);
+        }
+    }, [profiles, index]);
 
-        const userSwiped = profiles[cardIndex];
+    const swipeLeft = () => {
+        if (!profiles[index]) return;
+
+        const userSwiped = profiles[index];
         console.log(`You swiped NEXT on ${userSwiped.firstName}`);
 
         setDoc(doc(db, 'users', user.uid, 'passes', userSwiped.uid),
@@ -71,12 +78,14 @@ const HomePage = ({ navigation }) => {
             firstName: userSwiped.firstName,
             age: userSwiped.age,
         });
+
+        setIndex(index + 1);
     };
 
-    const swipeRight = async (cardIndex) => {
-        if (!profiles[cardIndex]) return;
+    const swipeRight = async () => {
+        if (!profiles[index]) return;
 
-        const userSwiped = profiles[cardIndex];
+        const userSwiped = profiles[index];
         const loggedInUser = await (
             await getDoc(doc(db, 'users', user.uid))
         ).data();
@@ -125,106 +134,107 @@ const HomePage = ({ navigation }) => {
                 }
             }
         );
+
+        setIndex(index + 1);
     }; 
 
-    return (
+    return index === profiles.length ? (
+        <SafeAreaView className="flex-1 justify-center items-center">
+            <Text className="text-2xl font-bold my-3">No more profiles!</Text>
+            <Text className="text-lg mx-5">Try again later or expand your search in golf preferences to see more people</Text>
+        </SafeAreaView>
+    ) : (
         <SafeAreaView className="flex-1">
-            <Image
-                className="h-14 w-14 self-center"
-                source={require('../assets/TransparentLogo.png')}
-            />
+                <Text className="mx-5 mt-3 font-bold text-2xl">{profiles[index]?.firstName}</Text>
+                <View className="flex justify-center items-center mt-3 self-center rounded-lg" style={{width: 350, height: 260}}>
+                    <FlatList
+                        data={imageData}
+                        keyExtractor={item => item.id}
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        renderItem={(item) => {
+                            return (
+                                <Image 
+                                    className="rounded-lg" 
+                                    source={{uri: item.item.url}}
+                                    style={{width:350, height:260}}
+                                />
+                            )
+                        }}
+                    />
+                </View>
 
-            {/* Profile Cards */}
+                <View className="flex rounded-lg mt-3 bg-white self-center" style={{width: '90%'}}>
+                    <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
+                        <View className="flex-row items-center">
+                            <MaterialCommunityIcons name='cake-variant-outline' size={24} color="black" />
+                            <Text className="text-base mx-4">{profiles[index]?.age}</Text>
+                        </View>
 
-            <View className="flex-1 -mt-10 ">
-                <Swiper
-                    ref={swipeRef}
-                    containerStyle={{ backgroundColor: "transparent" }}
-                    cards={profiles}
-                    stackSize={5}
-                    cardIndex={0}
-                    animateCardOpacity
-                    verticalSwipe={false}
-                    onSwipedLeft={(cardIndex) => {
-                        swipeLeft(cardIndex);
-                    }}
-                    onSwipedRight={(cardIndex) => {
-                        swipeRight(cardIndex);
-                    }}
-                    overlayLabels={{
-                        left: {
-                            title: "NEXT",
-                            style: {
-                                label: {
-                                    textAlign: "right",
-                                    color: "red"
-                                },
-                            },
-                        },
-                        right: {
-                            title: "YES",
-                            style: {
-                                label: {
-                                    textAlign: "left",
-                                    color: "green"
-                                },
-                            },
-                        },
-                    }}
-                    renderCard={(card) => card ? (
-                            <View key={card.uid} className="relative bg-white h-3/4 rounded-xl">
-                                <View className="top-0 h-1/2 w-full rounded-xl">
-                                    <FlatList 
-                                        data={card.images} 
-                                        renderItem={(item) => {
-                                            return (
-                                                <View className="rounded-xl">
-                                                    <Image className="w-96 h-full self-center rounded-t-xl" source={{uri: item.item.url}} />
-                                                </View>
-                                            )
-                                        }}
-                                        keyExtractor={item => item.id}
-                                        horizontal
-                                        pagingEnabled
-                                        showsHorizontalScrollIndicator={false}
-                                    />
-                                </View>    
-                                <View className="bg-white w-full h-20 rounded-b-xl">
-                                    <View>
-                                        <Text className="font-bold">{card.firstName}, {card.age}</Text>
-                                    </View>
-                                    <View>
-                                        <Text>{card.city}</Text>
-                                        <Text>Playstyle: {card.playStyle}</Text>
-                                        <Text>Handicap: {card.handicap}</Text>
-                                        <Text>What are you doing after a round?</Text>
-                                        <Text>{card.afterRound}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                        ) : (
-                            <View className="bg-white h-3/4 rounded-xl justify-center items-center" style={style.cardShadow}>
-                                <Text className="font-bold pb-5">No more profiles!</Text>
-                                <Text>Please try again later</Text>
-                            </View>
-                        )
+                        <View className="border-r border-slate-300 h-full">
+                            <Text></Text>
+                        </View>
+
+                        <View className="flex-row items-center ml-4">
+                            <AntDesign name='user' size={24} color="black" />
+                            <Text className="text-base mx-4">{profiles[index]?.gender}</Text>
+                        </View>
+                    </View>
+
+                    <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
+                        <View className="flex-row items-center">
+                            <MaterialIcons name='sports-golf' size={24} color="black" />
+                            <Text className="text-base mx-4">{profiles[index]?.playStyle}</Text>
+                        </View>
+
+                        <View className="border-r border-slate-300 h-full">
+                            <Text></Text>
+                        </View>
+
+                        <View className="flex-row items-center ml-4">
+                            <Text className="font-bold">HCP: </Text>
+                            <Text className="text-base mx-4">{profiles[index]?.handicap}</Text>
+                        </View>
+                    </View>
+
+                    <View className="flex-row items-center justify-center mx-4 py-3 border-b border-slate-300">
+                        <Ionicons name='location-outline' size={24} color="black" />
+                        <Text className="text-base mx-4">{profiles[index]?.city}</Text>
+                    </View>
+
+                    { 
+                        profiles[index]?.course &&
+                        <View className="flex-row items-center justify-center px-3 py-3 border-b border-slate-300 mx-4">
+                            <Ionicons name='golf-outline' size={24} color="black" />
+                            <Text className="text-base mx-4">{profiles[index]?.course}</Text>
+                        </View>
                     }
-                />
-            </View>
-            <View className="flex flex-row justify-between mb-3 mx-10">
-                <TouchableOpacity 
-                    className="items-center justify-center rounded-full w-16 h-16 bg-red-200"
-                    onPress={() => swipeRef.current.swipeLeft()}
-                >
-                    <Entypo name="cross" size={24} color="red"/>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    className="items-center justify-center rounded-full w-16 h-16 bg-green-200"
-                    onPress={() => swipeRef.current.swipeRight()}
-                >
-                    <Ionicons name="checkmark" size={24} color="green"/>
-                </TouchableOpacity>
-            </View>
+
+                    <View className="py-3 mx-4">
+                        <Text className="font-bold">What are you doing after a round?</Text>
+                        <Text className="mt-2">{profiles[index]?.afterRound}</Text>
+                    </View>
+
+                </View>
+            
+                <View className="flex-1 justify-end mb-5">
+                    <View className="flex-row justify-between mx-5">
+                        <TouchableOpacity 
+                            className="items-center justify-center rounded-full w-16 h-16 bg-red-200"
+                            onPress={swipeLeft}
+                        >
+                            <Entypo name="cross" size={24} color="red"/>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            className="items-center justify-center rounded-full w-16 h-16 bg-green-200"
+                            onPress={swipeRight}
+                        >
+                            <Ionicons name="checkmark" size={24} color="green"/>
+                        </TouchableOpacity>
+                    </View>
+                </View>
         </SafeAreaView>
     );
 };

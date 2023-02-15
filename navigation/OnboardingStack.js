@@ -8,6 +8,7 @@ import ImagesPage from "../Pages/onboarding/ImagesPage";
 import PromptPage from "../Pages/onboarding/PromptPage";
 import TabNavigator from "./TabNavigator";
 import MatchPage from "../Pages/modals/MatchPage";
+import PreferencesPage from "../Pages/onboarding/PreferencesPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ const OnboardingStack = () => {
             <Stack.Group>
                 <Stack.Screen name="Onboarding" component={Onboarding} />
                 <Stack.Screen name="BasicInfo" component={BasicInfoPage} />
+                <Stack.Screen name="Preferences" component={PreferencesPage} />
                 <Stack.Screen name="Notifications" component={NotificationPage} />
                 <Stack.Screen name="Location" component={LocationPage} />
                 <Stack.Screen name="Images" component={ImagesPage} />

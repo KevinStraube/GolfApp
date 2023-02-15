@@ -51,7 +51,7 @@ const BasicInfoPage = ({navigation}) => {
     const handleNext = () => {
         let age = calculate_age(date);
         addNewUser(user.uid, firstName, lastName, date, gender, age);
-        navigation.navigate('Notifications');
+        navigation.navigate('Preferences');
     }
 
     return (
