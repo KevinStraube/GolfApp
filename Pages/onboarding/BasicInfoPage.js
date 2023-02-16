@@ -88,12 +88,12 @@ const BasicInfoPage = ({navigation}) => {
                 className="bg-white mx-5 w-32"
             />
             <TouchableOpacity 
-                className="mt-8 self-end mx-5 rounded-lg bg-slate-400 p-3 w-20"
+                className="mt-8 self-end mx-5 rounded-lg bg-lime-500 p-3 w-20"
                 disabled={!validate()}
                 onPress={handleNext}
                 style={!firstName || !lastName || date.length < 10 || !gender ? styles.disabled : styles.enabled}
                 >
-                <Text className="self-center">Next</Text>
+                <Text className="text-white font-semibold self-center">Next</Text>
             </TouchableOpacity>
         </SafeAreaView>
     ); 

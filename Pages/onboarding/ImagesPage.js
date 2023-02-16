@@ -145,17 +145,17 @@ const ImagesPage = ({ navigation }) => {
             </View>
             <View className="flex-row justify-around">
                 <TouchableOpacity 
-                    className="mt-10 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-10 rounded-lg bg-lime-500 p-3 w-20"
                     onPress={() => navigation.navigate('Location')}>
-                    <Text className="self-center">Back</Text>
+                    <Text className="text-white font-semibold self-center">Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    className="mt-10 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-10 rounded-lg bg-lime-500 p-3 w-20"
                     disabled={disabled}
                     style={disabled ? styles.disabled : styles.enabled}
                     onPress={handleNext}
                     >
-                    <Text className="self-center">Next</Text>
+                    <Text className="text-white font-semibold self-center">Next</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

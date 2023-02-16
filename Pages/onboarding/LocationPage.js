@@ -31,6 +31,7 @@ async function uploadLocation(uid, city, location, reverseLocation) {
     }
 }  
 
+/*
 async function registerForLocationAsync() {
     let location;
 
@@ -43,6 +44,7 @@ async function registerForLocationAsync() {
     location = await Location.getCurrentPositionAsync({});
     return location;
 }
+*/
 
 const LocationPage = ({ navigation }) => {
     const [location, setLocation] = useState('');
@@ -85,30 +87,30 @@ const LocationPage = ({ navigation }) => {
         <SafeAreaView>
             <Text className="text-xl font-semibold mt-8 self-center">Where do you live?</Text>
             <TouchableOpacity 
-                className="mt-10 self-center bg-slate-300 p-3 rounded-2xl"
+                className="mt-10 self-center bg-lime-500 py-3 px-4 rounded-full"
                 disabled={city.length > 0}
                 style={city.length > 0 ? styles.disabled : styles.enabled}
                 onPress={handleLocationEnable}
                 >
-                <Text>Enable Location</Text>
+                <Text className="text-white font-semibold self-center">Enable Location</Text>
             </TouchableOpacity>
             {loading && (
                 <ActivityIndicator size="large" className="self-center" />
             )}
-            <Text className="self-center mt-7">{city}</Text>
+            <Text className="text-xl self-center mt-7">{city}</Text>
             <View className="flex-row justify-around">
                 <TouchableOpacity 
-                    className="mt-60 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-60 rounded-lg bg-lime-500 p-3 w-20"
                     onPress={() => navigation.navigate('Notifications')}>
-                    <Text className="self-center">Back</Text>
+                    <Text className="text-white font-semibold self-center">Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    className="mt-60 rounded-lg bg-slate-400 p-3 w-20"
+                    className="mt-60 rounded-lg bg-lime-500 p-3 w-20"
                     disabled={location.length < 1}
                     style={location.length < 1 ? styles.disabled : styles.enabled}
                     onPress={() => navigation.navigate('Images')}
                     >
-                    <Text className="self-center">Next</Text>
+                    <Text className="text-white font-semibold self-center">Next</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

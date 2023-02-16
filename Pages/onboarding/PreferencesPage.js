@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import BouncyCheckBox from 'react-native-bouncy-checkbox';
 import { Slider } from "@miblanchard/react-native-slider";
 import { useAuth } from '../../hooks/useAuth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 
 
@@ -30,12 +30,12 @@ const PreferencesPage = ({navigation}) => {
         }
 
         try {
-            setDoc(doc(firestore, 'users', user.uid, 'preferences', 'prefs'), 
+            updateDoc(doc(firestore, 'users', user.uid), 
             {
-                genders: genders,
+                genderPreference: genders,
                 ageRange: age,
                 handicapRange: handicap,
-                distance: distance,
+                distancePreference: distance,
             });
         } catch (error) {
             console.log("Error creating preferences:", error);
@@ -121,12 +121,12 @@ const PreferencesPage = ({navigation}) => {
             </View>
 
             <TouchableOpacity 
-                className="mt-8 self-end mx-5 rounded-lg bg-slate-400 p-3 w-20"
-                disabled={maleCheckBox && femaleCheckBox && otherCheckBox}
-                style={maleCheckBox && femaleCheckBox && otherCheckBox ? styles.disabled : styles.enabled}
+                className="mt-8 self-end mx-5 rounded-lg bg-lime-500 p-3 w-20"
+                disabled={!maleCheckBox && !femaleCheckBox && !otherCheckBox}
+                style={!maleCheckBox && !femaleCheckBox && !otherCheckBox ? styles.disabled : styles.enabled}
                 onPress={handleNext}
             >
-                <Text className="self-center">Next</Text>
+                <Text className="text-white font-semibold self-center">Next</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

@@ -6,19 +6,19 @@ import SettingsRow from '../../components/SettingsRow';
 const data = [
     {
         id: 0,
-        title: "Change email",
+        title: "Change Email",
         icon: "mail-outline",
         page: "Reauthenticate",
     },
     {
         id: 1,
-        title: "Change password",
+        title: "Change Password",
         icon: "lock-closed-outline",
         page: "ChangePassword",
     },
     {
         id: 2,
-        title: "Delete account",
+        title: "Delete Account",
         icon: "trash-outline",
         page: "DeleteAccount",
     },
