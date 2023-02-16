@@ -10,8 +10,10 @@ const db = getFirestore();
 
 const HomePage = ({ navigation }) => {
     const [profiles, setProfiles] = useState([]);
+    const [filteredProfiles, setFilteredProfiles] = useState([]); 
     const [index, setIndex] = useState(0);
     const [imageData, setImageData] = useState([]);
+    const [userData, setUserData] = useState(null);
 
     const { user } = useAuth();
 
@@ -22,6 +24,9 @@ const HomePage = ({ navigation }) => {
             let unsubscribe;
 
             const fetchCards = async () => {
+
+                const userDocSnap = await getDoc(doc(db, 'users', user.uid));
+                setUserData(userDocSnap.data());
             
                 const passes = await getDocs(collection(db, 'users', user.uid, 'passes')).then
                     ((snapshot) => snapshot.docs.map((doc) => doc.id)
@@ -37,10 +42,10 @@ const HomePage = ({ navigation }) => {
                 unsubscribe = onSnapshot(
                     query(
                         collection(db, 'users'),
-                        where('uid', 'not-in', [...passedUserIds, ...likedUserIds])
+                        where('uid', 'not-in', [...passedUserIds, ...likedUserIds]),
                     ),
                     (snapshot) => {
-                        setProfiles(
+                        setFilteredProfiles(
                             snapshot.docs.filter((doc) => doc.id !== user.uid)
                             .map((doc) => ({
                                 id: doc.id,
@@ -49,12 +54,29 @@ const HomePage = ({ navigation }) => {
                         ))
                     );
                 });
+                
+                const tempArray = filteredProfiles;
+                for (var i = tempArray.length - 1; i >= 0; i--) {
+                    if (tempArray[i].age < userData.ageRange[0] || tempArray[i].age > userData.ageRange[1]) {
+                        console.log(tempArray[i].age, userData.ageRange[1]);
+                        tempArray.splice(i, 1);
+                    }
+                    else if (!userData.genderPreference.includes(tempArray[i]?.gender)) {
+                        tempArray.splice(i, 1);
+                    }
+                    else if (tempArray[i].handicap < userData.handicapRange[0] || tempArray[i].handicap > userData.handicapRange[1]) {
+                        tempArray.splice(i, 1);
+                    }
+                    //ADD LOCATION FILTER NEXT
+                }
+                setProfiles(tempArray);
             };
     
             fetchCards();
             setIndex(0);
+            
             console.log(profiles);
-    
+
             return unsubscribe;
         }
     }, [user]);
@@ -63,7 +85,7 @@ const HomePage = ({ navigation }) => {
         if (profiles) {
             setImageData(profiles[index]?.images);
         }
-    }, [profiles, index]);
+    }, [profiles]);
 
     const swipeLeft = () => {
         if (!profiles[index]) return;
@@ -133,11 +155,10 @@ const HomePage = ({ navigation }) => {
                 }
             }
         );
-
         setIndex(index + 1);
     }; 
 
-    return index === profiles.length ? (
+    return profiles?.length === 0 ? (
         <SafeAreaView className="flex-1 justify-center items-center">
             <Text className="text-2xl font-bold my-3">No more profiles!</Text>
             <Text className="text-lg mx-5">Try again later or expand your search in golf preferences to see more people</Text>
