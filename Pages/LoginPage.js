@@ -39,7 +39,7 @@ const LoginPage = ({navigation}) => {
                 <Text className="text-base">Already have an account? Sign in</Text>
                 <TextInput 
                     className="py-3 px-2 rounded-lg bg-white w-4/5"
-                    placeholder="Email" 
+                    placeholder="Email Address" 
                     onChangeText={text => setEmail(text)} 
                     value={email} 
                 />
@@ -50,17 +50,17 @@ const LoginPage = ({navigation}) => {
                     secureTextEntry
                 />
                 <TouchableOpacity
-                    className="bg-lime-600 py-3 px-6 self-center rounded-lg" 
+                    className="bg-lime-500 py-3 px-6 self-center rounded-lg" 
                     onPress={handleLogin}
                     value={password}
                 >
-                    <Text className="text-white font-medium text-base">Login</Text>
+                    <Text className="text-white font-medium text-base">Sign In</Text>
                 </TouchableOpacity>
             </View>
             <View className="flex-row justify-center">
                 <Text className="font-semibold leading-8">Don't have an account? </Text>
                 <TouchableOpacity
-                    className="bg-lime-600 p-2 rounded-lg"
+                    className="bg-lime-500 p-2 rounded-lg"
                     onPress={() => navigation.navigate('SignUp')}
                     >
                     <Text className="text-white">Sign Up</Text>

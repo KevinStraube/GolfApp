@@ -38,41 +38,39 @@ const SignUpPage = ({navigation}) => {
     return (
         <SafeAreaView className="h-full">
         <View className="pt-12 items-center">
-            <View className="bg-blue-200 px-3 py-1 rounded-full">
-                <Text className="text-lg text-blue-800 font-semibold">Sign Up</Text>
-            </View>
+            <Text className="font-semibold text-2xl">Sign Up</Text>
         </View>
         <View className="flex-auto justify-center items-center gap-3">
             <TextInput 
-                className="py-3 px-2 rounded-lg bg-white w-80"
-                placeholder="Email" 
+                className="py-3 px-2 rounded-lg bg-white w-4/5"
+                placeholder="Email Address" 
                 onChangeText={setEmail}
             />
             <TextInput
-                className="py-3 px-2 rounded-lg bg-white w-80"
+                className="py-3 px-2 rounded-lg bg-white w-4/5"
                 placeholder="Password"
                 onChangeText={setPassword}
                 secureTextEntry
             />
             <TextInput
-                className="py-3 px-2 rounded-lg bg-white w-80"
+                className="py-3 px-2 rounded-lg bg-white w-4/5"
                 placeholder="Confirm Password"
                 onChangeText={setConfirmPassword}
                 secureTextEntry
             />
             <TouchableOpacity
-                className="bg-indigo-600 p-3 self-center rounded-lg" 
+                className="bg-lime-500 p-3 self-center rounded-lg" 
                 onPress={handleSignUp}
             >
-                <Text className="text-slate-50">Create Account</Text>
+                <Text className="text-white font-medium text-base">Create Account</Text>
             </TouchableOpacity>
         </View>
         <View className="flex-row justify-center">
             <TouchableOpacity
-                className="bg-indigo-600 p-2 rounded-lg"
+                className="bg-lime-500 p-2 rounded-lg"
                 onPress={() => navigation.navigate("Login")}
                 >
-                <Text className="text-slate-50">Back to Login</Text>
+                <Text className="text-white">Back to Login</Text>
             </TouchableOpacity>
         </View>
     </SafeAreaView>
