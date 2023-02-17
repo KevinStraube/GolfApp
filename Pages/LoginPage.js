@@ -31,40 +31,39 @@ const LoginPage = ({navigation}) => {
 
 
     return (
-        <SafeAreaView className="h-full">
-            <View className="pt-12 items-center">
-                <View className="bg-blue-200 px-3 py-1 rounded-full">
-                    <Text className="text-lg text-blue-800 font-semibold">Login Page</Text>
-                </View>
+        <SafeAreaView className="flex-1 h-full">
+            <View className="flex-2 items-center mt-12">
+                <Text className="text-2xl font-medium">Welcome to Clubhouse Golf</Text>
             </View>
-            <View className="flex-auto justify-center items-center gap-3">
+            <View className="flex-1 justify-center items-center gap-3">
+                <Text className="text-base">Already have an account? Sign in</Text>
                 <TextInput 
-                    className="py-3 px-2 rounded-lg bg-white w-80"
+                    className="py-3 px-2 rounded-lg bg-white w-4/5"
                     placeholder="Email" 
                     onChangeText={text => setEmail(text)} 
                     value={email} 
                 />
                 <TextInput
-                    className="py-3 px-2 rounded-lg bg-white w-80"
+                    className="py-3 px-2 rounded-lg bg-white w-4/5"
                     placeholder="Password"
                     onChangeText={text => setPassword(text)} 
                     secureTextEntry
                 />
                 <TouchableOpacity
-                    className="bg-indigo-600 p-3 self-center rounded-lg" 
+                    className="bg-lime-600 py-3 px-6 self-center rounded-lg" 
                     onPress={handleLogin}
                     value={password}
                 >
-                    <Text className="text-slate-50">Login</Text>
+                    <Text className="text-white font-medium text-base">Login</Text>
                 </TouchableOpacity>
             </View>
             <View className="flex-row justify-center">
                 <Text className="font-semibold leading-8">Don't have an account? </Text>
                 <TouchableOpacity
-                    className="bg-indigo-600 p-2 rounded-lg"
+                    className="bg-lime-600 p-2 rounded-lg"
                     onPress={() => navigation.navigate('SignUp')}
                     >
-                    <Text className="text-slate-50">Sign Up</Text>
+                    <Text className="text-white">Sign Up</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
