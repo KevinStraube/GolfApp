@@ -5,6 +5,7 @@ import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } fr
 import { useAuth } from '../hooks/useAuth';
 import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp } from "firebase/firestore";
 import generateId from '../lib/generateId';
+import { distanceBetween } from "geofire-common";
 
 const db = getFirestore();
 
@@ -66,8 +67,21 @@ const HomePage = ({ navigation }) => {
                     }
                     else if (tempArray[i].handicap < userData.handicapRange[0] || tempArray[i].handicap > userData.handicapRange[1]) {
                         tempArray.splice(i, 1);
+                    } 
+                    else {
+                        if (tempArray[i]?.location.coords.latitude && tempArray[i]?.location.coords.longitude) {
+                            const distanceBetweenUsers = distanceBetween(
+                                [tempArray[i]?.location.coords.latitude, tempArray[i]?.location.coords.longitude],
+                                [userData.location.coords.latitude, userData.location.coords.longitude]
+                            );
+                            
+                            console.log("DISTANCE:", distanceBetweenUsers);
+
+                            if (distanceBetweenUsers > userData.distancePreference) {
+                                tempArray.splice(i, 1);
+                            }
+                        }
                     }
-                    //ADD LOCATION FILTER NEXT
                 }
                 setProfiles(tempArray);
             };
@@ -75,7 +89,7 @@ const HomePage = ({ navigation }) => {
             fetchCards();
             setIndex(0);
             
-            console.log(profiles);
+            //console.log(profiles);
 
             return unsubscribe;
         }
