@@ -1,21 +1,30 @@
 import { View, Text, SafeAreaView, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header';
-import { getAuth, reauthenticateWithCredential } from 'firebase/auth';
-
-const auth = getAuth();
-const user = auth.currentUser;
+import { getAuth, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { useAuth } from '../../hooks/useAuth';
 
 const ReauthenticatePage = ({navigation}) => {
     const [password, setPassword] = useState('');
+    const { user } = useAuth();
 
     const reAuthenticate = () => {
-        reauthenticateWithCredential(user, password).then(() => {
+        const credential = EmailAuthProvider.credential(user.email, password);
+
+        reauthenticateWithCredential(user, credential).then(() => {
             navigation.navigate('ChangeEmail');
         }).catch((error) => {
             console.log("Error re-authenticating user:", error);
         })
     }
+
+    useEffect(() => {
+        if (!user) {
+            console.log("User is loading...");
+        } else {
+            console.log(user);
+        }
+    }, [user]);
 
     return (
         <SafeAreaView>

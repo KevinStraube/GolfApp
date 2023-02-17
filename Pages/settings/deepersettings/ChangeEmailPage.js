@@ -18,14 +18,13 @@ const ChangeEmailPage = ({navigation}) => {
         } else {
             setMatched(true);
             
-            /*
             updateEmail(auth.currentUser, email).then(() => {
                 Alert.alert("Success", "Email updated successfully");
+                navigation.goBack();
                 navigation.goBack();
             }).catch((error) => {
                 console.log("Error updating user email:", error);
             });
-            */
         }
     }
 
