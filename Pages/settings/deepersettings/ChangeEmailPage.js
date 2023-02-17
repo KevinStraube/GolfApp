@@ -80,7 +80,6 @@ const ChangeEmailPage = ({navigation}) => {
                         </TouchableOpacity>
                     </View>
                 </TouchableWithoutFeedback>
-
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
