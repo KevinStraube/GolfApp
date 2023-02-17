@@ -60,8 +60,8 @@ const EditProfilePage = ({navigation}) => {
     return (
         <SafeAreaView className="flex-1">
             <Header title={"Edit Profile"}/>
-            <View>
-                <Text className="font-semibold text-lg mx-4 mt-3">Play Style</Text>
+            <View className="border-b border-slate-300 pb-5 mx-4">
+                <Text className="font-semibold text-lg mt-3">Play Style</Text>
                 <Dropdown 
                     data={playStyleData} 
                     value={playStyle}
@@ -71,29 +71,33 @@ const EditProfilePage = ({navigation}) => {
                     labelField="label"
                     valueField="value"
                     placeholder={playStyle}
-                    className="bg-white px-4 py-2 mx-4 mt-1 w-1/2"
+                    className="bg-white px-4 py-2 mt-1 w-1/2"
                 />
-
-                {handicap < 25 ? <Text className="font-semibold text-lg mx-4 mt-7">Handicap: {handicap}</Text> 
-                : <Text className="font-semibold text-lg mx-4 mt-7">Handicap: {handicap}+</Text> } 
-                <View className="px-5 mt-3">
-                    <Slider 
-                        value={handicap}
-                        onValueChange={value => setHandicap(value)}
-                        minimumValue={0}
-                        maximumValue={25}
-                        step={1}
-                    />
-                </View>
-                <Text className="font-semibold text-lg mx-4 mt-7">What are you doing after a round?</Text>
+            </View>
+            
+            {handicap < 25 ? <Text className="font-semibold text-lg mx-4 mt-5">Handicap: {handicap}</Text> 
+            : <Text className="font-semibold text-lg mx-4 mt-4">Handicap: {handicap}+</Text> } 
+            <View className="mt-3 border-b border-slate-300 pb-4 mx-4">
+                <Slider 
+                    value={handicap}
+                    onValueChange={value => setHandicap(value)}
+                    minimumValue={0}
+                    maximumValue={25}
+                    step={1}
+                />
+            </View>
+            <Text className="font-semibold text-lg mx-4 mt-5">What are you doing after a round?</Text>
+            <View className="border-b border-slate-300 pb-5 mx-4">
                 <TextInput 
-                    className="bg-white w-5/6 rounded-lg p-2 mx-5 my-2"
+                    className="bg-white w-5/6 rounded-lg p-2 my-2"
                     onChangeText={text => setAfterRound(text)}
                     value={afterRound}
                 />
-                <Text className="font-semibold text-lg mx-4 mt-7">Favourite/Home course?</Text>
+            </View>
+            <Text className="font-semibold text-lg mx-4 mt-5">Favourite/Home course?</Text>
+            <View className="border-b border-slate-300 pb-5 mx-4">
                 <TextInput 
-                    className="bg-white w-5/6 rounded-lg p-2 mx-5 my-2"
+                    className="bg-white w-5/6 rounded-lg p-2 my-2"
                     onChangeText={text => setCourse(text)}
                     value={course}
                 />
