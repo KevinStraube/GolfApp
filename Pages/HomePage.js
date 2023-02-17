@@ -11,7 +11,6 @@ const db = getFirestore();
 
 const HomePage = ({ navigation }) => {
     const [profiles, setProfiles] = useState([]);
-    const [filteredProfiles, setFilteredProfiles] = useState([]); 
     const [index, setIndex] = useState(0);
     const [imageData, setImageData] = useState([]);
     const [userData, setUserData] = useState(null);
@@ -46,7 +45,7 @@ const HomePage = ({ navigation }) => {
                         where('uid', 'not-in', [...passedUserIds, ...likedUserIds]),
                     ),
                     (snapshot) => {
-                        setFilteredProfiles(
+                        setProfiles(
                             snapshot.docs.filter((doc) => doc.id !== user.uid)
                             .map((doc) => ({
                                 id: doc.id,
@@ -56,7 +55,7 @@ const HomePage = ({ navigation }) => {
                     );
                 });
                 
-                const tempArray = filteredProfiles;
+                const tempArray = profiles;
                 for (var i = tempArray.length - 1; i >= 0; i--) {
                     if (tempArray[i].age < userData.ageRange[0] || tempArray[i].age > userData.ageRange[1]) {
                         console.log(tempArray[i].age, userData.ageRange[1]);
@@ -84,12 +83,13 @@ const HomePage = ({ navigation }) => {
                     }
                 }
                 setProfiles(tempArray);
+                
             };
     
             fetchCards();
             setIndex(0);
             
-            //console.log(profiles);
+            console.log(profiles);
 
             return unsubscribe;
         }
@@ -98,8 +98,10 @@ const HomePage = ({ navigation }) => {
     useEffect(() => {
         if (profiles) {
             setImageData(profiles[index]?.images);
+        } else {
+            console.log("profiles not loaded yet");
         }
-    }, [profiles]);
+    }, [profiles, index]);
 
     const swipeLeft = () => {
         if (!profiles[index]) return;
@@ -172,7 +174,7 @@ const HomePage = ({ navigation }) => {
         setIndex(index + 1);
     }; 
 
-    return profiles?.length === 0 ? (
+    return profiles?.length === index? (
         <SafeAreaView className="flex-1 justify-center items-center">
             <Text className="text-2xl font-bold my-3">No more profiles!</Text>
             <Text className="text-lg mx-5">Try again later or expand your search in golf preferences to see more people</Text>
@@ -255,17 +257,17 @@ const HomePage = ({ navigation }) => {
                 <View className="flex-1 justify-end mb-5">
                     <View className="flex-row justify-between mx-5">
                         <TouchableOpacity 
-                            className="items-center justify-center rounded-full w-16 h-16 bg-red-500"
+                            className="items-center justify-center rounded-full w-16 h-16 bg-red-300"
                             onPress={swipeLeft}
                         >
-                            <Entypo name="cross" size={30} color="white"/>
+                            <Entypo name="cross" size={30} color="red"/>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                            className="items-center justify-center rounded-full w-16 h-16 bg-green-500"
+                            className="items-center justify-center rounded-full w-16 h-16 bg-green-300"
                             onPress={swipeRight}
                         >
-                            <Ionicons name="checkmark" size={30} color="white"/>
+                            <Ionicons name="checkmark" size={30} color="green"/>
                         </TouchableOpacity>
                     </View>
                 </View>
