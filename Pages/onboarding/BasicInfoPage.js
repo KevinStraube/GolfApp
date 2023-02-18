@@ -59,12 +59,12 @@ const BasicInfoPage = ({navigation}) => {
             <Text className="self-center font-semibold text-2xl mt-4">Basic Info</Text>
             <Text className="mt-10 mx-5">First Name</Text>
             <TextInput 
-                className="bg-white w-80 rounded-lg p-2 mx-5 my-2"
+                className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2"
                 onChangeText={text => setFirstName(text)}
             />
             <Text className="mt-8 mx-5">Last Name</Text>
             <TextInput 
-                className="bg-white w-80 rounded-lg p-2 mx-5 my-2" 
+                className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2" 
                 onChangeText={text => setLastName(text)}
             />
             <Text className="mt-8 mx-5">Date of Birth (mm/dd/yyyy)</Text>
@@ -85,7 +85,7 @@ const BasicInfoPage = ({navigation}) => {
                 labelField="label"
                 valueField="value"
                 placeholder="Select gender"
-                className="bg-white mx-5 w-32"
+                className="bg-white mx-5 w-1/3"
             />
             <TouchableOpacity 
                 className="mt-8 self-end mx-5 rounded-lg bg-lime-500 p-3 w-20"

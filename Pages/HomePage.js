@@ -14,9 +14,11 @@ const HomePage = ({ navigation }) => {
     const [index, setIndex] = useState(0);
     const [imageData, setImageData] = useState([]);
     const [userData, setUserData] = useState(null);
+    const [unfilteredData, setUnfilteredData] = useState([]);
 
     const { user } = useAuth();
 
+    /* First effect to load all profiles - set a limit on this number later */
     useEffect(() => {
         if (!user) {
             console.log("User not yet loaded");
@@ -45,7 +47,7 @@ const HomePage = ({ navigation }) => {
                         where('uid', 'not-in', [...passedUserIds, ...likedUserIds]),
                     ),
                     (snapshot) => {
-                        setProfiles(
+                        setUnfilteredData(
                             snapshot.docs.filter((doc) => doc.id !== user.uid)
                             .map((doc) => ({
                                 id: doc.id,
@@ -54,54 +56,56 @@ const HomePage = ({ navigation }) => {
                         ))
                     );
                 });
-                
-                const tempArray = profiles;
-                for (var i = tempArray.length - 1; i >= 0; i--) {
-                    if (tempArray[i].age < userData.ageRange[0] || tempArray[i].age > userData.ageRange[1]) {
-                        console.log(tempArray[i].age, userData.ageRange[1]);
-                        tempArray.splice(i, 1);
-                    }
-                    else if (!userData.genderPreference.includes(tempArray[i]?.gender)) {
-                        tempArray.splice(i, 1);
-                    }
-                    else if (tempArray[i].handicap < userData.handicapRange[0] || tempArray[i].handicap > userData.handicapRange[1]) {
-                        tempArray.splice(i, 1);
-                    } 
-                    else {
-                        if (tempArray[i]?.location.coords.latitude && tempArray[i]?.location.coords.longitude) {
-                            const distanceBetweenUsers = distanceBetween(
-                                [tempArray[i]?.location.coords.latitude, tempArray[i]?.location.coords.longitude],
-                                [userData.location.coords.latitude, userData.location.coords.longitude]
-                            );
-                            
-                            console.log("DISTANCE:", distanceBetweenUsers);
-
-                            if (distanceBetweenUsers > userData.distancePreference) {
-                                tempArray.splice(i, 1);
-                            }
-                        }
-                    }
-                }
-                setProfiles(tempArray);
-                
             };
     
             fetchCards();
-            setIndex(0);
-            
-            console.log(profiles);
 
             return unsubscribe;
         }
     }, [user]);
 
+    /* Second effect to filter profiles */
     useEffect(() => {
-        if (profiles) {
-            setImageData(profiles[index]?.images);
+        if (unfilteredData) {
+            const tempArray = unfilteredData;
+            for (var i = tempArray.length - 1; i >= 0; i--) {
+                if (tempArray[i].age < userData.ageRange[0] || tempArray[i].age > userData.ageRange[1]) {
+                    console.log(tempArray[i].age, userData.ageRange[1]);
+                    tempArray.splice(i, 1);
+                }
+                else if (!userData.genderPreference.includes(tempArray[i]?.gender)) {
+                    tempArray.splice(i, 1);
+                }
+                else if (tempArray[i].handicap < userData.handicapRange[0] || tempArray[i].handicap > userData.handicapRange[1]) {
+                    tempArray.splice(i, 1);
+                } 
+                else {
+                    if (tempArray[i]?.location.coords.latitude && tempArray[i]?.location.coords.longitude) {
+                        const distanceBetweenUsers = distanceBetween(
+                            [tempArray[i]?.location.coords.latitude, tempArray[i]?.location.coords.longitude],
+                            [userData.location.coords.latitude, userData.location.coords.longitude]
+                        );
+                        
+                        console.log("Distance:", distanceBetweenUsers);
+
+                        if (distanceBetweenUsers > userData.distancePreference) {
+                            tempArray.splice(i, 1);
+                        }
+                    }
+                }
+            }
+            setProfiles(tempArray);
         } else {
             console.log("profiles not loaded yet");
         }
-    }, [profiles, index]);
+    }, [unfilteredData]);
+
+    /* third effect to load images onto profiles */
+    useEffect(() => {
+        if (profiles) {
+            setImageData(profiles[index]?.images);
+        }
+    }, [profiles, index])
 
     const swipeLeft = () => {
         if (!profiles[index]) return;
@@ -174,7 +178,7 @@ const HomePage = ({ navigation }) => {
         setIndex(index + 1);
     }; 
 
-    return profiles?.length === index? (
+    return profiles?.length <= index ? (
         <SafeAreaView className="flex-1 justify-center items-center">
             <Text className="text-2xl font-bold my-3">No more profiles!</Text>
             <Text className="text-lg mx-5">Try again later or expand your search in golf preferences to see more people</Text>
