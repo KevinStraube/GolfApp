@@ -1,6 +1,6 @@
 import { Button, KeyboardAvoidingView, SafeAreaView, Alert, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -30,6 +30,10 @@ const SignUpPage = ({navigation}) => {
                     //Signed in
                     const user = userCredential.user;
                     console.log("Registered with: ", user.email);
+
+                    sendEmailVerification(user).catch((error) => {
+                        console.log("Error sending email:", error);
+                    });
                 })
                 .catch((error) => alert(error.message))
         }
