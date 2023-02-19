@@ -18,7 +18,7 @@ const PopupMenu = () => {
             action: () => navigation.navigate('MatchProfile'),
         },
         {
-            title: "Unmatch",
+            title: "Un-match",
             icon: "trash-2",
             action: () => Alert.alert("Confirm", "Are you sure you want to remove the match?",[
                 {
@@ -26,7 +26,7 @@ const PopupMenu = () => {
                     style: "cancel",
                 },
                 {
-                    text: "Unmatch",
+                    text: "Remove",
                 },
             ]),
         },
