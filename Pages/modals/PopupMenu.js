@@ -1,10 +1,14 @@
 import { View, Text, TouchableOpacity, Modal, SafeAreaView, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Feather } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { collection, deleteDoc, doc, onSnapshot, query } from 'firebase/firestore';
+import { firestore } from '../../firebase';
 
 const PopupMenu = () => {
     const [visible, setVisible] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [messagesDeleted, setMessagesDeleted] = useState(false);
     const { params } = useRoute();
 
     const { matchDetails } = params;
@@ -27,6 +31,19 @@ const PopupMenu = () => {
                 },
                 {
                     text: "Remove",
+                    onPress: (async () => {
+                        onSnapshot(
+                            query(
+                                collection(firestore, 'matches', matchDetails.id, 'messages'),
+                            ),(snapshot) => 
+                                snapshot.docs.forEach((snap) => (
+                                    deleteDoc(snap.ref)
+                                )
+                            )
+                        )
+                        deleteDoc(doc(firestore, 'matches', matchDetails.id));
+                        navigation.navigate('Main');
+                    }),
                 },
             ]),
         },
