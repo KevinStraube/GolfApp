@@ -9,9 +9,9 @@ import ReceiverMessage from '../components/ReceiverMessage';
 import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Ionicons, Feather } from '@expo/vector-icons';
-import PopupMenu from '../components/PopupMenu';
+import PopupMenu from './modals/PopupMenu';
 
-const MessagePage = () => {
+const MessagePage = ({ navigation }) => {
     const { user } = useAuth();
     const { params } = useRoute();
     const [input, setInput] = useState('');
@@ -60,7 +60,7 @@ const MessagePage = () => {
                 <Text className="text-2xl font-bold pl-4">{getMatchedUserInfo(matchDetails.users, user?.uid).firstName}</Text>
 
                 <View className="ml-auto px-5 ">
-                    <PopupMenu />
+                    <PopupMenu matchDetails={matchDetails}/>
                 </View>
             </View>
             

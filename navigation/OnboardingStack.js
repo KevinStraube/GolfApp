@@ -19,6 +19,7 @@ import ChangeEmailPage from "../Pages/settings/deepersettings/ChangeEmailPage";
 import ChangePasswordPage from "../Pages/settings/deepersettings/ChangePasswordPage";
 import DeleteAccountPage from "../Pages/settings/deepersettings/DeleteAccountPage";
 import ReauthenticatePage from "../Pages/settings/ReauthenticatePage";
+import MatchProfilePage from "../Pages/matches/MatchProfilePage";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ const OnboardingStack = () => {
                 <Stack.Screen name="Main" component={TabNavigator} options={{gestureEnabled: false}}/>
                 <Stack.Screen name="Message" component={MessagePage} />
                 <Stack.Screen name="Settings" component={SettingsPage} />
+                <Stack.Screen name="MatchProfile" component={MatchProfilePage} />
             </Stack.Group>
 
             <Stack.Group screenOptions={{ presentation: "transparentModal" }}>

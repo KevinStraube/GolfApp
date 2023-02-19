@@ -1,27 +1,34 @@
-import { View, Text, TouchableOpacity, Modal, SafeAreaView, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, Modal, SafeAreaView, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { Feather } from '@expo/vector-icons';
-import {
-    Menu,
-    MenuProvider,
-    MenuOption,
-    MenuOptions,
-    MenuTrigger,
-} from "react-native-popup-menu"
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const PopupMenu = () => {
     const [visible, setVisible] = useState(false);
+    const { params } = useRoute();
+
+    const { matchDetails } = params;
+
+    const navigation = useNavigation();
 
     const options = [
         {
             title: "View Profile",
             icon: "user",
-            action: () => alert("View Profile"),
+            action: () => navigation.navigate('MatchProfile'),
         },
         {
             title: "Unmatch",
             icon: "trash-2",
-            action: () => alert('Unmatch user?'),
+            action: () => Alert.alert("Confirm", "Are you sure you want to remove the match?",[
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Unmatch",
+                },
+            ]),
         },
     ];
 
