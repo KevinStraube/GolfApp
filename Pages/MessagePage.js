@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TextInput, Button, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, FlatList } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, Button, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, FlatList, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header';
 import getMatchedUserInfo from '../lib/getMatchedUserInfo';
@@ -8,6 +8,8 @@ import SenderMessage from '../components/SenderMessage';
 import ReceiverMessage from '../components/ReceiverMessage';
 import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { firestore } from '../firebase';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import PopupMenu from '../components/PopupMenu';
 
 const MessagePage = () => {
     const { user } = useAuth();
@@ -47,7 +49,21 @@ const MessagePage = () => {
 
     return (
         <SafeAreaView className="flex-1">
-            <Header title={getMatchedUserInfo(matchDetails.users, user?.uid).firstName}/>
+            <View className="flex flex-row items-center border-b border-slate-300 pb-3">
+                <TouchableOpacity
+                    className="px-2"
+                    onPress={() => navigation.goBack()}
+                >
+                    <Ionicons name='chevron-back-outline' size={34} color="#71C547"/>
+                </TouchableOpacity>
+
+                <Text className="text-2xl font-bold pl-4">{getMatchedUserInfo(matchDetails.users, user?.uid).firstName}</Text>
+
+                <View className="ml-auto px-5 ">
+                    <PopupMenu />
+                </View>
+            </View>
+            
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
