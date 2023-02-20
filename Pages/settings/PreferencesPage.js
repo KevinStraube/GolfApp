@@ -49,12 +49,10 @@ const PreferencesPage = ({navigation}) => {
                 }
             }
             fetchData();
-            console.log(maleCheckBox, femaleCheckBox, otherCheckBox);
         }
     }, [user]);
 
     useEffect(() => {
-        console.log(maleCheckBox, femaleCheckBox, otherCheckBox);
     }, [maleCheckBox, femaleCheckBox, otherCheckBox])
 
     const handleNext = () => {

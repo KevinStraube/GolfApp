@@ -7,19 +7,18 @@ import { firestore } from '../../firebase';
 
 const PopupMenu = () => {
     const [visible, setVisible] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [messagesDeleted, setMessagesDeleted] = useState(false);
     const { params } = useRoute();
 
     const { matchDetails } = params;
 
     const navigation = useNavigation();
 
+    //2 menu options
     const options = [
         {
             title: "View Profile",
             icon: "user",
-            action: () => navigation.navigate('MatchProfile'),
+            action: () => navigation.navigate('MatchProfile',{matchDetails: matchDetails}),
         },
         {
             title: "Un-match",
@@ -29,7 +28,8 @@ const PopupMenu = () => {
                     text: "Cancel",
                     style: "cancel",
                 },
-                {
+                {   /* TEST IF THIS FAILS WHEN NO MESSAGES HAVE BEEN SENT */
+                    //Delete all messages, then delete match 
                     text: "Remove",
                     onPress: (async () => {
                         onSnapshot(

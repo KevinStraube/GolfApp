@@ -10,11 +10,14 @@ const MatchPage = () => {
     const { loggedInUser, userSwiped } = params;
 
     return (
-        <View className="h-full bg-green-500" style={{ opacity: 0.89 }}>
-            <View className="mt-12 self-end mx-5">
+        <View className="h-full bg-green-500" style={{ opacity: 0.98 }}>
+            <TouchableOpacity 
+                className="mt-12 self-end mx-5"
+                onPress={() => navigation.goBack()}
+            >
                 <MaterialCommunityIcons name='close' size={40} color="white"/>
-            </View>
-            <View className="flex-1 justify-center items-center">
+            </TouchableOpacity>
+            <View className="h-2/3 mt-12 justify-center items-center">
                 <Text className="text-2xl font-bold text-white">You Matched with {userSwiped.firstName}!</Text>
                 <Text className="text-white py-4">Message them and setup a round?</Text>
                 <TouchableOpacity 

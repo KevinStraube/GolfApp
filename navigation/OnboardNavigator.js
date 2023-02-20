@@ -56,7 +56,7 @@ export default function OnboardNavigator() {
             </Stack.Group>
             <Stack.Group screenOptions={{ presentation: "transparentModal" }}>
                 <Stack.Screen name="Match" component={MatchPage}/>
-            </Stack.Group>
+            </Stack.Group>            
             <Stack.Group>
                 <Stack.Screen name="EditProfile" component={EditProfilePage}/>
                 <Stack.Screen name="Preferences" component={PreferencesPage}/>
