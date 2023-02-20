@@ -18,7 +18,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "host.exp.exponent"
     },
     "android": {
       "adaptiveIcon": {
@@ -34,6 +35,16 @@
       "eas": {
         "projectId": "6a6b89c9-1cf4-4ba9-a00c-dd9ebe38c6be"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   }
 }
