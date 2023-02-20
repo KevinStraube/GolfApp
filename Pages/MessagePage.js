@@ -42,6 +42,7 @@ const MessagePage = ({ navigation }) => {
             displayName: matchDetails.users[user.uid].firstName,
             photoURL: matchDetails.users[user.uid].images[0].url,
             message: input,
+            read: "false",
         })
 
         setInput("");

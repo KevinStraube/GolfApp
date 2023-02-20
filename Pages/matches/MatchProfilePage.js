@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-const MatchProfilePage = ({ navigation }) => {
+const MatchProfilePage = () => {
     const {params} = useRoute();
     const {matchDetails} = params;
     const [profile, setProfile] = useState(null);
