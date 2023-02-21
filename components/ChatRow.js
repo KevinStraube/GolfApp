@@ -43,9 +43,13 @@ const ChatRow = ({ matchDetails }) => {
         <TouchableOpacity 
             className="flex-row border-slate-400 border border-x-0 items-center py-3 bg-white px-5 my-1"
             onPress={() => {
-                updateDoc(doc(firestore, 'matches', matchDetails.id, 'messages', lastMessageId), {
-                    read: "true",
-                })
+                try {
+                    updateDoc(doc(firestore, 'matches', matchDetails.id, 'messages', lastMessageId), {
+                        read: "true",
+                    })
+                } catch (error) {
+                    console.log("No messages yet");
+                }
                 navigation.navigate('Message', {
                     matchDetails,
                 })

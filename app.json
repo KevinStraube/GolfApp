@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "GolfApp",
+    "name": "Clubhouse Golf",
     "slug": "GolfApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/TransparentLogo.png",
+      "image": "./assets/LogoFull.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
