@@ -29,7 +29,7 @@ const EditProfilePage = ({navigation}) => {
                 afterRound, afterRound,
                 course, course,
             });
-            Alert.alert("Success", "Profile updated");
+            Alert.alert("Profile Updated", "Note: An app restart is required to see changes");
             navigation.goBack();
         } catch (error) {
             console.log("Error updating data:", error);

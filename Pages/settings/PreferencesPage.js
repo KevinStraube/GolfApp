@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Alert, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header';
 import { Slider } from "@miblanchard/react-native-slider";
@@ -7,17 +7,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 
-/* Maybe change dropdown to check boxes */
-const genderData = [
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
-    { label: 'Both', value: 'Both' },
-]
-
 const PreferencesPage = ({navigation}) => {
-    const [maleCheckBox, setMaleCheckBox] = useState(false);
-    const [femaleCheckBox, setFemaleCheckBox] = useState(false);
-    const [otherCheckBox, setOtherCheckBox] = useState(false);
+    const [maleCheckBox, setMaleCheckBox] = useState(true);
+    const [femaleCheckBox, setFemaleCheckBox] = useState(true);
+    const [otherCheckBox, setOtherCheckBox] = useState(true);
     const [age, setAge] = useState([]);
     const [handicapRange, setHandicapRange] = useState([]);
     const [distance, setDistance] = useState(1);
@@ -35,15 +28,6 @@ const PreferencesPage = ({navigation}) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     setAge(data.ageRange);
-                    if (data.genderPreference.includes('Male')) {
-                        setMaleCheckBox(true);
-                    }
-                    if (data.genderPreference.includes("Female")) {
-                        setFemaleCheckBox(true);
-                    }
-                    if (data.genderPreference.includes("Other")) {
-                        setOtherCheckBox(true);
-                    }
                     setHandicapRange(data.handicapRange);
                     setDistance(data.distancePreference);
                 }
@@ -51,9 +35,6 @@ const PreferencesPage = ({navigation}) => {
             fetchData();
         }
     }, [user]);
-
-    useEffect(() => {
-    }, [maleCheckBox, femaleCheckBox, otherCheckBox])
 
     const handleNext = () => {
         const genders = [];
@@ -74,7 +55,7 @@ const PreferencesPage = ({navigation}) => {
                 handicapRange: handicapRange,
                 distancePreference: distance,
             });
-            Alert.alert("Success", "Preferences Updated");
+            Alert.alert("Preferences updated", "Note: An app restart is required to see changes");
             navigation.goBack();
         } catch (error) {
             console.log("Error updating document from preferences settings:", error);
@@ -84,7 +65,7 @@ const PreferencesPage = ({navigation}) => {
     return (
         <SafeAreaView className="flex-1">
             <Header title={"Golf Preferences"}/>
-            <Text className="font-semibold text-lg mx-4 mt-3">Gender</Text>
+            <Text className="font-semibold text-lg mx-4 mt-3">Genders</Text>
             <View className="flex-row justify-evenly mt-4 border-b border-slate-300 pb-5 mx-4">
                 <BouncyCheckBox 
                     size={20}
@@ -94,7 +75,7 @@ const PreferencesPage = ({navigation}) => {
                     iconStyle={{ borderColor: "green" }}
                     textStyle={{textDecorationLine: "none", color: "black"}}
                     onPress={() => setMaleCheckBox(!maleCheckBox)}
-                    isChecked={!maleCheckBox}
+                    isChecked={maleCheckBox}
                 />
                 <BouncyCheckBox 
                     size={20}
@@ -157,6 +138,8 @@ const PreferencesPage = ({navigation}) => {
             <View className="flex-1 justify-center items-center">
                 <TouchableOpacity 
                     className="w-5/6 py-3 px-3 bg-lime-600 rounded-lg"
+                    disabled={!maleCheckBox && !femaleCheckBox && !otherCheckBox}
+                    style={!maleCheckBox && !femaleCheckBox && !otherCheckBox ? styles.disabled : styles.enabled}
                     onPress={handleNext}
                 >
                     <Text className="self-center text-white font-bold text-base">Apply</Text>
@@ -165,5 +148,14 @@ const PreferencesPage = ({navigation}) => {
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    enabled: {
+        opacity: 1,
+    },
+    disabled: {
+        opacity: 0.3,
+    },
+});
 
 export default PreferencesPage;
