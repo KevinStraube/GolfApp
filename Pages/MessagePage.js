@@ -1,26 +1,29 @@
-import { View, Text, SafeAreaView, TextInput, Button, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, FlatList, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import Header from '../components/Header';
+import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import getMatchedUserInfo from '../lib/getMatchedUserInfo';
 import { useAuth } from '../hooks/useAuth';
 import { useRoute } from '@react-navigation/native';
-import SenderMessage from '../components/SenderMessage';
-import ReceiverMessage from '../components/ReceiverMessage';
-import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy } from 'firebase/firestore';
-import { firestore } from '../firebase';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import PopupMenu from './modals/PopupMenu';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MatchChatPage from './matches/MatchChatPage';
 import MatchProfilePage from './matches/MatchProfilePage';
+import ActionSheet from 'react-native-actionsheet';
 
 const Tab = createMaterialTopTabNavigator();
 
 const MessagePage = ({ navigation }) => {
     const { user } = useAuth();
     const { params } = useRoute();
-    const [input, setInput] = useState('');
-    const [messages, setMessages] = useState([]);
+    let actionSheet = useRef();
+
+    let options = [
+        'Share Profile', 'Unmatch', 'Report', 'Cancel'
+    ];
+
+    const showActionSheet = () => {
+        actionSheet.current.show();
+    }
 
     const { matchDetails } = params;
 
@@ -38,7 +41,9 @@ const MessagePage = ({ navigation }) => {
                     <Text className="text-2xl font-bold pl-4">{getMatchedUserInfo(matchDetails.users, user?.uid).firstName}</Text>
 
                     <View className="ml-auto px-5">
-                        <PopupMenu matchDetails={matchDetails}/>
+                    <TouchableOpacity onPress={showActionSheet}>
+                        <Feather name='more-horizontal' size={32} color="black" />
+                    </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -52,12 +57,19 @@ const MessagePage = ({ navigation }) => {
                         backgroundColor: "black",
                     },
                 }}
-                
             >
                 <Tab.Screen name='Chat' component={MatchChatPage} initialParams={{matchDetails: matchDetails}}/>
                 <Tab.Screen name='Profile' component={MatchProfilePage} initialParams={{matchDetails: matchDetails}}/>
             </Tab.Navigator>
             
+            <ActionSheet
+                ref={actionSheet}
+                options={options}
+                cancelButtonIndex={3}
+                onPress={(index) => {
+                    alert(options[index]);
+                }}
+            />
         </SafeAreaView>
     );
 };
