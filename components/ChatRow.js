@@ -41,7 +41,7 @@ const ChatRow = ({ matchDetails }) => {
 
     return (
         <TouchableOpacity 
-            className="flex-row border-slate-400 border border-x-0 items-center py-3 bg-white px-5 my-1"
+            className="flex-row border-slate-300 border-b items-center py-3 px-5"
             onPress={() => {
                 try {
                     updateDoc(doc(firestore, 'matches', matchDetails.id, 'messages', lastMessageId), {

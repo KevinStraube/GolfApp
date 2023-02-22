@@ -13,7 +13,7 @@ const MatchProfilePage = () => {
 
     useEffect(() => {
         if (user) {
-            if (matchDetails.usersMatched[0] === user.uid) {
+            if (matchDetails?.usersMatched[0] === user.uid) {
                 const matchedUserID = matchDetails.usersMatched[1];
                 setProfile(matchDetails.users[matchedUserID]);
             } else {
@@ -25,8 +25,7 @@ const MatchProfilePage = () => {
 
     return (
         <SafeAreaView className="flex-1">
-            <Header title={profile?.firstName}/>
-
+            <View className="border-b border-slate-300"></View>
             <View className="flex justify-center items-center mt-3 self-center rounded-lg" style={{width: 350, height: 260}}>
                 <FlatList 
                     data={profile?.images} 
