@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TabNavigator from "./TabNavigator";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingPage from "../Pages/LoadingPage";
@@ -16,12 +16,24 @@ import ChangePasswordPage from "../Pages/settings/deepersettings/ChangePasswordP
 import DeleteAccountPage from "../Pages/settings/deepersettings/DeleteAccountPage";
 import ReauthenticatePage from "../Pages/settings/ReauthenticatePage";
 import MatchProfilePage from "../Pages/matches/MatchProfilePage";
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+});
 
 const Stack = createNativeStackNavigator();
 
 export default function OnboardNavigator() {
     const [loading, setLoading] = useState(true);
+    const [notification, setNotification] = useState(false);
     const [viewedOnboarding, setViewedOnboarding] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
 
     const checkOnboarding = async () => {
         try {
@@ -39,6 +51,19 @@ export default function OnboardNavigator() {
 
     useEffect(() => {
         checkOnboarding();
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        }
     }, []);
     
     /* 

@@ -69,7 +69,7 @@ const SignUpPage = ({navigation}) => {
                 <Text className="text-white font-medium text-base">Create Account</Text>
             </TouchableOpacity>
         </View>
-        <View className="flex-row justify-center">
+        <View className="flex-row justify-center mb-2">
             <TouchableOpacity
                 className="bg-lime-500 p-2 rounded-lg"
                 onPress={() => navigation.navigate("Login")}

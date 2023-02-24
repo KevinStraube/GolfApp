@@ -75,7 +75,7 @@ const MessagePage = ({ navigation }) => {
                                 text: "Cancel",
                                 style: "cancel",
                             },
-                            {   /* TEST IF THIS FAILS WHEN NO MESSAGES HAVE BEEN SENT */
+                            { 
                                 //Delete all messages, then delete match 
                                 text: "Remove",
                                 onPress: (() => {
@@ -95,7 +95,7 @@ const MessagePage = ({ navigation }) => {
                         ]);
                     }
                     else if (index === 1) {
-                        alert("REPORTED");
+                        Alert.alert("Error", "To report an account, please email...");
                     } else {
                         console.log("Cancelled");
                     }

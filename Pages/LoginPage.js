@@ -57,7 +57,7 @@ const LoginPage = ({navigation}) => {
                     <Text className="text-white font-medium text-base">Sign In</Text>
                 </TouchableOpacity>
             </View>
-            <View className="flex-row justify-center">
+            <View className="flex-row justify-center mb-2">
                 <Text className="font-semibold leading-8">Don't have an account? </Text>
                 <TouchableOpacity
                     className="bg-lime-500 p-2 rounded-lg"
