@@ -6,14 +6,25 @@ import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy } from 
 import SenderMessage from '../../components/SenderMessage';
 import ReceiverMessage from '../../components/ReceiverMessage';
 import { useAuth } from '../../hooks/useAuth';
+import { sendPushNotification } from '../../backend/NotificationFunctions';
+import getMatchedUserInfo from '../../lib/getMatchedUserInfo';
 
 const MatchChatPage = () => {
     const {params} = useRoute();
     const {matchDetails} = params;
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([]);
+    const [token, setToken] = useState(null);
+    const [name, setName] = useState('');
 
     const { user } = useAuth();
+
+    useEffect(() => {
+        if (user) {
+            setToken(getMatchedUserInfo(matchDetails.users, user).notificationToken);
+            setName(getMatchedUserInfo(matchDetails.users, user).firstName);
+        }
+    });
 
     useEffect(() =>
     onSnapshot(
@@ -39,7 +50,7 @@ const MatchChatPage = () => {
             message: input,
             read: "false",
         })
-
+        sendPushNotification(token, `${name}`, input);
         setInput("");
     };
 

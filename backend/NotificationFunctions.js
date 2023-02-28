@@ -1,17 +1,19 @@
 import * as Notifications from 'expo-notifications';
 
-export async function sendPushNotification() {
+export async function sendPushNotification(token, title, body) {
+    /*
     const appConfig = require('../app.json');
     const projectId = appConfig?.expo?.extra?.eas?.projectId;
     const token = (await Notifications.getExpoPushTokenAsync({
         projectId
     })).data;
+    */
     console.log("TOKEN:", token);
     const message = {
-        to: "ExponentPushToken[YjKBUTAbLCihr9deIRE2aI]",
+        to: token,
         sound: "default",
-        title: "New Match!",
-        body: "Body of message",
+        title: title,
+        body: body,
     };
 
     await fetch('https://exp.host/--/api/v2/push/send', {

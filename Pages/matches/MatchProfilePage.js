@@ -12,6 +12,9 @@ const MatchProfilePage = () => {
     const { user } = useAuth();
 
     useEffect(() => {
+        /*
+        Refactor later by converting this user check to getMatchedUserInfo in lib folder
+        */
         if (user) {
             if (matchDetails?.usersMatched[0] === user.uid) {
                 const matchedUserID = matchDetails.usersMatched[1];

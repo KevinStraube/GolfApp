@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp } from "firebase/firestore";
 import generateId from '../lib/generateId';
 import { distanceBetween } from "geofire-common";
+import { sendPushNotification } from "../backend/NotificationFunctions";
 
 const db = getFirestore();
 
@@ -156,11 +157,14 @@ const HomePage = ({ navigation }) => {
                         timestamp: serverTimestamp(),
                     });
 
+                    //Display match screen
                     navigation.navigate("Match", {
                         loggedInUser,
                         userSwiped,
                     });
-                    
+
+                    //Send other user a notification
+                    sendPushNotification(userSwiped.notificationToken, "You got a match!", "Message them and set up a round");
 
                 } else {
                     //Other user has not swiped yes yet, create a new doc in likes 

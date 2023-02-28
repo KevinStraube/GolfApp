@@ -43,16 +43,22 @@ const ChatRow = ({ matchDetails }) => {
         <TouchableOpacity 
             className="flex-row border-slate-300 border-b items-center py-3 px-5"
             onPress={() => {
-                try {
-                    updateDoc(doc(firestore, 'matches', matchDetails.id, 'messages', lastMessageId), {
-                        read: "true",
-                    })
-                } catch (error) {
-                    console.log("No messages yet");
-                }
-                navigation.navigate('Message', {
-                    matchDetails,
-                })
+                if (lastMessage?.message && lastMessage.read === "false" && lastMessage?.userId !== user.uid) {
+                    try {
+                        updateDoc(doc(firestore, 'matches', matchDetails.id, 'messages', lastMessageId), {
+                            read: "true",
+                        })
+                    } catch (error) {
+                        console.log("No messages yet");
+                    }
+                    navigation.navigate('Message', {
+                        matchDetails,
+                    });
+                } else {
+                    navigation.navigate('Message', {
+                        matchDetails,
+                    });
+                }  
             }}
         >   
             <Image

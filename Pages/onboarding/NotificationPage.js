@@ -33,7 +33,11 @@ const NotificationPage = ({ navigation }) => {
                 alert('Notifications disabled. Please re-enable to recieve notifications.');
                 return;
             }
-            token = (await Notifications.getExpoPushTokenAsync()).data;
+            const appConfig = require('../../app.json');
+            const projectId = appConfig?.expo?.extra?.eas?.projectId;
+            token = (await Notifications.getExpoPushTokenAsync({
+                projectId
+            })).data;
     
         } else {
             alert('Must use physical device');

@@ -1,13 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, SafeAreaView, Button, Image, FlatList, TouchableOpacity } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "../hooks/useAuth";
-import { getAuth, signOut } from "firebase/auth";
 import LoadingPage from './LoadingPage';
 import { firestore, messaging } from "../firebase";
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
-import { getToken } from "firebase/messaging";
 import { sendPushNotification } from "../backend/NotificationFunctions";
 
 async function getData(uid) {
