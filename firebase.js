@@ -1,7 +1,10 @@
-import { getApps, initializeApp } from 'firebase/app';
+import { getApps, initializeApp, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getMessaging, isSupported } from 'firebase/messaging';
+
+const FIREBASE_VAPID_KEY = "BHC05pvWI7f9f9wWsXpkDxa-FNoh8E2yjochJiDzhH4atsRVdb1zvrcS7RVPz7_XDpGzBJedO7zfKnVS00aCQco";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB2_QsBxQTljoHTVv9mn-u3nqD0qTYDjVE",
@@ -13,9 +16,22 @@ const firebaseConfig = {
 };
 
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps();
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const firestore = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
+const messaging = (async () => {
+    try {
+        const isSupportedBrowser = await isSupported();
+        if (isSupportedBrowser) {
+            return getMessaging(app);
+        }
+        console.log("Firebase is not supported in this browser");
+        return null;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+})();
 
-export { app, firestore, auth, storage }
+export { app, firestore, auth, storage, messaging }

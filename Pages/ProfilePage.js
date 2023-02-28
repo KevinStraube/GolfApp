@@ -5,8 +5,10 @@ import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "../hooks/useAuth";
 import { getAuth, signOut } from "firebase/auth";
 import LoadingPage from './LoadingPage';
-import { firestore } from "../firebase";
+import { firestore, messaging } from "../firebase";
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
+import { getToken } from "firebase/messaging";
+import { sendPushNotification } from "../backend/NotificationFunctions";
 
 async function getData(uid) {
     try {

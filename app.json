@@ -4,7 +4,7 @@
     "slug": "GolfApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/LogoFull.png",
@@ -19,7 +19,7 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "host.exp.exponent"
+      "bundleIdentifier": "com.clubhousegolf.golf"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -27,7 +27,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "host.exp.exponent"
+      "package": "com.clubhousegolf.golf"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -46,6 +46,7 @@
           }
         }
       ]
-    ]
+    ],
+    "owner": "kevinstraube1"
   }
 }
