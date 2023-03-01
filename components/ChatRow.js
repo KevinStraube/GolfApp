@@ -43,8 +43,10 @@ const ChatRow = ({ matchDetails }) => {
         <TouchableOpacity 
             className="flex-row border-slate-300 border-b items-center py-3 px-5"
             onPress={() => {
+                //Only set last message to read if the user who opens it is not the sender
                 if (lastMessage?.message && lastMessage.read === "false" && lastMessage?.userId !== user.uid) {
                     try {
+                        //Update message to show it has been read
                         updateDoc(doc(firestore, 'matches', matchDetails.id, 'messages', lastMessageId), {
                             read: "true",
                         })

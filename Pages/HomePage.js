@@ -70,16 +70,20 @@ const HomePage = ({ navigation }) => {
         if (unfilteredData) {
             const tempArray = unfilteredData;
             for (var i = tempArray.length - 1; i >= 0; i--) {
+                //Check if age is within specified range
                 if (tempArray[i].age < userData.ageRange[0] || tempArray[i].age > userData.ageRange[1]) {
                     console.log(tempArray[i].age, userData.ageRange[1]);
                     tempArray.splice(i, 1);
                 }
+                //Check if gender is in preferences
                 else if (!userData.genderPreference.includes(tempArray[i]?.gender)) {
                     tempArray.splice(i, 1);
                 }
+                //Check if handicap is in specified range
                 else if (tempArray[i].handicap < userData.handicapRange[0] || tempArray[i].handicap > userData.handicapRange[1]) {
                     tempArray.splice(i, 1);
                 } 
+                //Check if location is in specified range
                 else {
                     if (tempArray[i]?.location.coords.latitude && tempArray[i]?.location.coords.longitude) {
                         const distanceBetweenUsers = distanceBetween(
