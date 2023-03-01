@@ -18,6 +18,7 @@
       "**/*"
     ],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": false,
       "bundleIdentifier": "com.clubhousegolf.golf"
     },
@@ -45,7 +46,8 @@
             "useFrameworks": "static"
           }
         }
-      ]
+      ],
+      ["@react-native-google-signin/google-signin"]
     ],
     "owner": "kevinstraube1"
   }

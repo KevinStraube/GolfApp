@@ -1,9 +1,11 @@
 import { Button, KeyboardAvoidingView, SafeAreaView, Alert, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
+//import * as rnAuth from '@react-native-firebase/auth';
 
 async function removeOnboarding() {
     try {
@@ -45,6 +47,11 @@ const SignUpPage = ({navigation}) => {
         setEmailFields(!emailFields);
     }
 
+    const googleSignUp = async () => {
+        console.log("Pressed");
+
+    }
+
     return (
         <SafeAreaView className="h-full">
             <KeyboardAvoidingView className="flex-1">
@@ -64,7 +71,7 @@ const SignUpPage = ({navigation}) => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                     className="bg-white py-5 self-center rounded-full w-2/3 items-center border border-black" 
-                                    onPress={showEmailInfo}
+                                    onPress={googleSignUp}
                                 >
                                     <View className="flex-row justify-between gap-x-3">
                                         <AntDesign name='google' size={24} color='black'/>
