@@ -19,7 +19,10 @@
     },
     "production": {
       "ios": {
-        "resourceClass": "m1-medium"
+        "resourceClass": "m1-medium",
+        "env": {
+          "GOOGLE_SERVICES_FILE": "./GoogleService-Info.plist"
+        }
       }
     }
   },
