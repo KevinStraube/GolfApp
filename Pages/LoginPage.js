@@ -47,6 +47,7 @@ const LoginPage = ({navigation}) => {
                                 placeholder="Email Address" 
                                 onChangeText={text => setEmail(text)} 
                                 value={email} 
+                                keyboardType='email-address'
                             />
                             <TextInput
                                 className="py-3 px-2 rounded-lg bg-white w-4/5"

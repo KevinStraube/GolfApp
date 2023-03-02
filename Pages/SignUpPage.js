@@ -111,6 +111,7 @@ const SignUpPage = ({navigation}) => {
                                     className="py-3 px-2 rounded-lg bg-white w-4/5"
                                     placeholder="Email Address" 
                                     onChangeText={setEmail}
+                                    keyboardType="email-address"
                                 />
                                 <TextInput
                                     className="py-3 px-2 rounded-lg bg-white w-4/5"
