@@ -1,11 +1,10 @@
 import { Button, KeyboardAvoidingView, SafeAreaView, Alert, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
-import { createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, signInWithCredential, FacebookAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
-import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
-//import * as rnAuth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 async function removeOnboarding() {
     try {
@@ -48,8 +47,24 @@ const SignUpPage = ({navigation}) => {
     }
 
     const googleSignUp = async () => {
-        console.log("Pressed");
+        GoogleSignin.configure({
+            webClientId: '1013459442897-1kln95dv1g5ahsr9om89gomkbu06jl84.apps.googleusercontent.com',
+            iosClientId: '1013459442897-rfh4frat8l9f5u9hafc7hp735luvbdjr.apps.googleusercontent.com',
+        });
 
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+        const provider = new GoogleAuthProvider();
+
+        const { idToken } = await GoogleSignin.signIn();
+        const googleCredential = GoogleAuthProvider.credential(idToken);
+        signInWithCredential(auth, googleCredential)
+        .catch((error) => {
+            console.log("Error creating user with Google", error);
+        })
+    }
+
+    const facebookSignUp = () => {
+        alert("Facebook sign up coming soon...");
     }
 
     return (
@@ -80,7 +95,7 @@ const SignUpPage = ({navigation}) => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                     className="bg-white py-5 self-center rounded-full w-2/3 items-center border border-black" 
-                                    onPress={showEmailInfo}
+                                    onPress={facebookSignUp}
                                 >
                                     <View className="flex-row justify-between gap-x-3">
                                         <AntDesign name='facebook-square' size={24} color='black'/>
@@ -116,10 +131,10 @@ const SignUpPage = ({navigation}) => {
                                     <Text className="text-white font-medium text-base">Create Account</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    className="bg-white p-3 self-center rounded-lg border-black border" 
+                                    className="p-3 self-center rounded-lg" 
                                     onPress={showEmailInfo}
                                 >
-                                    <Text className="text-black font-medium text-base">Back to sign up methods</Text>
+                                    <Text className="text-black font-medium text-base underline">Back to sign up methods</Text>
                                 </TouchableOpacity>
                             </View>
                         }
