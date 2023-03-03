@@ -38,7 +38,22 @@ const SignUpPage = ({navigation}) => {
                         console.log("Error sending email:", error);
                     });
                 })
-                .catch((error) => alert(error.message))
+                .catch((error) => {
+                    if (error.code === 'auth/invalid-email') {
+                        Alert.alert("Error", "Invalid email address");
+                    }
+                    else if (error.code === 'auth/internal-error') {
+                        Alert.alert("Error", "Password cannot be empty");
+                    }
+                    else if (error.code === 'auth/weak-password') {
+                        Alert.alert("Password too short", "Passwords must be at least 6 characters");
+                    }
+                    else if (error.code === 'auth/missing-email') {
+                        Alert.alert("Error", "Email field cannot be empty");
+                    } else {
+                        Alert.alert("Error", error.code);
+                    }
+                })
         }
     }
 

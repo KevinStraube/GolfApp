@@ -5,7 +5,6 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { connectStorageEmulator } from "firebase/storage";
 
 const LoginPage = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -36,6 +35,8 @@ const LoginPage = ({navigation}) => {
                 }
                 else if (error.code === 'auth/internal-error') {
                     Alert.alert("Error", "Password cannot be empty");
+                } else {
+                    Alert.alert("Error", error);
                 }
             })
     }
