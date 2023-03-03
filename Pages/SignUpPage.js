@@ -79,7 +79,7 @@ const SignUpPage = ({navigation}) => {
                         !emailFields &&
                         <View className="flex-auto justify-center items-center gap-3">
                             <TouchableOpacity
-                                    className="bg-lime-500 py-5 self-center rounded-full w-2/3 items-center" 
+                                    className="bg-green-600 py-5 self-center rounded-full w-2/3 items-center" 
                                     onPress={showEmailInfo}
                                 >
                                     <Text className="text-white font-medium text-base">Sign up with email</Text>
@@ -141,10 +141,10 @@ const SignUpPage = ({navigation}) => {
                         }
                         <View className="flex-row justify-center mb-2">
                             <TouchableOpacity
-                                className="bg-lime-500 p-2 rounded-lg"
+                                className="p-2"
                                 onPress={() => navigation.navigate("Login")}
                                 >
-                                <Text className="text-white">Back to Login</Text>
+                                <Text className="font-semibold underline">Back to Login</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

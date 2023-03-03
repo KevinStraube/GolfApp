@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import MaskInput, { Masks } from "react-native-mask-input";
 import { Dropdown } from "react-native-element-dropdown";
 import { setDoc, collection, getFirestore, serverTimestamp, doc } from 'firebase/firestore';
@@ -56,45 +56,51 @@ const BasicInfoPage = ({navigation}) => {
 
     return (
         <SafeAreaView className="flex-1">
-            <Text className="self-center font-semibold text-2xl mt-4">Basic Info</Text>
-            <Text className="mt-10 mx-5">First Name</Text>
-            <TextInput 
-                className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2"
-                onChangeText={text => setFirstName(text)}
-            />
-            <Text className="mt-8 mx-5">Last Name</Text>
-            <TextInput 
-                className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2" 
-                onChangeText={text => setLastName(text)}
-            />
-            <Text className="mt-8 mx-5">Date of Birth (mm/dd/yyyy)</Text>
-            <MaskInput
-                value={date}
-                onChangeText={setDate}
-                mask={Masks.DATE_MMDDYYYY}
-                keyboardType="numeric"
-                className="text-lg p-2 mx-3"
-            />
-            <Text className="mt-8 mx-5">Gender</Text>
-            <Dropdown
-                data={genderData}
-                value={gender}
-                onChange={item => {
-                    setGender(item.value);
-                }}
-                labelField="label"
-                valueField="value"
-                placeholder="Select gender"
-                className="bg-white mx-5 w-1/3"
-            />
-            <TouchableOpacity 
-                className="mt-8 self-end mx-5 rounded-lg bg-lime-500 p-3 w-20"
-                disabled={!validate()}
-                onPress={handleNext}
-                style={!firstName || !lastName || date.length < 10 || !gender ? styles.disabled : styles.enabled}
-                >
-                <Text className="text-white font-semibold self-center">Next</Text>
-            </TouchableOpacity>
+            <KeyboardAvoidingView className="flex-1">
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View className="flex-1">
+                        <Text className="self-center font-semibold text-2xl mt-4">Basic Info</Text>
+                        <Text className="mt-10 mx-5">First Name</Text>
+                        <TextInput 
+                            className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2"
+                            onChangeText={text => setFirstName(text)}
+                        />
+                        <Text className="mt-8 mx-5">Last Name</Text>
+                        <TextInput 
+                            className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2" 
+                            onChangeText={text => setLastName(text)}
+                        />
+                        <Text className="mt-8 mx-5">Date of Birth (mm/dd/yyyy)</Text>
+                        <MaskInput
+                            value={date}
+                            onChangeText={setDate}
+                            mask={Masks.DATE_MMDDYYYY}
+                            keyboardType="numeric"
+                            className="text-lg p-2 mx-3"
+                        />
+                        <Text className="mt-8 mx-5">Gender</Text>
+                        <Dropdown
+                            data={genderData}
+                            value={gender}
+                            onChange={item => {
+                                setGender(item.value);
+                            }}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select gender"
+                            className="bg-white mx-5 w-1/3"
+                        />
+                        <TouchableOpacity 
+                            className="mt-8 self-end mx-5 rounded-lg bg-lime-500 p-3 w-20"
+                            disabled={!validate()}
+                            onPress={handleNext}
+                            style={!firstName || !lastName || date.length < 10 || !gender ? styles.disabled : styles.enabled}
+                            >
+                            <Text className="text-white font-semibold self-center">Next</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     ); 
 };

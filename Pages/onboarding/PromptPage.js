@@ -95,7 +95,7 @@ const PromptPage = ({navigation}) => {
                         </View>
                         <Text className="text-base font-semibold mt-8 mx-5">What are you doing after a round?</Text>
                         <TextInput 
-                            className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2"
+                            className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2"
                             onChangeText={text => setAfterRound(text)}
                             value={afterRound}
                         />
@@ -104,7 +104,7 @@ const PromptPage = ({navigation}) => {
                             <Text className="text-xs self-center text-slate-500"> (optional)</Text>
                         </View>
                         <TextInput 
-                            className="bg-white w-4/5 rounded-lg p-2 mx-5 my-2"
+                            className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2"
                             onChangeText={text => setCourse(text)}
                             value={course}
                         />
