@@ -6,6 +6,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
+/**
+ * Function to remove device onboarding state
+ * Once removed, user will be shown the onboarding screens until they have completed the full flow
+ */
 async function removeOnboarding() {
     try {
         await AsyncStorage.removeItem('@viewedOnboarding');
@@ -20,24 +24,31 @@ const SignUpPage = ({navigation}) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [emailFields, setEmailFields] = useState(false);
 
+    //User signs up using email/password
+    //Fires when user presses create account button
     const handleSignUp = () => {
+        //Error handler when password and confirm password fields do not match
         if (password != confirmPassword) {
             Alert.alert(
                 "Error",
                 "Passwords do not match"
             );
         } else {
+            //Passwords match, remove onboarding
             removeOnboarding();
+            //Create new user in firebase
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    //Signed in
+                    //Once the user has been created
                     const user = userCredential.user;
                     console.log("Registered with: ", user.email);
 
+                    //Send email to user to verify their account
                     sendEmailVerification(user).catch((error) => {
                         console.log("Error sending email:", error);
                     });
                 })
+                //Cases of error handling using error codes to display different error messages
                 .catch((error) => {
                     if (error.code === 'auth/invalid-email') {
                         Alert.alert("Error", "Invalid email address");
@@ -57,11 +68,14 @@ const SignUpPage = ({navigation}) => {
         }
     }
 
+    //Show or hide sign up methods 
     const showEmailInfo = () => {
         setEmailFields(!emailFields);
     }
 
+    //User signs up with Google
     const googleSignUp = async () => {
+        //Set client IDs with app information from Google Cloud Console
         GoogleSignin.configure({
             webClientId: '1013459442897-1kln95dv1g5ahsr9om89gomkbu06jl84.apps.googleusercontent.com',
             iosClientId: '1013459442897-rfh4frat8l9f5u9hafc7hp735luvbdjr.apps.googleusercontent.com',
@@ -70,14 +84,17 @@ const SignUpPage = ({navigation}) => {
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
         const provider = new GoogleAuthProvider();
 
+        //Get credential from GoogleSignIn library
         const { idToken } = await GoogleSignin.signIn();
         const googleCredential = GoogleAuthProvider.credential(idToken);
+        //Sign into Firebase using generated credential
         signInWithCredential(auth, googleCredential)
         .catch((error) => {
             console.log("Error creating user with Google", error);
         })
     }
 
+    //User signs up with Facebook
     const facebookSignUp = () => {
         alert("Facebook sign up coming soon...");
     }

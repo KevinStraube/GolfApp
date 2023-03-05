@@ -11,6 +11,7 @@ import ActionSheet from 'react-native-actionsheet';
 import { onSnapshot, query, collection, doc, deleteDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 
+//Create the top tabs for chat and profile
 const Tab = createMaterialTopTabNavigator();
 
 const MessagePage = ({ navigation }) => {
@@ -18,10 +19,12 @@ const MessagePage = ({ navigation }) => {
     const { params } = useRoute();
     let actionSheet = useRef();
 
+    //Current options for bottom pop up menu
     let options = [
         'Unmatch', 'Report', 'Cancel'
     ];
 
+    //Show pop up bottom menu options
     const showActionSheet = () => {
         actionSheet.current.show();
     }

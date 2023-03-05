@@ -10,6 +10,7 @@ const LoginPage = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    //Sets onboarding on login
     async function setOnboarding() {
         try {
             await AsyncStorage.setItem('@viewedOnboarding', 'true');
@@ -20,12 +21,14 @@ const LoginPage = ({navigation}) => {
 
     const handleLogin = () => {
         setOnboarding();
+        //User logs into firebase using email and password
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 //Signed in
                 const user = userCredential.user;
                 console.log("Logged in with: ", user.email);
             })
+            //Error handling displays different messages depending on the error code
             .catch((error) => {
                 if (error.code === 'auth/invalid-email') {
                     Alert.alert("Error", "Invalid email address");

@@ -7,6 +7,7 @@ import { firestore, messaging } from "../firebase";
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { sendPushNotification } from "../backend/NotificationFunctions";
 
+//Function to grab user's profile data 
 async function getData(uid) {
     try {
         const docRef = doc(firestore, 'users', uid);
@@ -23,6 +24,10 @@ async function getData(uid) {
 }
 
 const ProfilePage = ({navigation}) => {
+    /**
+     * All required user data
+     * Change this to single state variable for all data
+     */
     const [name, setName] = useState('');
     const [age, setAge] = useState(0);
     const [gender, setGender] = useState('');
@@ -51,6 +56,7 @@ const ProfilePage = ({navigation}) => {
         }
     }
     
+    //Wait until user loads to populate data
     useEffect(() => {
         if (!user) {
             console.log("User is not loaded yet");

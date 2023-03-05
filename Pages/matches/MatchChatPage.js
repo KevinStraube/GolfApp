@@ -19,6 +19,7 @@ const MatchChatPage = () => {
 
     const { user } = useAuth();
 
+    //Once the user is loaded, get user's notification token and first name
     useEffect(() => {
         if (user) {
             setToken(getMatchedUserInfo(matchDetails.users, user).notificationToken);
@@ -26,6 +27,7 @@ const MatchChatPage = () => {
         }
     });
 
+    //Once match details are loaded, query all messages between the two matched users
     useEffect(() =>
     onSnapshot(
         query(
@@ -40,7 +42,8 @@ const MatchChatPage = () => {
             )
         )
     ), [matchDetails, firestore]);
-
+    
+    //Once a user sends a message, add message to database
     const sendMessage = () => {
         addDoc(collection(firestore, 'matches', matchDetails.id, 'messages'), {
             timestamp: serverTimestamp(),
@@ -49,8 +52,10 @@ const MatchChatPage = () => {
             photoURL: matchDetails.users[user.uid].images[0].url,
             message: input,
             read: "false",
-        })
+        });
+        //Send the receiving user a push notification
         sendPushNotification(token, `${name}`, input);
+        //Clear the message field
         setInput("");
     };
 

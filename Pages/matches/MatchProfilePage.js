@@ -15,6 +15,7 @@ const MatchProfilePage = () => {
         /*
         Refactor later by converting this user check to getMatchedUserInfo in lib folder
         */
+       //Once user is loaded, get the other user's data
         if (user) {
             if (matchDetails?.usersMatched[0] === user.uid) {
                 const matchedUserID = matchDetails.usersMatched[1];

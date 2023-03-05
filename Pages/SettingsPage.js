@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import SettingsRow from '../components/SettingsRow';
 import { getAuth, signOut } from 'firebase/auth';
 
+//List of all settings 
 const settingsList = [
   {
     id: 0,
@@ -33,6 +34,7 @@ const settingsList = [
 
 const SettingsPage = () => {
 
+    //Function to logout user
     const logout = () => {
         Alert.alert("Sign out?", "Are you sure you want to sign out?",[
             {

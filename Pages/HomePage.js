@@ -27,21 +27,27 @@ const HomePage = ({ navigation }) => {
             let unsubscribe;
 
             const fetchCards = async () => {
-
+                //Fetch data of the logged in user
                 const userDocSnap = await getDoc(doc(db, 'users', user.uid));
                 setUserData(userDocSnap.data());
             
+                //Fetch all accounts the user has passed on
                 const passes = await getDocs(collection(db, 'users', user.uid, 'passes')).then
                     ((snapshot) => snapshot.docs.map((doc) => doc.id)
                 );
 
+                //Fetch all accounts the user has liked
                 const likes = await getDocs(collection(db, 'users', user.uid, 'likes')).then
                     ((snapshot) => snapshot.docs.map((doc) => doc.id)
                 );
 
+                //Ensure passes and likes are not empty (an empty array will throw and error)
                 const passedUserIds = passes.length > 0 ? passes : ["test"];
                 const likedUserIds = likes.length > 0 ? likes : ["test"];
 
+                //Query all accounts that exist and filter out accounts that user has already interacted with
+                //Set the results to unfiltered data
+                //** PLACE A LIMIT ON THIS LATER **
                 unsubscribe = onSnapshot(
                     query(
                         collection(db, 'users'),
@@ -99,6 +105,7 @@ const HomePage = ({ navigation }) => {
                     }
                 }
             }
+            //Set profiles to the newly filtered data
             setProfiles(tempArray);
         } else {
             console.log("profiles not loaded yet");
@@ -112,25 +119,35 @@ const HomePage = ({ navigation }) => {
         }
     }, [profiles, index])
 
+    //User presses next on the profile they see
     const swipeLeft = () => {
+        //Do nothing if there is no profile on the screen
         if (!profiles[index]) return;
 
+        //Get profile of the user they see
         const userSwiped = profiles[index];
         console.log(`You swiped NEXT on ${userSwiped.firstName}`);
 
+        //Add user to 'passes' collection, if one exists, otherwise create one
         setDoc(doc(db, 'users', user.uid, 'passes', userSwiped.uid),
         {
+            //Store user's uid, name and age
+            //No need to store anything else
             uid: userSwiped.uid,
             firstName: userSwiped.firstName,
             age: userSwiped.age,
         });
 
+        //Increase index in the array to show next profile
         setIndex(index + 1);
     };
 
+    //Users presses yes on the profile they see
     const swipeRight = async () => {
+        //Do nothing if there is no profile on the screen
         if (!profiles[index]) return;
 
+        //Get profile of the user they see
         const userSwiped = profiles[index];
         const loggedInUser = await (
             await getDoc(doc(db, 'users', user.uid))
@@ -144,6 +161,7 @@ const HomePage = ({ navigation }) => {
                     //Other user has already swiped yes on you, create a match!
                     console.log(`You matched with ${userSwiped.firstName}`);
 
+                    //Add other user to likes collection, if it does not exist, create it
                     setDoc(doc(db, 'users', user.uid, 'likes', userSwiped.uid),
                     {
                         uid: userSwiped.uid,
@@ -151,7 +169,7 @@ const HomePage = ({ navigation }) => {
                         age: userSwiped.age,
                     });
 
-                    //Match
+                    //Add match to new matches collection. Doc ID are both user IDs concatenated
                     setDoc(doc(db, 'matches', generateId(user.uid, userSwiped.uid)), {
                         users: {
                             [user.uid]: loggedInUser,
@@ -183,6 +201,7 @@ const HomePage = ({ navigation }) => {
                 }
             }
         );
+        //Increment index in the array to show next profile
         setIndex(index + 1);
     }; 
 
