@@ -51,7 +51,14 @@
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       "@react-native-google-signin/google-signin",
-      "react-native-fbsdk-next"
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "129822126476135",
+          "clientToken": "ad2d6909fc2306b30839533898367435",
+          "displayName": "Clubhouse Golf"
+        }
+      ]
     ],
     "owner": "kevinstraube1"
   }

@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
 /**
  * Function to remove device onboarding state
@@ -91,12 +92,27 @@ const SignUpPage = ({navigation}) => {
         signInWithCredential(auth, googleCredential)
         .catch((error) => {
             console.log("Error creating user with Google", error);
-        })
+        });
     }
 
     //User signs up with Facebook
-    const facebookSignUp = () => {
-        alert("Facebook sign up coming soon...");
+    const facebookSignUp = async () => {
+        await LoginManager.logInWithPermissions(['public_profile', 'email']);
+
+        const data = await AccessToken.getCurrentAccessToken();
+
+        if (!data) {
+            console.log("Error fetching access token");
+        }
+
+        const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
+
+        const response = await signInWithCredential(auth, facebookCredential)
+            .catch((error) => {
+                console.log("Error creating user with Facebook:", error);
+            });
+        
+        console.log(response);
     }
 
     return (
