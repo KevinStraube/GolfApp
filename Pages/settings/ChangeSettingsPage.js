@@ -3,6 +3,7 @@ import React from 'react'
 import Header from '../../components/Header';
 import SettingsRow from '../../components/SettingsRow';
 
+//List of options within the settings tab
 const data = [
     {
         id: 0,

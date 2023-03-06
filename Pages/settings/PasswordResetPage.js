@@ -4,9 +4,11 @@ import Header from '../../components/Header';
 import { auth } from '../../firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
 
+//Page is only available if the user is logged in with email/password provider
 const PasswordResetPage = ({ navigation }) => {
     const [email, setEmail] = useState('');
 
+    //Sends the user a password reset email
     const resetPassword = () => {
         if (email.length === 0) {
             Alert.alert("Error", "Email cannot be empty");

@@ -9,8 +9,11 @@ const ReauthenticatePage = ({navigation}) => {
     const { user } = useAuth();
 
     const reAuthenticate = () => {
+        //Get new credential by providing login details
         const credential = EmailAuthProvider.credential(user.email, password);
 
+        //Get new authentication token by calling reauthenticate
+        //This is necessary because resetting email will not work if it has been too long since user has signed in
         reauthenticateWithCredential(user, credential).then(() => {
             navigation.navigate('ChangeEmail');
         }).catch((error) => {
@@ -18,6 +21,7 @@ const ReauthenticatePage = ({navigation}) => {
         })
     }
 
+    //Load user data
     useEffect(() => {
         if (!user) {
             console.log("User is loading...");

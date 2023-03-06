@@ -17,10 +17,12 @@ const PreferencesPage = ({navigation}) => {
 
     const { user } = useAuth();
 
+    //Wait for user data to load
     useEffect(() => {
         if (!user) {
             console.log("User loading...");
         } else {
+            //Once user data has loaded, fetch user data
             const fetchData = async () => {
                 const docRef = doc(firestore, 'users', user.uid);
                 const docSnap = await getDoc(docRef);
@@ -36,7 +38,9 @@ const PreferencesPage = ({navigation}) => {
         }
     }, [user]);
 
+    //Update preferences once user presses confirm
     const handleNext = () => {
+        //Add selected genders to array
         const genders = [];
         if (maleCheckBox) {
             genders.push('Male');
@@ -48,6 +52,7 @@ const PreferencesPage = ({navigation}) => {
             genders.push('Other');
         }
 
+        //Update the user's preferences in the database
         try {
             updateDoc(doc(firestore, 'users', user.uid),{
                 genderPreference: genders,

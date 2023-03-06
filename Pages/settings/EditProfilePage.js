@@ -7,6 +7,7 @@ import {useAuth} from '../../hooks/useAuth';
 import { firestore } from '../../firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
+//List of options for style of play
 const playStyleData = [
     { label: 'Casual', value: 'Casual' },
     { label: 'Intermediate', value: 'Intermediate' },
@@ -21,6 +22,7 @@ const EditProfilePage = ({navigation}) => {
 
     const { user } = useAuth();
 
+    //Update the user's database after confirming changes to their profile
     const updateUserInfo = async () => {
         try {
             await updateDoc(doc(firestore, 'users', user.uid), {
