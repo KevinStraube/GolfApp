@@ -57,8 +57,6 @@ const ImagesPage = ({ navigation }) => {
             quality: 0,
         });
 
-        console.log(result);
-
         if (!result.canceled) {
             setFirstImage(result.assets[0]);
             setImages((prevState) => [...prevState, result.assets[0]]);
@@ -73,8 +71,6 @@ const ImagesPage = ({ navigation }) => {
             aspect: [4,3],
             quality: 0,
         });
-
-        console.log(result);
 
         if (!result.canceled) {
             setSecondImage(result.assets[0]);
@@ -91,8 +87,6 @@ const ImagesPage = ({ navigation }) => {
             quality: 0,
         });
 
-        console.log(result);
-
         if (!result.canceled) {
             setThirdImage(result.assets[0]);
             setImages((prevState) => [...prevState, result.assets[0]]);
@@ -107,8 +101,6 @@ const ImagesPage = ({ navigation }) => {
             aspect: [4,3],
             quality: 0,
         });
-
-        console.log(result);
 
         if (!result.canceled) {
             setFourthImage(result.assets[0]);

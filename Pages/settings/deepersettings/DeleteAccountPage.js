@@ -1,10 +1,11 @@
-import { View, Text, SafeAreaView, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, TextInput, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../../components/Header';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useAuth } from '../../../hooks/useAuth';
-import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
+import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAuthProvider } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
 const DeleteAccount = () => {
     const [understand, setUnderstand] = useState(false);
@@ -17,6 +18,8 @@ const DeleteAccount = () => {
     useEffect(() => {
         if (!user) {
             console.log("User is loading...");
+        } else {
+            console.log(user);
         }
     }, [user]);
 
@@ -39,11 +42,46 @@ const DeleteAccount = () => {
         });
     }
 
+    const reauthenticateFacebook = async () => {
+        //Display Facebook login screen
+        await LoginManager.logInWithPermissions(['public_profile', 'email']);
+
+        //Get user's access token
+        const data = await AccessToken.getCurrentAccessToken();
+
+        if (!data) {
+            console.log("Error fetching access token");
+        }
+
+        //Get Facebook credential based on access token
+        const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
+
+        reauthenticateWithCredential(user, facebookCredential)
+            .then(() => {
+                setAuthenticated(true);
+            })
+            .catch((error) => {
+                console.log("Error re-authenticating with Facebook:", error);
+            });
+    }
+
     return (
         <SafeAreaView className="flex-1">
             <Header title={"Delete Account"}/>
             {
-            !authenticated &&
+            !authenticated && user?.providerData[0].providerId === "facebook.com" &&
+            <View className="flex-1">
+                <Text className="font-medium text-lg ml-5 mt-3">Please login again with Facebook</Text>
+                <TouchableOpacity 
+                    className="w-4/5 py-3 rounded-lg bg-green-600 items-center self-center mt-5"
+                    onPress={reauthenticateFacebook}
+                >
+                    <Text className="font-semibold text-base text-white">Login</Text>
+                </TouchableOpacity>
+            </View>
+            }
+            {
+            !authenticated && user?.providerData[0].providerId === "password" &&
             <View>
                 <Text className="mx-5 mt-3 text-base">Enter your password</Text>
                 <View className="flex-row items-center">

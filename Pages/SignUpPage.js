@@ -97,16 +97,20 @@ const SignUpPage = ({navigation}) => {
 
     //User signs up with Facebook
     const facebookSignUp = async () => {
+        //Display Facebook login screen
         await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
+        //Get user's access token
         const data = await AccessToken.getCurrentAccessToken();
 
         if (!data) {
             console.log("Error fetching access token");
         }
 
+        //Get Facebook credential based on access token
         const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
 
+        //Sign into Firebase using generated credential
         const response = await signInWithCredential(auth, facebookCredential)
             .catch((error) => {
                 console.log("Error creating user with Facebook:", error);
