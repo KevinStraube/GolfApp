@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../../components/Header';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useAuth } from '../../../hooks/useAuth';
-import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAuthProvider } from 'firebase/auth';
+import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const DeleteAccount = () => {
     const [understand, setUnderstand] = useState(false);
@@ -42,6 +43,27 @@ const DeleteAccount = () => {
         });
     }
 
+    const reauthenticateGoogle = async () => {
+        //Set client IDs with app information from Google Cloud Console
+        GoogleSignin.configure({
+            webClientId: '1013459442897-1kln95dv1g5ahsr9om89gomkbu06jl84.apps.googleusercontent.com',
+            iosClientId: '1013459442897-rfh4frat8l9f5u9hafc7hp735luvbdjr.apps.googleusercontent.com',
+        });
+
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+        //Get credential from GoogleSignIn library
+        const { idToken } = await GoogleSignin.signIn();
+        const googleCredential = GoogleAuthProvider.credential(idToken);
+        //Sign into Firebase using generated credential
+        reauthenticateWithCredential(user, googleCredential)
+            .then(() => {
+                setAuthenticated(true);
+            })
+            .catch((error) => {
+                console.log("Error re-authenticating with Google:", error);
+            });
+    }
+
     const reauthenticateFacebook = async () => {
         //Display Facebook login screen
         await LoginManager.logInWithPermissions(['public_profile', 'email']);
@@ -75,6 +97,18 @@ const DeleteAccount = () => {
                 <TouchableOpacity 
                     className="w-4/5 py-3 rounded-lg bg-green-600 items-center self-center mt-5"
                     onPress={reauthenticateFacebook}
+                >
+                    <Text className="font-semibold text-base text-white">Login</Text>
+                </TouchableOpacity>
+            </View>
+            }
+            {
+            !authenticated && user?.providerData[0].providerId === "google.com" &&
+            <View className="flex-1">
+                <Text className="font-medium text-lg ml-5 mt-3">Please login again with Google</Text>
+                <TouchableOpacity 
+                    className="w-4/5 py-3 rounded-lg bg-green-600 items-center self-center mt-5"
+                    onPress={reauthenticateGoogle}
                 >
                     <Text className="font-semibold text-base text-white">Login</Text>
                 </TouchableOpacity>
