@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import TabNavigator from "./TabNavigator";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingPage from "../Pages/LoadingPage";
+import LoadingPage from "../Pages/main/LoadingPage";
 import OnboardingStack from "./OnboardingStack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MatchPage from "../Pages/modals/MatchPage";
-import MessagePage from '../Pages/MessagePage';
-import SettingsPage from '../Pages/SettingsPage';
+import MessagePage from '../Pages/main/MessagePage';
+import SettingsPage from '../Pages/main/SettingsPage';
 import EditProfilePage from "../Pages/settings/EditProfilePage";
 import PreferencesPage from "../Pages/settings/PreferencesPage";
 import ChangeSettingsPage from "../Pages/settings/ChangeSettingsPage";

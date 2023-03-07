@@ -1,7 +1,7 @@
 import { Alert, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import Header from '../components/Header';
-import SettingsRow from '../components/SettingsRow';
+import Header from '../../components/Header';
+import SettingsRow from '../../components/SettingsRow';
 import { getAuth, signOut } from 'firebase/auth';
 
 //List of all settings 

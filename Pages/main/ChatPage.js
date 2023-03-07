@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, Image, Button, TouchableOpacity } from "react-native";
 import LoadingPage from "./LoadingPage";
-import Header from "../components/Header";
-import ChatList from "../components/ChatList";
+import Header from "../../components/Header";
+import ChatList from "../../components/ChatList";
 
 const ChatPage = () => {
     return (

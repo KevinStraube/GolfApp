@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import LoginStack from './LoginStack';
-import LoadingPage from "../Pages/LoadingPage";
+import LoadingPage from "../Pages/main/LoadingPage";
 import OnboardNavigator from "./OnboardNavigator";
 
 export default function RootNavigator() {

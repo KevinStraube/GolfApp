@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginPage from "../Pages/LoginPage";
-import SignUpPage from "../Pages/SignUpPage";
+import LoginPage from "../Pages/main/LoginPage";
+import SignUpPage from "../Pages/main/SignUpPage";
 import PasswordResetPage from "../Pages/settings/PasswordResetPage";
 
 const Stack = createNativeStackNavigator();

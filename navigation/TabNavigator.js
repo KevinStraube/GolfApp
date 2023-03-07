@@ -1,9 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomePage from "../Pages/HomePage";
+import HomePage from "../Pages/main/HomePage";
 import { Ionicons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
-import ProfilePage from "../Pages/ProfilePage";
-import ChatPage from "../Pages/ChatPage";
+import ProfilePage from "../Pages/main/ProfilePage";
+import ChatPage from "../Pages/main/ChatPage";
 
 const Tab = createBottomTabNavigator();
 

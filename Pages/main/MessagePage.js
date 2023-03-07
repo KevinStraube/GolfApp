@@ -1,15 +1,15 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import getMatchedUserInfo from '../lib/getMatchedUserInfo';
-import { useAuth } from '../hooks/useAuth';
+import getMatchedUserInfo from '../../lib/getMatchedUserInfo';
+import { useAuth } from '../../hooks/useAuth';
 import { useRoute } from '@react-navigation/native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import MatchChatPage from './matches/MatchChatPage';
-import MatchProfilePage from './matches/MatchProfilePage';
+import MatchChatPage from '../matches/MatchChatPage';
+import MatchProfilePage from '../matches/MatchProfilePage';
 import ActionSheet from 'react-native-actionsheet';
 import { onSnapshot, query, collection, doc, deleteDoc } from 'firebase/firestore';
-import { firestore } from '../firebase';
+import { firestore } from '../../firebase';
 
 //Create the top tabs for chat and profile
 const Tab = createMaterialTopTabNavigator();

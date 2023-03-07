@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, SafeAreaView, Button, Image, FlatList, TouchableOpacity } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import LoadingPage from './LoadingPage';
-import { firestore, messaging } from "../firebase";
+import { firestore, messaging } from "../../firebase";
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
-import { sendPushNotification } from "../backend/NotificationFunctions";
+import { sendPushNotification } from "../../backend/NotificationFunctions";
 
 //Function to grab user's profile data 
 async function getData(uid) {

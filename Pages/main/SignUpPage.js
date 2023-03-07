@@ -1,7 +1,7 @@
 import { Button, KeyboardAvoidingView, SafeAreaView, Alert, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, signInWithCredential, FacebookAuthProvider } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';

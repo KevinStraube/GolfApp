@@ -5,7 +5,7 @@ import { updateDoc, doc, getFirestore } from 'firebase/firestore';
 import { async } from '@firebase/util';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../hooks/useAuth';
-import LoadingPage from '../LoadingPage';
+import LoadingPage from '../main/LoadingPage';
 
 const firestore = getFirestore();
 
