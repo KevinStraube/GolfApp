@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, SafeAreaView, Button, Image, FlatList, TouchableOpacity } from "react-native";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useAuth } from "../../hooks/useAuth";
 import LoadingPage from './LoadingPage';
 import { firestore, messaging } from "../../firebase";
@@ -28,14 +28,7 @@ const ProfilePage = ({navigation}) => {
      * All required user data
      * Change this to single state variable for all data
      */
-    const [name, setName] = useState('');
-    const [age, setAge] = useState(0);
-    const [gender, setGender] = useState('');
-    const [playStyle, setPlayStyle] = useState('');
-    const [handicap, setHandicap] = useState(0);
-    const [afterRound, setAfterRound] = useState('');
-    const [location, setLocation] = useState('');
-    const [course, setCourse] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [imageData, setImageData] = useState([]);
 
     const { user } = useAuth();
@@ -43,39 +36,27 @@ const ProfilePage = ({navigation}) => {
     //Wait until user loads to populate data
     useEffect(() => {
         if (user) {
-            let unsubscribe = false;
+            let unsubscribe;
 
             const loadData = async () => {
-                if (!unsubscribe) {
-                    let data = await getData(user.uid);
-                    setName(data.firstName);
-                    setAge(data.age);
-                    setGender(data.gender);
-                    setPlayStyle(data.playStyle);
-                    setHandicap(data.handicap);
-                    setAfterRound(data.afterRound);
-                    setLocation(data.city);
-                    setImageData(data.images);
-                    if (data.course) {
-                        setCourse(data.course);
-                    }
-                }
+                unsubscribe = onSnapshot(doc(firestore, 'users', user.uid), (doc) => {
+                    setUserData(doc.data());
+                    setImageData(doc.data().images);
+                })
             }
             loadData();
-        } 
 
-        return () => {
-            unsubscribe = true;
-        }
+            return unsubscribe;
+        } 
     }, [user]);
 
     /* POTENTIALLY ADD PAGINATOR TO FLATLIST */
 
-    return !user ? <LoadingPage /> 
+    return !user || !userData ? <LoadingPage /> 
         : (
         <SafeAreaView className="flex-1">
             <View className="flex-row items-center mt-4 justify-between mr-5">
-                <Text className="text-2xl font-semibold mx-5">{name}</Text>
+                <Text className="text-2xl font-semibold mx-5">{userData.firstName}</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
                     <Ionicons name="menu" size={32} color="black"/>
                 </TouchableOpacity>
@@ -102,7 +83,7 @@ const ProfilePage = ({navigation}) => {
                 <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
                     <View className="flex-row items-center">
                         <MaterialCommunityIcons name='cake-variant-outline' size={24} color="black" />
-                        <Text className="text-base mx-4">{age}</Text>
+                        <Text className="text-base mx-4">{userData.age}</Text>
                     </View>
 
                     <View className="border-r border-slate-300 h-full">
@@ -111,14 +92,14 @@ const ProfilePage = ({navigation}) => {
 
                     <View className="flex-row items-center ml-4">
                         <AntDesign name='user' size={24} color="black" />
-                        <Text className="text-base mx-4">{gender}</Text>
+                        <Text className="text-base mx-4">{userData.gender}</Text>
                     </View>
                 </View>
 
                 <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
                     <View className="flex-row items-center">
                         <MaterialIcons name='sports-golf' size={24} color="black" />
-                        <Text className="text-base mx-4">{playStyle}</Text>
+                        <Text className="text-base mx-4">{userData.playStyle}</Text>
                     </View>
 
                     <View className="border-r border-slate-300 h-full">
@@ -127,26 +108,26 @@ const ProfilePage = ({navigation}) => {
 
                     <View className="flex-row items-center ml-4">
                         <Text className="font-bold">HCP: </Text>
-                        <Text className="text-base mx-4">{handicap}</Text>
+                        <Text className="text-base mx-4">{userData.handicap}</Text>
                     </View>
                 </View>
 
                 <View className="flex-row items-center justify-center mx-4 py-3 border-b border-slate-300">
                     <Ionicons name='location-outline' size={24} color="black" />
-                    <Text className="text-base mx-4">{location}</Text>
+                    <Text className="text-base mx-4">{userData.city}</Text>
                 </View>
 
                 { 
-                    course &&
+                    userData.course &&
                     <View className="flex-row items-center justify-center px-3 py-3 border-b border-slate-300 mx-4">
                         <Ionicons name='golf-outline' size={24} color="black" />
-                        <Text className="text-base mx-4">{course}</Text>
+                        <Text className="text-base mx-4">{userData.course}</Text>
                     </View>
                 }
 
                 <View className="py-3 mx-4">
                     <Text className="font-bold">What are you doing after a round?</Text>
-                    <Text className="mt-2">{afterRound}</Text>
+                    <Text className="mt-2">{userData.afterRound}</Text>
                 </View>
             </View>
         </SafeAreaView>

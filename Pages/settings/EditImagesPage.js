@@ -305,12 +305,12 @@ const EditImagesPage = ({ navigation }) => {
         deleteOldImages(filteredImageArray);
         
         uploadNewImages(filteredUrlArray);
-        /*
+        
         navigation.goBack();
         navigation.goBack();
 
-        Alert.alert("Images Uploaded", "You may need to restart the app to see changes.");
-        */
+        Alert.alert("Photos Updated");
+        
     }
 
     return (
