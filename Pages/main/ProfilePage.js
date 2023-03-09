@@ -39,29 +39,33 @@ const ProfilePage = ({navigation}) => {
     const [imageData, setImageData] = useState([]);
 
     const { user } = useAuth();
-
-    const loadData = async () => {
-        
-        let data = await getData(user.uid);
-        setName(data.firstName);
-        setAge(data.age);
-        setGender(data.gender);
-        setPlayStyle(data.playStyle);
-        setHandicap(data.handicap);
-        setAfterRound(data.afterRound);
-        setLocation(data.city);
-        setImageData(data.images);
-        if (data.course) {
-            setCourse(data.course);
-        }
-    }
     
     //Wait until user loads to populate data
     useEffect(() => {
-        if (!user) {
-            console.log("User is not loaded yet");
-        } else {
+        if (user) {
+            let unsubscribe = false;
+
+            const loadData = async () => {
+                if (!unsubscribe) {
+                    let data = await getData(user.uid);
+                    setName(data.firstName);
+                    setAge(data.age);
+                    setGender(data.gender);
+                    setPlayStyle(data.playStyle);
+                    setHandicap(data.handicap);
+                    setAfterRound(data.afterRound);
+                    setLocation(data.city);
+                    setImageData(data.images);
+                    if (data.course) {
+                        setCourse(data.course);
+                    }
+                }
+            }
             loadData();
+        } 
+
+        return () => {
+            unsubscribe = true;
         }
     }, [user]);
 

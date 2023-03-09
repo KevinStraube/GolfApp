@@ -16,6 +16,7 @@ import ChangePasswordPage from "../Pages/settings/deepersettings/ChangePasswordP
 import DeleteAccountPage from "../Pages/settings/deepersettings/DeleteAccountPage";
 import ReauthenticatePage from "../Pages/settings/ReauthenticatePage";
 import MatchProfilePage from "../Pages/matches/MatchProfilePage";
+import EditImagesPage from "../Pages/settings/EditImagesPage";
 import * as Notifications from 'expo-notifications';
 
 Notifications.setNotificationHandler({
@@ -93,6 +94,7 @@ export default function OnboardNavigator() {
                 <Stack.Screen name="ChangePassword" component={ChangePasswordPage}/>
                 <Stack.Screen name="DeleteAccount" component={DeleteAccountPage}/>
                 <Stack.Screen name="Reauthenticate" component={ReauthenticatePage} />
+                <Stack.Screen name="EditImages" component={EditImagesPage} />
             </Stack.Group>
         </Stack.Navigator>
     ) : <OnboardingStack />

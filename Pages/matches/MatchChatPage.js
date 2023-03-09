@@ -25,7 +25,7 @@ const MatchChatPage = () => {
             setToken(getMatchedUserInfo(matchDetails.users, user).notificationToken);
             setName(getMatchedUserInfo(matchDetails.users, user).firstName);
         }
-    });
+    }, [user]);
 
     //Once match details are loaded, query all messages between the two matched users
     useEffect(() =>

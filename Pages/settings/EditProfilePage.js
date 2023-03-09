@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -6,6 +6,7 @@ import { Slider } from "@miblanchard/react-native-slider";
 import {useAuth} from '../../hooks/useAuth';
 import { firestore } from '../../firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { Entypo } from '@expo/vector-icons';
 
 //List of options for style of play
 const playStyleData = [
@@ -62,56 +63,69 @@ const EditProfilePage = ({navigation}) => {
     return (
         <SafeAreaView className="flex-1">
             <Header title={"Edit Profile"}/>
-            <View className="border-b border-slate-300 pb-5 mx-4">
-                <Text className="font-semibold text-lg mt-3">Play Style</Text>
-                <Dropdown 
-                    data={playStyleData} 
-                    value={playStyle}
-                    onChange={item => {
-                        setPlayStyle(item.value);
-                    }}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={playStyle}
-                    className="bg-white px-4 py-2 mt-1 w-1/2"
-                />
-            </View>
-            
-            {handicap < 25 ? <Text className="font-semibold text-lg mx-4 mt-5">Handicap: {handicap}</Text> 
-            : <Text className="font-semibold text-lg mx-4 mt-4">Handicap: {handicap}+</Text> } 
-            <View className="mt-3 border-b border-slate-300 pb-4 mx-4">
-                <Slider 
-                    value={handicap}
-                    onValueChange={value => setHandicap(value)}
-                    minimumValue={0}
-                    maximumValue={25}
-                    step={1}
-                />
-            </View>
-            <Text className="font-semibold text-lg mx-4 mt-5">What are you doing after a round?</Text>
-            <View className="border-b border-slate-300 pb-5 mx-4">
-                <TextInput 
-                    className="bg-white w-5/6 rounded-lg p-2 my-2"
-                    onChangeText={text => setAfterRound(text)}
-                    value={afterRound}
-                />
-            </View>
-            <Text className="font-semibold text-lg mx-4 mt-5">Favourite/Home course?</Text>
-            <View className="border-b border-slate-300 pb-5 mx-4">
-                <TextInput 
-                    className="bg-white w-5/6 rounded-lg p-2 my-2"
-                    onChangeText={text => setCourse(text)}
-                    value={course}
-                />
-            </View>
-            <View className="flex-1 justify-center items-center">
+            <ScrollView className="flex-1">
                 <TouchableOpacity 
-                    className="w-5/6 py-3 px-3 bg-lime-600 rounded-lg"
-                    onPress={updateUserInfo}
+                    className="border-b border-slate-300 py-10 mx-4"
+                    onPress={() => navigation.navigate('EditImages')}
                 >
-                    <Text className="self-center text-white font-bold text-base">Apply</Text>
+                    <View className="flex-row items-center">
+                        <Text className="font-semibold text-lg">Photos</Text>
+                        <View className="ml-auto">
+                            <Entypo name='chevron-thin-right' size={26} color='black'/>
+                        </View>
+                    </View>
                 </TouchableOpacity>
-            </View>
+                <View className="border-b border-slate-300 pb-5 mx-4">
+                    <Text className="font-semibold text-lg mt-3">Play Style</Text>
+                    <Dropdown 
+                        data={playStyleData} 
+                        value={playStyle}
+                        onChange={item => {
+                            setPlayStyle(item.value);
+                        }}
+                        labelField="label"
+                        valueField="value"
+                        placeholder={playStyle}
+                        className="bg-white px-4 py-2 mt-1 w-1/2"
+                    />
+                </View>
+                
+                {handicap < 25 ? <Text className="font-semibold text-lg mx-4 mt-5">Handicap: {handicap}</Text> 
+                : <Text className="font-semibold text-lg mx-4 mt-4">Handicap: {handicap}+</Text> } 
+                <View className="mt-3 border-b border-slate-300 pb-4 mx-4">
+                    <Slider 
+                        value={handicap}
+                        onValueChange={value => setHandicap(value)}
+                        minimumValue={0}
+                        maximumValue={25}
+                        step={1}
+                    />
+                </View>
+                <Text className="font-semibold text-lg mx-4 mt-5">What are you doing after a round?</Text>
+                <View className="border-b border-slate-300 pb-5 mx-4">
+                    <TextInput 
+                        className="bg-white w-5/6 rounded-lg p-3 my-2"
+                        onChangeText={text => setAfterRound(text)}
+                        value={afterRound}
+                    />
+                </View>
+                <Text className="font-semibold text-lg mx-4 mt-5">Favourite/Home course?</Text>
+                <View className="border-b border-slate-300 pb-5 mx-4">
+                    <TextInput 
+                        className="bg-white w-5/6 rounded-lg p-3 my-2"
+                        onChangeText={text => setCourse(text)}
+                        value={course}
+                    />
+                </View>
+                <View className="flex-1 justify-center items-center mt-5">
+                    <TouchableOpacity 
+                        className="w-5/6 py-3 px-3 bg-green-600 rounded-lg"
+                        onPress={updateUserInfo}
+                    >
+                        <Text className="self-center text-white font-bold text-base">Apply</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };

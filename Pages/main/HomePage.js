@@ -97,7 +97,7 @@ const HomePage = ({ navigation }) => {
                             [userData.location.coords.latitude, userData.location.coords.longitude]
                         );
                         
-                        console.log("Distance:", distanceBetweenUsers);
+                        //console.log("Distance:", distanceBetweenUsers);
 
                         if (distanceBetweenUsers > userData.distancePreference) {
                             tempArray.splice(i, 1);
