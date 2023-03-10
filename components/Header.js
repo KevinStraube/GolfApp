@@ -11,7 +11,7 @@ const Header = ({title}) => {
                 className="px-2"
                 onPress={() => navigation.goBack()}
             >
-                <Ionicons name='chevron-back-outline' size={34} color="#71C547"/>
+                <Ionicons name='chevron-back-outline' size={34} color="#498E27"/>
             </TouchableOpacity>
 
             <Text className="text-2xl font-bold pl-4">{title}</Text>

@@ -40,7 +40,7 @@ const PasswordResetPage = ({ navigation }) => {
                             onChangeText={(text) => setEmail(text)}
                         />
                         <TouchableOpacity
-                            className="w-4/5 p-3 bg-green-600 mt-5 self-center rounded-lg items-center"
+                            className="w-4/5 p-3 bg-green-700 mt-5 self-center rounded-lg items-center"
                             onPress={resetPassword}
                         >
                             <Text className="text-white text-base font-medium">Reset Password</Text>

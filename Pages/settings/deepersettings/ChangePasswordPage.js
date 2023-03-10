@@ -106,7 +106,7 @@ const ChangePasswordPage = ({ navigation }) => {
                         } 
 
                         <TouchableOpacity 
-                            className="w-4/5 items-center justify-center py-3 bg-lime-500 rounded-lg mt-5"
+                            className="w-4/5 items-center justify-center py-3 bg-green-700 rounded-lg mt-5"
                             onPress={submitNewPassword}
                         >
                             <Text className="text-white font-semibold text-base">Submit</Text>

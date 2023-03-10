@@ -134,7 +134,7 @@ const DeleteAccount = () => {
                         />
                     }
                     <TouchableOpacity 
-                        className="p-2 ml-3 bg-lime-500 rounded-lg mt-2"
+                        className="p-2 ml-3 bg-green-700 rounded-lg mt-2"
                         onPress={reauthenticateUser}
                     >
                         <Ionicons name='checkmark' size={22} color="white"/>

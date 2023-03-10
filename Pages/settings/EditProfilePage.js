@@ -119,7 +119,7 @@ const EditProfilePage = ({navigation}) => {
                 </View>
                 <View className="flex-1 justify-center items-center mt-5">
                     <TouchableOpacity 
-                        className="w-5/6 py-3 px-3 bg-green-600 rounded-lg"
+                        className="w-5/6 py-3 px-3 bg-green-700 rounded-lg"
                         onPress={updateUserInfo}
                     >
                         <Text className="self-center text-white font-bold text-base">Apply</Text>

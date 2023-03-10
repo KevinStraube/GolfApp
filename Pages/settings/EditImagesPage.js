@@ -434,7 +434,7 @@ const EditImagesPage = ({ navigation }) => {
                         </View>
                     </View>
                     <TouchableOpacity 
-                        className="self-center items-center py-3 bg-green-600 rounded-lg mt-10 w-4/6"
+                        className="self-center items-center py-3 bg-green-700 rounded-lg mt-10 w-4/6"
                         style={!firstImage && !secondImage && !thirdImage && !fourthImage ? styles.disabled : styles.enabled}
                         disabled={!firstImage && !secondImage && !thirdImage && !fourthImage}
                         onPress={handleApply}

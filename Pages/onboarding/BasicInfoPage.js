@@ -105,7 +105,7 @@ const BasicInfoPage = ({navigation}) => {
                             />
                         </View>
                         <TouchableOpacity 
-                            className="mt-5 self-end mx-5 rounded-lg bg-green-700 p-3 w-20"
+                            className="mt-5 self-end mx-5 rounded-lg bg-green-700 p-3 w-1/5"
                             disabled={!validate()}
                             onPress={handleNext}
                             style={!firstName || !lastName || date.length < 10 || !gender ? styles.disabled : styles.enabled}

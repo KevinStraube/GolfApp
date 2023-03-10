@@ -40,7 +40,7 @@ const ReauthenticatePage = ({navigation}) => {
                 onChangeText={text => setPassword(text)}
             />
             <TouchableOpacity 
-                className="w-5/6 py-3 px-3 bg-lime-600 rounded-lg self-center mt-12"
+                className="w-5/6 py-3 px-3 bg-green-700 rounded-lg self-center mt-12"
                 onPress={reAuthenticate}
             >
                 <Text className="self-center text-white font-bold text-base">Submit</Text>

@@ -115,34 +115,34 @@ const ImagesPage = ({ navigation }) => {
             <Text className="self-center text-slate-500 mt-3">Please choose at least one</Text>
             <View className="mt-5">
                 <View className="flex-row gap-5 justify-center items-center">
-                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-28 w-28" onPress={pickFirstImage}>
-                        {firstImage && <Image source={{ uri: firstImage.uri}} className="w-28 h-28 rounded-lg"/>}
+                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-32 w-32" onPress={pickFirstImage}>
+                        {firstImage && <Image source={{ uri: firstImage.uri}} className="w-32 h-32 rounded-lg"/>}
                         {!firstImage && <AntDesign name='plus' size={34} color="gray" />}
                     </TouchableOpacity>
-                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-28 w-28" onPress={pickSecondImage}>
-                        {secondImage && <Image source={{ uri: secondImage.uri}} className="w-28 h-28 rounded-lg"/>}
+                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-32 w-32" onPress={pickSecondImage}>
+                        {secondImage && <Image source={{ uri: secondImage.uri}} className="w-32 h-32 rounded-lg"/>}
                         {!secondImage && <AntDesign name='plus' size={34} color="gray" />}
                     </TouchableOpacity>
                 </View>
                 <View className="flex-row justify-center items-center gap-5 mt-1">
-                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-28 w-28" onPress={pickThirdImage}>
-                        {thirdImage && <Image source={{ uri: thirdImage.uri}} className="w-28 h-28 rounded-lg"/>}
+                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-32 w-32" onPress={pickThirdImage}>
+                        {thirdImage && <Image source={{ uri: thirdImage.uri}} className="w-32 h-32 rounded-lg"/>}
                         {!thirdImage && <AntDesign name='plus' size={34} color="gray" />}
                     </TouchableOpacity>
-                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-28 w-28" onPress={pickFourthImage}>
-                        {fourthImage && <Image source={{ uri: fourthImage.uri}} className="w-28 h-28 rounded-lg"/>}
+                    <TouchableOpacity className="justify-center items-center border-dashed border-2 border-slate-400 rounded-lg h-32 w-32" onPress={pickFourthImage}>
+                        {fourthImage && <Image source={{ uri: fourthImage.uri}} className="w-32 h-32 rounded-lg"/>}
                         {!fourthImage && <AntDesign name='plus' size={34} color="gray" />}
                     </TouchableOpacity>
                 </View>
             </View>
             <View className="flex-row justify-around">
                 <TouchableOpacity 
-                    className="mt-10 rounded-lg bg-lime-500 p-3 w-20"
+                    className="mt-10 rounded-lg bg-green-700 p-3 w-20"
                     onPress={() => navigation.navigate('Location')}>
                     <Text className="text-white font-semibold self-center">Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    className="mt-10 rounded-lg bg-lime-500 p-3 w-20"
+                    className="mt-10 rounded-lg bg-green-700 p-3 w-20"
                     disabled={disabled}
                     style={disabled ? styles.disabled : styles.enabled}
                     onPress={handleNext}

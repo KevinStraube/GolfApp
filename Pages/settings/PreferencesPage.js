@@ -142,7 +142,7 @@ const PreferencesPage = ({navigation}) => {
             </View>
             <View className="flex-1 justify-center items-center">
                 <TouchableOpacity 
-                    className="w-5/6 py-3 px-3 bg-lime-600 rounded-lg"
+                    className="w-5/6 py-3 px-3 bg-green-700 rounded-lg"
                     disabled={!maleCheckBox && !femaleCheckBox && !otherCheckBox}
                     style={!maleCheckBox && !femaleCheckBox && !otherCheckBox ? styles.disabled : styles.enabled}
                     onPress={handleNext}

@@ -72,29 +72,23 @@ const NotificationPage = ({ navigation }) => {
             <Text className="text-xl font-semibold mt-8 self-center">Never miss an opportunity to find your next golf partner</Text>
             <View className="flex-row mt-8 justify-center space-x-3 ">
                 <TouchableOpacity 
-                    className="w-34 bg-lime-300 p-3 rounded-full"
+                    className="w-34 bg-green-700 p-3 rounded-full"
                     onPress={handleNotifications}
                     >
-                    <Text>Enable Notifications</Text>
+                    <Text className="text-white">Enable Notifications</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    className="w-34 bg-lime-300 p-3 rounded-full"
+                    className="w-34 bg-green-700 p-3 rounded-full"
                     onPress={handleDisableNotifications}
                     >
-                    <Text>Disable Notifications</Text>
+                    <Text className="text-white">Disable Notifications</Text>
                 </TouchableOpacity>
             </View>
-            <View className="flex-row justify-around">
+            <View className="flex-row justify-between mx-5">
                 <TouchableOpacity 
-                    className="mt-60 rounded-lg bg-lime-500 p-3 w-20"
-                    onPress={() => navigation.navigate('BasicInfo')}>
+                    className="mt-60 rounded-lg bg-green-700 p-3 w-1/5"
+                    onPress={() => navigation.goBack()}>
                     <Text className="text-white font-semibold self-center">Back</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                        className="mt-60 rounded-lg bg-lime-500 p-3 w-20"
-                        onPress={() => navigation.navigate('Location')}
-                    >
-                    <Text className="text-white font-semibold self-center">Next</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

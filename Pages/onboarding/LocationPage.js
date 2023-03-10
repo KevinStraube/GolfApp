@@ -2,8 +2,6 @@ import { ActivityIndicator, Alert, SafeAreaView, StyleSheet, Text, TouchableOpac
 import React, { useEffect, useRef, useState } from 'react'
 import * as Location from 'expo-location';
 import { updateDoc, doc, getFirestore } from 'firebase/firestore';
-import { async } from '@firebase/util';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingPage from '../main/LoadingPage';
 
@@ -30,21 +28,6 @@ async function uploadLocation(uid, city, location, reverseLocation) {
         console.log('Error uploading location data to database', e);
     }
 }  
-
-/*
-async function registerForLocationAsync() {
-    let location;
-
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-        console.log("status not shown as granted");
-        return;
-    }
-
-    location = await Location.getCurrentPositionAsync({});
-    return location;
-}
-*/
 
 const LocationPage = ({ navigation }) => {
     const [location, setLocation] = useState('');
@@ -87,25 +70,25 @@ const LocationPage = ({ navigation }) => {
         <SafeAreaView>
             <Text className="text-xl font-semibold mt-8 self-center">Where do you live?</Text>
             <TouchableOpacity 
-                className="mt-10 self-center bg-lime-500 py-3 px-4 rounded-full"
+                className="mt-10 self-center bg-green-700 py-3 px-4 rounded-full"
                 disabled={city.length > 0}
-                style={city.length > 0 ? styles.disabled : styles.enabled}
+                style={city.length > 0 || loading ? styles.disabled : styles.enabled}
                 onPress={handleLocationEnable}
                 >
                 <Text className="text-white font-semibold self-center">Enable Location</Text>
             </TouchableOpacity>
             {loading && (
-                <ActivityIndicator size="large" className="self-center" />
+                <ActivityIndicator size="large" className="self-center mt-5" />
             )}
             <Text className="text-xl self-center mt-7">{city}</Text>
             <View className="flex-row justify-around">
                 <TouchableOpacity 
-                    className="mt-60 rounded-lg bg-lime-500 p-3 w-20"
+                    className="mt-60 rounded-lg bg-green-700 p-3 w-20"
                     onPress={() => navigation.navigate('Notifications')}>
                     <Text className="text-white font-semibold self-center">Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                    className="mt-60 rounded-lg bg-lime-500 p-3 w-20"
+                    className="mt-60 rounded-lg bg-green-700 p-3 w-20"
                     disabled={location.length < 1}
                     style={location.length < 1 ? styles.disabled : styles.enabled}
                     onPress={() => navigation.navigate('Images')}

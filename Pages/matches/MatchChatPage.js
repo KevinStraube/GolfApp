@@ -86,13 +86,13 @@ const MatchChatPage = () => {
                 className="flex-row justify-between items-center border-t border-gray-200 px-5 py-2"
             >
                 <TextInput
-                    className="h-10 text-base"
+                    className="h-10 text-base w-2/3"
                     placeholder='Send Message...'
                     onChangeText={setInput}
                     onSubmitEditing={sendMessage}
                     value={input}
                 />
-                <Button title="Send" color="#71C547" onPress={sendMessage}/>
+                <Button title="Send" color="#498E27" onPress={sendMessage}/>
             </View>
         </KeyboardAvoidingView>
     );
