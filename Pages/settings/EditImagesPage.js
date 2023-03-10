@@ -10,13 +10,20 @@ import * as ImagePicker from 'expo-image-picker';
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const EditImagesPage = ({ navigation }) => {
+    //Array of image names selected by the user on the screen (includes previous images)
     const [imageArray, setImageArray] = useState([]);
+    //Array of previous image names (to be compared with new list at the end for image deletion)
     const [originalImageNames, setOriginalImageNames] = useState([]);
+    //Array of full image URLs (this will contain the same images as imageArray)
     const [urlArray, setUrlArray] = useState([]);
+    
+    //Variable for each potential image 
     const [firstImage, setFirstImage] = useState(null);
     const [secondImage, setSecondImage] = useState(null);
     const [thirdImage, setThirdImage] = useState(null);
     const [fourthImage, setFourthImage] = useState(null);
+
+    //Loading state while data is being fetched
     const [loading, setLoading] = useState(true);
 
     const { user } = useAuth();
@@ -25,14 +32,17 @@ const EditImagesPage = ({ navigation }) => {
         if (user) {
             const getData = async () => {
                 try {
+                    //Get user's data from database
                     const docSnap = await getDoc(doc(firestore, 'users', user.uid));
                     
                     if (docSnap.exists()) {
                         const data = docSnap.data();
+                        //Populate three arrays with the user's image data
                         populateImageArray(data.images);
                         getOldImageNames(data.images);
                         populateUrlArray(data.images);
 
+                        //Assign image variables based on if they exist (minimum one must exist)
                         setFirstImage(data.images[0]);
                         if (data.images[1]) {
                             setSecondImage(data.images[1]);
@@ -56,6 +66,7 @@ const EditImagesPage = ({ navigation }) => {
     }, [user]);
 
     const selectImage = async (index) => {
+        //Launch image picker when user presses one of the four image buttons
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
@@ -63,6 +74,12 @@ const EditImagesPage = ({ navigation }) => {
             quality: 0,
         });
 
+        /**
+         * When a picture is chosen, based on the index:
+         * - Assign the image with random ID and uri
+         * - Update the image array
+         * - Update the URL array
+         */
         if (!result.canceled) {
             if (index === 0) {
                 setFirstImage({id: Math.random(), url: result.assets[0].uri});
@@ -87,10 +104,14 @@ const EditImagesPage = ({ navigation }) => {
         }
     }
 
+    //Populate original image names. Runs on component mount
     const getOldImageNames = (images) => {
+        //Temporary array that can be easily manipulated before updating the state array
         var imageNames = [];
 
+        //Loop through existing image array
         for (let i = 0; i < images.length; i++) {
+            //Get substring of name from full URL
             const name = images[i].url.substring(images[i].url.lastIndexOf('/')+1, images[i].url.lastIndexOf('?'));
             imageNames.push(name);
         }
@@ -98,14 +119,19 @@ const EditImagesPage = ({ navigation }) => {
         setOriginalImageNames(imageNames);
     }
 
+    //Populate image array. Runs on component mount
     const populateImageArray = (images) => {
+        //Temporary array that can be easily manipulated before updating the state array
         var imageNames = [];
 
+        //Loop through existing image array
         for (let i = 0; i < images.length; i++) {
+            //Get substring of name from full URL
             const name = images[i].url.substring(images[i].url.lastIndexOf('/')+1, images[i].url.lastIndexOf('?'));
             imageNames.push(name);
         }
 
+        //Populate array with empty strings if length is less than 4. This makes it easy to maintain index positions later
         while (imageNames.length < 4) {
             imageNames.push("");
         }
@@ -113,13 +139,18 @@ const EditImagesPage = ({ navigation }) => {
         setImageArray(imageNames);
     }
 
+    //Populate URL array. Runs on component mount
     const populateUrlArray = (images) => {
+        //Temporary array that can be easily manipulated before updating the state array
         var imageUrls = [];
 
+        //Loop through existing image array
         for (let i = 0; i < images.length; i++) {
+            //Add full URL to the temp array
             imageUrls.push(images[i].url);
         }
 
+        //Populate array with empty strings if length is less than 4. This makes it easy to maintain index positions later
         while (imageUrls.length < 4) {
             imageUrls.push("");
         }
@@ -127,8 +158,11 @@ const EditImagesPage = ({ navigation }) => {
         setUrlArray(imageUrls);
     }
 
+    //Update imageArray when a new image is selected
     const newImageArray = (index, newImage) => {
+        //Update array directly in state
         const replacementImageArray = imageArray.map((image, i) => {
+            //Replace current value with new image name
             if (i === index) {
                 return newImage.substring(newImage.lastIndexOf('/')+1, newImage.lastIndexOf('.'));
             } else {
@@ -139,8 +173,11 @@ const EditImagesPage = ({ navigation }) => {
         setImageArray(replacementImageArray);
     }
 
+    //Update URL array when a new image is selected
     const updateUrlArray = (index, newImage) => {
+        //Update array directly in state
         const replacementUrlArray = urlArray.map((image, i) => {
+            //Replace current value with new image URL
             if (i === index) {
                 return newImage;
             } else {
@@ -151,7 +188,9 @@ const EditImagesPage = ({ navigation }) => {
         setUrlArray(replacementUrlArray);
     }
 
+    //Remove image from array when it is cleared by the user
     const removeImageFromArray = (index) => {
+        //Update image array directly in state
         const newImageArray = imageArray.map((image, i) => {
             if (i === index) {
                 return "";
@@ -161,6 +200,7 @@ const EditImagesPage = ({ navigation }) => {
         });
         setImageArray(newImageArray);
 
+        //Update URL array directly in state
         const newUrlArray = urlArray.map((image, i) => {
             if (i === index) {
                 return "";
@@ -171,6 +211,7 @@ const EditImagesPage = ({ navigation }) => {
         setUrlArray(newUrlArray);
     }
 
+    //Show alert box when user long-presses any image button
     const clearImage = (index) => {
         Alert.alert("Clear Image?","",[
             {
@@ -201,9 +242,11 @@ const EditImagesPage = ({ navigation }) => {
         ]);
     }
 
+    //Delete old images from storage that user has replaced
     const deleteOldImages = (filteredArray) => {
+        //Loop through original images 
         for (let i = 0; i < originalImageNames.length; i++) {
-            console.log(originalImageNames[i]);
+            //If original image is not in the new image array, delete it
             if (!filteredArray.includes(originalImageNames[i])) {
                 const imageRef = ref(storage, originalImageNames[i]);
                 deleteObject(imageRef)
@@ -217,13 +260,16 @@ const EditImagesPage = ({ navigation }) => {
         }
     }
 
+    //Upload new images to both storage and database
     const uploadNewImages = async (filteredArray) => {
         const docRef = doc(firestore, 'users', user.uid);
+        //Get user's data
         await getDoc(docRef)
         .then((docSnap) => {
             //Convert all new image URLs to names. Compare database names to new list, delete from database if name does not exist in new list
             var filteredArrayNames = [];
 
+            //Get the name substring from the URL array. URL may be a firebase URL or a local image URL. Get substring accordingly
             for (let i = 0; i < filteredArray.length; i++) {
                 if (filteredArray[i].includes('firebase')) {
                     filteredArrayNames.push(filteredArray[i].substring(filteredArray[i].lastIndexOf('/')+1), filteredArray[i].lastIndexOf('?'));
@@ -234,10 +280,13 @@ const EditImagesPage = ({ navigation }) => {
 
             var currentImageNames = [];
 
+            //Get the name substring from the database
             for (let i = 0; i < docSnap.data().images.length; i++) {
                 const currentImage = docSnap.data().images[i].url;
+                //Only firebase URLs exist in the database
                 const onlyName = currentImage.substring(currentImage.lastIndexOf('/')+1, currentImage.lastIndexOf('?'));
 
+                //If old image does not exist in the new array, remove it from the database otherwise add it to current array
                 if (!filteredArrayNames.includes(onlyName)) {
                     updateDoc(docRef, {
                         images: arrayRemove({
@@ -250,7 +299,9 @@ const EditImagesPage = ({ navigation }) => {
                 }
             }
 
+            //Loop through final filtered array
             filteredArray.map(async (image) => {
+                //Get the name substring from the URL array. URL may be a firebase URL or a local image URL. Get substring accordingly
                 let imageName;
                 if (image.includes('firebase')) {
                     imageName = image.substring(image.lastIndexOf('/')+1, image.lastIndexOf('?'));
@@ -258,11 +309,13 @@ const EditImagesPage = ({ navigation }) => {
                     imageName = image.substring(image.lastIndexOf('/')+1, image.lastIndexOf('.'));
                 }
 
+                //If image does not already exist
                 if (!currentImageNames.includes(imageName)) {
                     const imageRef = ref(storage, imageName);
                     const response = await fetch(image);
                     const blob = await response.blob();
-        
+                    
+                    //Upload image to storage, then get the download URL, and finally update database to include the new image object
                     try {
                         uploadBytes(imageRef, blob)
                             .then((snapshot) => {
@@ -294,21 +347,25 @@ const EditImagesPage = ({ navigation }) => {
         })
     }
 
+    //User presses apply button
     const handleApply = () => {
         var tempUrlArray = urlArray;
         
         //Remove empty strings from arrays if any exist
-        
         const filteredImageArray = imageArray.filter(elem => elem !== "");
         const filteredUrlArray = tempUrlArray.filter(elem => elem !== "");
         
+        //Call function to delete old images
         deleteOldImages(filteredImageArray);
         
+        //Call function to upload new images
         uploadNewImages(filteredUrlArray);
         
+        //Go back to main settings menu
         navigation.goBack();
         navigation.goBack();
 
+        //Alert the user that the process has completed
         Alert.alert("Photos Updated");
         
     }

@@ -3,31 +3,10 @@ import { View, Text, SafeAreaView, Button, Image, FlatList, TouchableOpacity } f
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useAuth } from "../../hooks/useAuth";
 import LoadingPage from './LoadingPage';
-import { firestore, messaging } from "../../firebase";
+import { firestore } from "../../firebase";
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
-import { sendPushNotification } from "../../backend/NotificationFunctions";
-
-//Function to grab user's profile data 
-async function getData(uid) {
-    try {
-        const docRef = doc(firestore, 'users', uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            console.log('Successfully retrieved data');
-            return data;
-        }
-    } catch (e) {
-        console.log('Error getting doc from database', e);
-    }
-}
 
 const ProfilePage = ({navigation}) => {
-    /**
-     * All required user data
-     * Change this to single state variable for all data
-     */
     const [userData, setUserData] = useState(null);
     const [imageData, setImageData] = useState([]);
 
