@@ -6,13 +6,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { async } from "@firebase/util";
 
 const Onboarding = ({ navigation }) => {
-    //CHANGE NAVIGATION BACK TO BASIC INFO
     return (
         <SafeAreaView className="flex-1 items-center">
             <Text className="text-2xl font-semibold mt-12">Welcome to Clubhouse Golf!</Text>
             <Text className="text-xl font-semibold my-12">We just need to ask a few questions</Text>
             <TouchableOpacity 
-                className="bg-lime-500 m-2 p-3 rounded w-20"
+                className="bg-green-700 p-3 rounded-lg w-1/5"
                 onPress={() => navigation.navigate('BasicInfo')}
                 >
                 <Text className="self-center text-white font-semibold">Next</Text>

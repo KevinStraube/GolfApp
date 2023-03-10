@@ -77,7 +77,7 @@ const LoginPage = ({navigation}) => {
                                 <Text className="underline">Forgot Password?</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                className="bg-green-600 py-3 px-6 w-4/5 rounded-lg items-center self-center mt-10" 
+                                className="bg-green-700 py-3 px-6 w-4/5 rounded-lg items-center self-center mt-10" 
                                 onPress={handleLogin}
                                 value={password}
                             >

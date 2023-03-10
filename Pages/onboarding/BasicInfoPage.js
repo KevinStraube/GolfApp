@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import MaskInput, { Masks } from "react-native-mask-input";
 import { Dropdown } from "react-native-element-dropdown";
 import { setDoc, collection, getFirestore, serverTimestamp, doc } from 'firebase/firestore';
@@ -50,8 +50,12 @@ const BasicInfoPage = ({navigation}) => {
 
     const handleNext = () => {
         let age = calculate_age(date);
-        addNewUser(user.uid, firstName, lastName, date, gender, age);
-        navigation.navigate('PreferencesOnboarding');
+        if (age < 18) {
+            Alert.alert("You must be at least 18 years old to use Clubhouse Golf");
+        } else {
+            addNewUser(user.uid, firstName, lastName, date, gender, age);
+            navigation.navigate('PreferencesOnboarding');
+        }
     }
 
     return (
@@ -59,45 +63,58 @@ const BasicInfoPage = ({navigation}) => {
             <KeyboardAvoidingView className="flex-1">
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View className="flex-1">
-                        <Text className="self-center font-semibold text-2xl mt-4">Basic Info</Text>
-                        <Text className="mt-10 mx-5">First Name</Text>
-                        <TextInput 
-                            className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2"
-                            onChangeText={text => setFirstName(text)}
-                        />
-                        <Text className="mt-8 mx-5">Last Name</Text>
-                        <TextInput 
-                            className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2" 
-                            onChangeText={text => setLastName(text)}
-                        />
-                        <Text className="mt-8 mx-5">Date of Birth (mm/dd/yyyy)</Text>
-                        <MaskInput
-                            value={date}
-                            onChangeText={setDate}
-                            mask={Masks.DATE_MMDDYYYY}
-                            keyboardType="numeric"
-                            className="text-lg p-2 mx-3"
-                        />
-                        <Text className="mt-8 mx-5">Gender</Text>
-                        <Dropdown
-                            data={genderData}
-                            value={gender}
-                            onChange={item => {
-                                setGender(item.value);
-                            }}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select gender"
-                            className="bg-white mx-5 w-1/3"
-                        />
+                        <View className="border-b border-slate-300 pb-3">
+                            <Text className="self-center font-semibold text-2xl mt-4">About You</Text>
+                        </View>
+                        <View className="border-b border-slate-300 pb-3">
+                            <Text className="mt-4 mx-5">First Name</Text>
+                            <TextInput 
+                                className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2"
+                                onChangeText={text => setFirstName(text)}
+                            />
+                        </View>
+                        <View className="border-b border-slate-300 pb-3">
+                            <Text className="mt-4 mx-5">Last Name</Text>
+                            <TextInput 
+                                className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2" 
+                                onChangeText={text => setLastName(text)}
+                            />
+                        </View>
+                        <View className="border-b border-slate-300 pb-3">
+                            <Text className="mt-4 mx-5">Date of Birth (mm/dd/yyyy)</Text>
+                            <MaskInput
+                                value={date}
+                                onChangeText={setDate}
+                                mask={Masks.DATE_MMDDYYYY}
+                                keyboardType="numeric"
+                                className="text-lg p-2 mx-3"
+                            />
+                        </View>
+                        <View className="border-b border-slate-300 pb-5">
+                            <Text className="mt-4 mx-5">Gender</Text>
+                            <Dropdown
+                                data={genderData}
+                                value={gender}
+                                onChange={item => {
+                                    setGender(item.value);
+                                }}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select gender"
+                                className="bg-white mx-5 w-1/3"
+                            />
+                        </View>
                         <TouchableOpacity 
-                            className="mt-8 self-end mx-5 rounded-lg bg-lime-500 p-3 w-20"
+                            className="mt-5 self-end mx-5 rounded-lg bg-green-700 p-3 w-20"
                             disabled={!validate()}
                             onPress={handleNext}
                             style={!firstName || !lastName || date.length < 10 || !gender ? styles.disabled : styles.enabled}
                             >
                             <Text className="text-white font-semibold self-center">Next</Text>
                         </TouchableOpacity>
+                        <View className="flex-1 items-center justify-end my-4 mx-5">
+                            <Text className="text-slate-600">Please ensure your details are correct. This information cannot be changed later.</Text>
+                        </View>
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>

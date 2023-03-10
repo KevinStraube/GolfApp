@@ -131,7 +131,7 @@ const SignUpPage = ({navigation}) => {
                         !emailFields &&
                         <View className="flex-auto justify-center items-center gap-3">
                             <TouchableOpacity
-                                    className="bg-green-600 py-5 self-center rounded-full w-2/3 items-center" 
+                                    className="bg-green-700 py-5 self-center rounded-full w-2/3 items-center" 
                                     onPress={showEmailInfo}
                                 >
                                     <Text className="text-white font-medium text-base">Sign up with email</Text>
@@ -178,7 +178,7 @@ const SignUpPage = ({navigation}) => {
                                     secureTextEntry
                                 />
                                 <TouchableOpacity
-                                    className="bg-lime-500 p-3 self-center rounded-lg" 
+                                    className="bg-green-700 p-3 self-center rounded-lg" 
                                     onPress={handleSignUp}
                                 >
                                     <Text className="text-white font-medium text-base">Create Account</Text>
