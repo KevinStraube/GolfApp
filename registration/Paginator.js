@@ -6,7 +6,7 @@ const Paginator = ({ data, scrollX }) => {
 
     return (
         <View className="flex-row h-10">
-            {data.map((_, i) => {
+            {data?.map((_, i) => {
                 //Calculate the indices of the previous, current and next dots
                 const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
                 
@@ -26,7 +26,7 @@ const Paginator = ({ data, scrollX }) => {
                     extrapolate: 'clamp',
                 })
 
-                return <Animated.View className="h-2 rounded-full bg-slate-500 mx-2 w-2" style={{opacity}} key={i.toString()} />
+                return <Animated.View className="h-2 rounded-full bg-white mx-2 w-2" style={{opacity}} key={i.toString()} />
             })}
         </View>
     );

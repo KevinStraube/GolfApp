@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, StyleSheet, Alert, Button } from "react-native";
+import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, StyleSheet, Alert, Button, Animated } from "react-native";
 import { auth } from '../../firebase';
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
@@ -7,6 +7,7 @@ import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, wher
 import generateId from '../../lib/generateId';
 import { distanceBetween } from "geofire-common";
 import { sendPushNotification } from "../../backend/NotificationFunctions";
+import Paginator from "../../registration/Paginator";
 
 const db = getFirestore();
 
@@ -16,6 +17,10 @@ const HomePage = ({ navigation }) => {
     const [imageData, setImageData] = useState([]);
     const [userData, setUserData] = useState(null);
     const [unfilteredData, setUnfilteredData] = useState([]);
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const slidesRef = useRef(null);
 
     const { user } = useAuth();
 
@@ -205,6 +210,24 @@ const HomePage = ({ navigation }) => {
         setIndex(index + 1);
     }; 
 
+    const viewableItemsChanged = useRef(({ viewableItems }) => {
+        setCurrentIndex(viewableItems[0].index);
+    }).current;
+
+    const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+    const scrollTo = async () => {
+        if (currentIndex < imageData.length - 1) {
+            slidesRef.current.scrollToIndex({ index: currentIndex + 1});
+        } else {
+            try {
+                await AsyncStorage.setItem('@viewedOnboarding', 'true');
+            } catch (error) {
+                console.log("Error @setItem: ", error);
+            }
+        }
+    };
+
     return profiles?.length <= index ? (
         <SafeAreaView className="flex-1 justify-center items-center">
             <Text className="text-2xl font-bold my-3">No more profiles!</Text>
@@ -212,96 +235,109 @@ const HomePage = ({ navigation }) => {
         </SafeAreaView>
     ) : (
         <SafeAreaView className="flex-1">
-                <Text className="mx-5 mt-3 font-bold text-2xl">{profiles[index]?.firstName}</Text>
-                <View className="flex justify-center items-center mt-3 self-center rounded-lg" style={{width: 350, height: 260}}>
-                    <FlatList
-                        data={imageData}
-                        keyExtractor={item => item.id}
-                        horizontal
-                        pagingEnabled
-                        showsHorizontalScrollIndicator={false}
-                        renderItem={(item) => {
-                            return (
-                                <Image 
-                                    className="rounded-lg" 
-                                    source={{uri: item.item.url}}
-                                    style={{width:350, height:260}}
-                                />
-                            )
-                        }}
-                    />
-                </View>
-
-                <View className="flex rounded-lg mt-3 bg-white self-center" style={{width: '90%'}}>
-                    <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
-                        <View className="flex-row items-center">
-                            <MaterialCommunityIcons name='cake-variant-outline' size={24} color="black" />
-                            <Text className="text-base mx-4">{profiles[index]?.age}</Text>
-                        </View>
-
-                        <View className="border-r border-slate-300 h-full">
-                            <Text></Text>
-                        </View>
-
-                        <View className="flex-row items-center ml-4">
-                            <AntDesign name='user' size={24} color="black" />
-                            <Text className="text-base mx-4">{profiles[index]?.gender}</Text>
-                        </View>
-                    </View>
-
-                    <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
-                        <View className="flex-row items-center">
-                            <MaterialIcons name='sports-golf' size={24} color="black" />
-                            <Text className="text-base mx-4">{profiles[index]?.playStyle}</Text>
-                        </View>
-
-                        <View className="border-r border-slate-300 h-full">
-                            <Text></Text>
-                        </View>
-
-                        <View className="flex-row items-center ml-4">
-                            <Text className="font-bold">HCP: </Text>
-                            <Text className="text-base mx-4">{profiles[index]?.handicap}</Text>
-                        </View>
-                    </View>
-
-                    <View className="flex-row items-center justify-center mx-4 py-3 border-b border-slate-300">
-                        <Ionicons name='location-outline' size={24} color="black" />
-                        <Text className="text-base mx-4">{profiles[index]?.city}</Text>
-                    </View>
-
-                    { 
-                        profiles[index]?.course &&
-                        <View className="flex-row items-center justify-center px-3 py-3 border-b border-slate-300 mx-4">
-                            <Ionicons name='golf-outline' size={24} color="black" />
-                            <Text className="text-base mx-4">{profiles[index]?.course}</Text>
-                        </View>
-                    }
-
-                    <View className="py-3 mx-4">
-                        <Text className="font-bold">What are you doing after a round?</Text>
-                        <Text className="mt-2">{profiles[index]?.afterRound}</Text>
-                    </View>
-
-                </View>
+            <View className="self-center">
+                <Image source={require('../../assets/TransparentLogo.png')} className="w-9 h-9"/>
+            </View>
+            <Text className="mx-5 font-bold text-2xl">{profiles[index]?.firstName}</Text>
+            <View className="flex justify-center items-center mt-3 self-center rounded-lg" style={{width: 350, height: 260}}>
+                <FlatList
+                    data={imageData}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={(item) => {
+                        return (
+                            <Image 
+                                className="rounded-lg" 
+                                source={{uri: item.item.url}}
+                                style={{width:350, height:260}}
+                            />
+                        )
+                    }}
+                    onScroll={Animated.event([{nativeEvent: {contentOffset: { x: scrollX } } }], {
+                        useNativeDriver: false,
+                    })}
+                    onViewableItemsChanged={viewableItemsChanged}
+                    viewabilityConfig={viewConfig}
+                    ref={slidesRef}
+                />
+            </View>
             
-                <View className="flex-1 justify-end mb-5">
-                    <View className="flex-row justify-between mx-5">
-                        <TouchableOpacity 
-                            className="items-center justify-center rounded-full w-16 h-16 bg-red-300"
-                            onPress={swipeLeft}
-                        >
-                            <Entypo name="cross" size={30} color="red"/>
-                        </TouchableOpacity>
+            <View style={{marginTop: -20, marginBottom: -10}} className="self-center">
+                <Paginator data={imageData} scrollX={scrollX}/>
+            </View>
 
-                        <TouchableOpacity 
-                            className="items-center justify-center rounded-full w-16 h-16 bg-green-300"
-                            onPress={swipeRight}
-                        >
-                            <Ionicons name="checkmark" size={30} color="green"/>
-                        </TouchableOpacity>
+            <View className="flex rounded-lg bg-white self-center" style={{width: '90%'}}>
+                <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
+                    <View className="flex-row items-center">
+                        <MaterialCommunityIcons name='cake-variant-outline' size={24} color="black" />
+                        <Text className="text-base mx-4">{profiles[index]?.age}</Text>
+                    </View>
+
+                    <View className="border-r border-slate-300 h-full">
+                        <Text></Text>
+                    </View>
+
+                    <View className="flex-row items-center ml-4">
+                        <AntDesign name='user' size={24} color="black" />
+                        <Text className="text-base mx-4">{profiles[index]?.gender}</Text>
                     </View>
                 </View>
+
+                <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
+                    <View className="flex-row items-center">
+                        <MaterialIcons name='sports-golf' size={24} color="black" />
+                        <Text className="text-base mx-4">{profiles[index]?.playStyle}</Text>
+                    </View>
+
+                    <View className="border-r border-slate-300 h-full">
+                        <Text></Text>
+                    </View>
+
+                    <View className="flex-row items-center ml-4">
+                        <Text className="font-bold">HCP: </Text>
+                        <Text className="text-base mx-4">{profiles[index]?.handicap}</Text>
+                    </View>
+                </View>
+
+                <View className="flex-row items-center justify-center mx-4 py-3 border-b border-slate-300">
+                    <Ionicons name='location-outline' size={24} color="black" />
+                    <Text className="text-base mx-4">{profiles[index]?.city}</Text>
+                </View>
+
+                { 
+                    profiles[index]?.course &&
+                    <View className="flex-row items-center justify-center px-3 py-3 border-b border-slate-300 mx-4">
+                        <Ionicons name='golf-outline' size={24} color="black" />
+                        <Text className="text-base mx-4">{profiles[index]?.course}</Text>
+                    </View>
+                }
+
+                <View className="py-3 mx-4">
+                    <Text className="font-bold">What are you doing after a round?</Text>
+                    <Text className="mt-2">{profiles[index]?.afterRound}</Text>
+                </View>
+
+            </View>
+        
+            <View className="flex-1 justify-end mb-5">
+                <View className="flex-row justify-between mx-5">
+                    <TouchableOpacity 
+                        className="items-center justify-center rounded-full w-16 h-16 bg-red-300"
+                        onPress={swipeLeft}
+                    >
+                        <Entypo name="cross" size={30} color="red"/>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        className="items-center justify-center rounded-full w-16 h-16 bg-green-300"
+                        onPress={swipeRight}
+                    >
+                        <Ionicons name="checkmark" size={30} color="green"/>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </SafeAreaView>
     );
 };
