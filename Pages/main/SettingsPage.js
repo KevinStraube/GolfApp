@@ -65,7 +65,7 @@ const SettingsPage = () => {
             renderItem={({item}) => <SettingsRow title={item.title} icon={item.icon} page={item.page}/>}
           />
           <TouchableOpacity 
-            className="bg-white py-4 mx-4 rounded-lg"
+            className="bg-white py-4 mx-4 rounded-lg border border-slate-400"
             onPress={logout}
           >
             <Text className="text-red-500 font-semibold text-lg text-center">Logout</Text>
