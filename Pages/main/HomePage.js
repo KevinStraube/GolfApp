@@ -94,6 +94,9 @@ const HomePage = ({ navigation }) => {
                 else if (tempArray[i].handicap < userData.handicapRange[0] || tempArray[i].handicap > userData.handicapRange[1]) {
                     tempArray.splice(i, 1);
                 } 
+                else if (tempArray[i]?.paused === true) {
+                    tempArray.splice(i, 1);
+                }
                 //Check if location is in specified range
                 else {
                     if (tempArray[i]?.location.coords.latitude && tempArray[i]?.location.coords.longitude) {
