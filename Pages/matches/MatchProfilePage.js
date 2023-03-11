@@ -1,15 +1,20 @@
-import { View, Text, SafeAreaView, FlatList, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, SafeAreaView, FlatList, Image, Animated } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRoute } from '@react-navigation/native';
 import Header from '../../components/Header';
 import { useAuth } from '../../hooks/useAuth';
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Paginator from '../../registration/Paginator';
 
 const MatchProfilePage = () => {
     const {params} = useRoute();
     const {matchDetails} = params;
     const [profile, setProfile] = useState(null);
     const { user } = useAuth();
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const slidesRef = useRef(null);
 
     useEffect(() => {
         /*
@@ -20,12 +25,20 @@ const MatchProfilePage = () => {
             if (matchDetails?.usersMatched[0] === user.uid) {
                 const matchedUserID = matchDetails.usersMatched[1];
                 setProfile(matchDetails.users[matchedUserID]);
+                console.log(matchDetails.users[matchedUserID]);
             } else {
                 const matchedUserID = matchDetails.usersMatched[0];
                 setProfile(matchDetails.users[matchedUserID]);
+                console.log(matchDetails.users[matchedUserID]);
             }
         }
     }, [user]);
+
+    const viewableItemsChanged = useRef(({ viewableItems }) => {
+        setCurrentIndex(viewableItems[0].index);
+    }).current;
+
+    const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
     return (
         <SafeAreaView className="flex-1">
@@ -46,9 +59,19 @@ const MatchProfilePage = () => {
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
+                    onScroll={Animated.event([{nativeEvent: {contentOffset: { x: scrollX } } }], {
+                        useNativeDriver: false,
+                    })}
+                    onViewableItemsChanged={viewableItemsChanged}
+                    viewabilityConfig={viewConfig}
+                    ref={slidesRef}
                 />
             </View>
             
+            <View style={{marginTop: -20, marginBottom: -10}} className="self-center">
+                <Paginator data={profile?.images} scrollX={scrollX}/>
+            </View>
+
             <View className="flex rounded-lg mt-3 bg-white self-center" style={{width: '90%'}}>
                 <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
                     <View className="flex-row items-center">

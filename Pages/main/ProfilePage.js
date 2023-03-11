@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, SafeAreaView, Button, Image, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, SafeAreaView, Button, Image, FlatList, TouchableOpacity, Animated } from "react-native";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useAuth } from "../../hooks/useAuth";
 import LoadingPage from './LoadingPage';
 import { firestore } from "../../firebase";
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
+import Paginator from "../../registration/Paginator";
 
 const ProfilePage = ({navigation}) => {
     const [userData, setUserData] = useState(null);
     const [imageData, setImageData] = useState([]);
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const slidesRef = useRef(null);
 
     const { user } = useAuth();
     
@@ -29,7 +34,11 @@ const ProfilePage = ({navigation}) => {
         } 
     }, [user]);
 
-    /* POTENTIALLY ADD PAGINATOR TO FLATLIST */
+    const viewableItemsChanged = useRef(({ viewableItems }) => {
+        setCurrentIndex(viewableItems[0].index);
+    }).current;
+
+    const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
     return !user || !userData ? <LoadingPage /> 
         : (
@@ -56,8 +65,19 @@ const ProfilePage = ({navigation}) => {
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
+                    onScroll={Animated.event([{nativeEvent: {contentOffset: { x: scrollX } } }], {
+                        useNativeDriver: false,
+                    })}
+                    onViewableItemsChanged={viewableItemsChanged}
+                    viewabilityConfig={viewConfig}
+                    ref={slidesRef}
                 />
             </View>
+
+            <View style={{marginTop: -20, marginBottom: -10}} className="self-center">
+                <Paginator data={imageData} scrollX={scrollX}/>
+            </View>
+
             <View className="flex rounded-lg mt-3 bg-white self-center" style={{width: '90%'}}>
                 <View className="flex-row items-center justify-evenly mx-4 py-3 border-b border-slate-300">
                     <View className="flex-row items-center">
