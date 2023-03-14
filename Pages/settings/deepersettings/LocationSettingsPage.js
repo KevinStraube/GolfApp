@@ -24,12 +24,13 @@ const LocationSettingsPage = () => {
         //Update user's location information in the database with new location data
         updateDoc(doc(firestore, 'users', user.uid), {
             city: reverseGeocodedLocation[0].city,
-            reverseGeocodedLocation: reverseGeocodedLocation
+            reverseGeocodedLocation: reverseGeocodedLocation,
+            location: userLocation
         })
         .then(() => {
             //Remove loading indicator and display success message
             setTopLoading(false);
-            Alert.alert("Success", `Location updated to ${reverseGeocodedLocation[0].city}`);
+            Alert.alert("Success", `Location updated to ${reverseGeocodedLocation[0].city}. Please restart the app for changes to take effect.`);
         })
         .catch((error) => {
             console.log("Error updating location with user location:", error);
@@ -49,12 +50,18 @@ const LocationSettingsPage = () => {
         //Update user's location information in the database with new location data
         updateDoc(doc(firestore, 'users', user.uid), {
             city: reverseGeocodedLocation[0].city,
-            reverseGeocodedLocation: reverseGeocodedLocation
+            reverseGeocodedLocation: reverseGeocodedLocation,
+            location: {
+                coords: {
+                    latitude: geocodedLocation[0].latitude,
+                    longitude: geocodedLocation[0].longitude,
+                },
+            }
         })
         .then(() => {
             //Remove loading indicator and display success message
             setLoading(false);
-            Alert.alert('Success', `Location updated to ${reverseGeocodedLocation[0].city}`);
+            Alert.alert('Success', `Location updated to ${reverseGeocodedLocation[0].city}. Please restart the app for changes to take effect.`);
         })
         .catch((error) => {
             console.log("Error updating location:", error);
