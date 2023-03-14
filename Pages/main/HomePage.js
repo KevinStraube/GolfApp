@@ -3,7 +3,7 @@ import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, StyleSheet
 import { auth } from '../../firebase';
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
-import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp } from "firebase/firestore";
+import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp, limit } from "firebase/firestore";
 import generateId from '../../lib/generateId';
 import { distanceBetween } from "geofire-common";
 import { sendPushNotification } from "../../backend/NotificationFunctions";
@@ -24,7 +24,7 @@ const HomePage = ({ navigation }) => {
 
     const { user } = useAuth();
 
-    /* First effect to load all profiles - set a limit on this number later */
+    //First effect to load all profiles
     useEffect(() => {
         if (!user) {
             console.log("User not yet loaded");
@@ -52,11 +52,11 @@ const HomePage = ({ navigation }) => {
 
                 //Query all accounts that exist and filter out accounts that user has already interacted with
                 //Set the results to unfiltered data
-                //** PLACE A LIMIT ON THIS LATER **
                 unsubscribe = onSnapshot(
                     query(
                         collection(db, 'users'),
                         where('uid', 'not-in', [...passedUserIds, ...likedUserIds]),
+                        limit(100),
                     ),
                     (snapshot) => {
                         setUnfilteredData(
