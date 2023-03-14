@@ -3,33 +3,37 @@ import React, { useEffect, useLayoutEffect, useState } from 'react'
 import Header from '../../components/Header';
 import SettingsRow from '../../components/SettingsRow';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../hooks/useAuth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, firestore } from '../../firebase';
-import { updatePassword } from 'firebase/auth';
 
 //List of options within the settings tab
 const data = [
     {
         id: 0,
+        title: "Location",
+        icon: "location-outline",
+        page: "LocationSettings",
+    },
+    {
+        id: 1,
         title: "Notifications",
         icon: "notifications-outline",
         page: "NotificationSettings",
     },
     {
-        id: 1,
+        id: 2,
         title: "Change Email",
         icon: "mail-outline",
         page: "Reauthenticate",
     },
     {
-        id: 2,
+        id: 3,
         title: "Change Password",
         icon: "lock-closed-outline",
         page: "ChangePassword",
     },
     {
-        id: 3,
+        id: 4,
         title: "Delete Account",
         icon: "trash-outline",
         page: "DeleteAccount",

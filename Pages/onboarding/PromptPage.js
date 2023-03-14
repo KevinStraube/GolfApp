@@ -49,19 +49,18 @@ const PromptPage = ({navigation}) => {
     const [playStyle, setPlayStyle] = useState('');
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
-    const [onboarding, setOnboarding] = useState(false);
     const [course, setCourse] = useState('');
+    const [characters, setCharacters] = useState(35);
     const { user } = useAuth();
 
     const handleSubmit = () => {
         viewOnboarding();
         uploadData(user.uid, playStyle, handicap, afterRound, course);
-        setOnboarding(true);
         navigation.navigate('Main');
     }
 
     const validate = () => {
-        return playStyle.length > 0 & afterRound.length > 0;
+        return playStyle.length > 0 && afterRound.length > 0 && characters >= 0;
     }
 
     return (
@@ -100,11 +99,23 @@ const PromptPage = ({navigation}) => {
                                 step={1}
                             />
                         </View>
-                        <Text className="text-base font-semibold mt-4 mx-5">What are you doing after a round?</Text>
+                        <View className="flex-row items-center mt-4">
+                            <Text className="text-base font-semibold ml-5 mr-1">What are you doing after a round?</Text>
+                            {
+                                characters >= 0 ?
+                                <Text className="text-base text-slate-500">({characters})</Text>
+                                :
+                                <Text className="text-base text-rose-500">({characters})</Text>
+                            }
+                        </View>
                         <View className="border-b border-slate-300 pb-4">
                             <TextInput 
                                 className="bg-white w-4/5 rounded-lg p-3 mx-5 my-2"
-                                onChangeText={text => setAfterRound(text)}
+                                onChangeText={(text) => {
+                                    setAfterRound(text);
+                                    let charsLeft = 35 - text.length;
+                                    setCharacters(charsLeft);
+                                }}
                                 value={afterRound}
                             />
                         </View>
@@ -129,7 +140,7 @@ const PromptPage = ({navigation}) => {
                                 className="mt-6 rounded-lg bg-green-700 p-3 w-20"
                                 disabled={!validate()}
                                 onPress={handleSubmit}
-                                style={playStyle.length < 1 || afterRound.length < 1 ? styles.disabled : styles.enabled}
+                                style={playStyle.length < 1 || afterRound.length < 1 || characters < 0 ? styles.disabled : styles.enabled}
                             >
                                 <Text className="text-white font-semibold self-center">Submit</Text>
                             </TouchableOpacity>
