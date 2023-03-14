@@ -21,6 +21,7 @@ import DeleteAccountPage from "../Pages/settings/deepersettings/DeleteAccountPag
 import ReauthenticatePage from "../Pages/settings/ReauthenticatePage";
 import MatchProfilePage from "../Pages/matches/MatchProfilePage";
 import EditImagesPage from "../Pages/settings/EditImagesPage";
+import NotificationSettings from "../Pages/settings/deepersettings/NotificationSettings";
 
 const Stack = createNativeStackNavigator();
 
@@ -61,6 +62,7 @@ const OnboardingStack = () => {
                 <Stack.Screen name="DeleteAccount" component={DeleteAccountPage}/>
                 <Stack.Screen name="Reauthenticate" component={ReauthenticatePage} />
                 <Stack.Screen name="EditImages" component={EditImagesPage}/>
+                <Stack.Screen name="NotificationSettings" component={NotificationSettings} />
             </Stack.Group>
         </Stack.Navigator>
     );

@@ -12,18 +12,24 @@ import { updatePassword } from 'firebase/auth';
 const data = [
     {
         id: 0,
+        title: "Notifications",
+        icon: "notifications-outline",
+        page: "NotificationSettings",
+    },
+    {
+        id: 1,
         title: "Change Email",
         icon: "mail-outline",
         page: "Reauthenticate",
     },
     {
-        id: 1,
+        id: 2,
         title: "Change Password",
         icon: "lock-closed-outline",
         page: "ChangePassword",
     },
     {
-        id: 2,
+        id: 3,
         title: "Delete Account",
         icon: "trash-outline",
         page: "DeleteAccount",
