@@ -61,7 +61,7 @@ const ChangeSettingsPage = () => {
             <View className="flex-row items-center py-2 border-b border-slate-300 px-5">
                 <Text>Pause Matches</Text>
                 <TouchableOpacity className="ml-2" onPress={showPauseInfo}>
-                    <Ionicons name='information-circle-outline' size={19} color='black'/>
+                    <Ionicons name='information-circle-outline' size={19} color='green'/>
                 </TouchableOpacity>
                 <View className="ml-auto">
                     <Switch

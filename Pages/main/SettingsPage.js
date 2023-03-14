@@ -63,9 +63,10 @@ const SettingsPage = () => {
             data={settingsList}
             keyExtractor={item => item.id}
             renderItem={({item}) => <SettingsRow title={item.title} icon={item.icon} page={item.page}/>}
+            scrollEnabled={false}
           />
           <TouchableOpacity 
-            className="bg-white py-4 mx-4 rounded-lg border border-slate-400"
+            className="bg-white py-3 mx-4 my-4 rounded-lg border border-red-500"
             onPress={logout}
           >
             <Text className="text-red-500 font-semibold text-lg text-center">Logout</Text>
