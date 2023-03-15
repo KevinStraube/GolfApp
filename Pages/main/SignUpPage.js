@@ -1,11 +1,12 @@
 import { Button, KeyboardAvoidingView, SafeAreaView, Alert, Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, signInWithCredential, FacebookAuthProvider } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth, firestore } from '../../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import { doc, getDoc } from 'firebase/firestore';
 
 /**
  * Function to remove device onboarding state
@@ -98,25 +99,42 @@ const SignUpPage = ({navigation}) => {
     //User signs up with Facebook
     const facebookSignUp = async () => {
         //Display Facebook login screen
-        await LoginManager.logInWithPermissions(['public_profile', 'email']);
+        const result = await LoginManager.logInWithPermissions(['public_profile', 'email'])
+            .catch((error) => {
+                console.log(error);
+            });
+
+        if (result.isCancelled) {
+            console.log("user cancelled the login process");
+            return;
+        }
 
         //Get user's access token
         const data = await AccessToken.getCurrentAccessToken();
 
         if (!data) {
             console.log("Error fetching access token");
+        } else {
+            //Get Facebook credential based on access token
+            const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
+
+            //Sign into Firebase using generated credential
+            const response = await signInWithCredential(auth, facebookCredential)
+                .then(async () => {
+                    const userDoc = await getDoc(doc(firestore, 'users', auth.currentUser.uid));
+                    if (!userDoc.exists()) {
+                        removeOnboarding();
+                    } else {
+                        console.log("user already exists");
+                    }
+                    
+                })
+                .catch((error) => {
+                    console.log("Error creating user with Facebook:", error);
+                });
+            
+            console.log(response);
         }
-
-        //Get Facebook credential based on access token
-        const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
-
-        //Sign into Firebase using generated credential
-        const response = await signInWithCredential(auth, facebookCredential)
-            .catch((error) => {
-                console.log("Error creating user with Facebook:", error);
-            });
-        
-        console.log(response);
     }
 
     return (

@@ -82,16 +82,16 @@ const HomePage = ({ navigation }) => {
             const tempArray = unfilteredData;
             for (var i = tempArray.length - 1; i >= 0; i--) {
                 //Check if age is within specified range
-                if (tempArray[i].age < userData.ageRange[0] || tempArray[i].age > userData.ageRange[1]) {
+                if (tempArray[i].age < userData?.ageRange[0] || tempArray[i].age > userData?.ageRange[1]) {
                     console.log(tempArray[i].age, userData.ageRange[1]);
                     tempArray.splice(i, 1);
                 }
                 //Check if gender is in preferences
-                else if (!userData.genderPreference.includes(tempArray[i]?.gender)) {
+                else if (!userData?.genderPreference.includes(tempArray[i]?.gender)) {
                     tempArray.splice(i, 1);
                 }
                 //Check if handicap is in specified range
-                else if (tempArray[i].handicap < userData.handicapRange[0] || tempArray[i].handicap > userData.handicapRange[1]) {
+                else if (tempArray[i].handicap < userData?.handicapRange[0] || tempArray[i].handicap > userData?.handicapRange[1]) {
                     tempArray.splice(i, 1);
                 } 
                 else if (tempArray[i]?.paused === true) {
@@ -102,12 +102,12 @@ const HomePage = ({ navigation }) => {
                     if (tempArray[i]?.location.coords.latitude && tempArray[i]?.location.coords.longitude) {
                         const distanceBetweenUsers = distanceBetween(
                             [tempArray[i]?.location.coords.latitude, tempArray[i]?.location.coords.longitude],
-                            [userData.location.coords.latitude, userData.location.coords.longitude]
+                            [userData?.location.coords.latitude, userData?.location.coords.longitude]
                         );
                         
                         //console.log("Distance:", distanceBetweenUsers);
 
-                        if (distanceBetweenUsers > userData.distancePreference) {
+                        if (distanceBetweenUsers > userData?.distancePreference) {
                             tempArray.splice(i, 1);
                         }
                     }
@@ -218,18 +218,6 @@ const HomePage = ({ navigation }) => {
     }).current;
 
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
-
-    const scrollTo = async () => {
-        if (currentIndex < imageData.length - 1) {
-            slidesRef.current.scrollToIndex({ index: currentIndex + 1});
-        } else {
-            try {
-                await AsyncStorage.setItem('@viewedOnboarding', 'true');
-            } catch (error) {
-                console.log("Error @setItem: ", error);
-            }
-        }
-    };
 
     return profiles?.length <= index ? (
         <SafeAreaView className="flex-1 justify-center items-center">

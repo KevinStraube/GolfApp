@@ -3,9 +3,16 @@ import { FlatList, SafeAreaView, Text, View, Animated, TouchableOpacity } from "
 import slides from "./slides";
 import Paginator from "./Paginator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { async } from "@firebase/util";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 
 const Onboarding = ({ navigation }) => {
+    const signout = () => {
+        signOut(auth)
+        .catch((error) => {
+            console.log(error);
+        })
+    }
     return (
         <SafeAreaView className="flex-1 items-center">
             <Text className="text-2xl font-semibold mt-12">Welcome to Clubhouse Golf!</Text>
@@ -15,6 +22,13 @@ const Onboarding = ({ navigation }) => {
                 onPress={() => navigation.navigate('BasicInfo')}
                 >
                 <Text className="self-center text-white font-semibold">Next</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+                className="bg-green-700 p-3 rounded-lg w-1/5 mt-5"
+                onPress={signout}
+            >
+                <Text className="self-center text-white font-semibold">Cancel</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

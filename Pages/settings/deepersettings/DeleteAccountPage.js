@@ -1,18 +1,21 @@
-import { View, Text, SafeAreaView, TouchableOpacity, TextInput, Button } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, TextInput, Button, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../../components/Header';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useAuth } from '../../../hooks/useAuth';
-import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAuthProvider, GoogleAuthProvider, sendSignInLinkToEmail } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { collection, deleteDoc, doc, onSnapshot, query } from 'firebase/firestore';
+import { firestore } from '../../../firebase';
 
 const DeleteAccount = () => {
     const [understand, setUnderstand] = useState(false);
     const [authenticated, setAuthenticated] = useState(false);
     const [incorrectPassword, setIncorrectPassword] = useState(false);
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const { user } = useAuth();
 
@@ -25,12 +28,64 @@ const DeleteAccount = () => {
     }, [user]);
 
     const deleteAccount = () => {
-        deleteUser(user).then(() => {
-            console.log("User deleted");
-        })
-        .catch((error) => {
-            console.log("Error deleting user:", error);
-        })
+        setLoading(true);
+        const userId = user.uid;
+
+        //Delete all the user's likes from database
+        onSnapshot(
+            query(
+                collection(firestore, 'users', userId, 'likes'),
+            ),(snapshot) => 
+                snapshot.docs.forEach((snap) => (
+                    deleteDoc(snap.ref)
+                )
+            )
+        )
+
+        //Delete all the user's passes from database
+        onSnapshot(
+            query(
+                collection(firestore, 'users', userId, 'passes'),
+            ),(snapshot) => 
+                snapshot.docs.forEach((snap) => (
+                    deleteDoc(snap.ref)
+                )
+            )
+        )
+
+        //Search for any matches containing the user and delete those
+        onSnapshot(
+            query(
+                collection(firestore, 'matches'),
+            ), (snapshot) =>
+                snapshot.docs.forEach((snap) => {
+                    if (snap.id.includes(userId)) {
+                        //User found in a match
+                        //Delete all messages
+                        query(
+                            collection(firestore, 'matches', snap.id, 'messages'),
+                        ), (messageSnapshot) => 
+                        messageSnapshot.docs.forEach((messageSnap) => (
+                            deleteDoc(messageSnap.ref)
+                        ))
+
+                        //Delete match
+                        deleteDoc(snap.ref);
+                    }
+                }
+            )
+        )
+
+        //Delete user
+        deleteDoc(doc(firestore, 'users', userId))
+            .then(() => {
+                deleteUser(user).then(() => {
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.log("Error deleting user:", error);
+                })
+            })
     }
 
     const reauthenticateUser = () => {
@@ -166,13 +221,17 @@ const DeleteAccount = () => {
             </View>
             }
             {
-                understand &&
+                understand && !loading &&
                 <TouchableOpacity 
                     className="w-4/5 mt-7 mx-4 py-3 bg-white rounded-lg justify-end self-center border border-rose-500"
                     onPress={deleteAccount}
                 >
                     <Text className="text-rose-500 font-semibold text-center">Delete Account</Text>
                 </TouchableOpacity>
+            }
+            {
+                understand && loading &&
+                <ActivityIndicator size={'large'} className="mt-7"/>
             }
         </SafeAreaView>
     );
