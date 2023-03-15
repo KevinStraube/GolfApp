@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../../components/Header';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useAuth } from '../../../hooks/useAuth';
-import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAuthProvider, GoogleAuthProvider, sendSignInLinkToEmail } from 'firebase/auth';
+import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -27,65 +27,72 @@ const DeleteAccount = () => {
         }
     }, [user]);
 
-    const deleteAccount = () => {
+    const deleteAccount = async () => {
         setLoading(true);
         const userId = user.uid;
 
-        //Delete all the user's likes from database
-        onSnapshot(
-            query(
-                collection(firestore, 'users', userId, 'likes'),
-            ),(snapshot) => 
-                snapshot.docs.forEach((snap) => (
-                    deleteDoc(snap.ref)
+        return Promise.all(
+            //Delete all the user's likes from database
+            onSnapshot(
+                query(
+                    collection(firestore, 'users', userId, 'likes'),
+                ),(snapshot) => 
+                    snapshot.docs.forEach(async (snap) => (
+                        await deleteDoc(snap.ref)
+                    )
                 )
-            )
-        )
+            ),
 
-        //Delete all the user's passes from database
-        onSnapshot(
-            query(
-                collection(firestore, 'users', userId, 'passes'),
-            ),(snapshot) => 
-                snapshot.docs.forEach((snap) => (
-                    deleteDoc(snap.ref)
+            //Delete all the user's passes from database
+            onSnapshot(
+                query(
+                    collection(firestore, 'users', userId, 'passes'),
+                ),(snapshot) => 
+                    snapshot.docs.forEach(async (snap) => (
+                        await deleteDoc(snap.ref)
+                    )
                 )
-            )
-        )
+            ),
 
-        //Search for any matches containing the user and delete those
-        onSnapshot(
-            query(
-                collection(firestore, 'matches'),
-            ), (snapshot) =>
-                snapshot.docs.forEach((snap) => {
-                    if (snap.id.includes(userId)) {
-                        //User found in a match
-                        //Delete all messages
-                        query(
-                            collection(firestore, 'matches', snap.id, 'messages'),
-                        ), (messageSnapshot) => 
-                        messageSnapshot.docs.forEach((messageSnap) => (
-                            deleteDoc(messageSnap.ref)
-                        ))
+            //Search for any matches containing the user and delete those
+            onSnapshot(
+                query(
+                    collection(firestore, 'matches'),
+                ), (snapshot) =>
+                    snapshot.docs.forEach(async (snap) => {
+                        if (snap.id.includes(userId)) {
+                            //User found in a match
+                            //Delete all messages
+                            query(
+                                collection(firestore, 'matches', snap.id, 'messages'),
+                            ), (messageSnapshot) => 
+                            messageSnapshot.docs.forEach(async (messageSnap) => (
+                                await deleteDoc(messageSnap.ref)
+                            ))
 
-                        //Delete match
-                        deleteDoc(snap.ref);
+                            //Delete match
+                            await deleteDoc(snap.ref);
+                        }
                     }
+                )
+            ),
+
+            //Delete user
+            await deleteDoc(doc(firestore, 'users', userId))
+                .catch((error) => {
+                    console.log(error);
                 }
             )
         )
+    }
 
-        //Delete user
-        deleteDoc(doc(firestore, 'users', userId))
-            .then(() => {
-                deleteUser(user).then(() => {
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.log("Error deleting user:", error);
-                })
-            })
+    const deleteAllData = async () => {
+        await deleteAccount();
+
+        deleteUser(user)
+            .catch((error) => {
+                console.log("Error deleting user:", error);
+            });
     }
 
     const reauthenticateUser = () => {
@@ -224,7 +231,7 @@ const DeleteAccount = () => {
                 understand && !loading &&
                 <TouchableOpacity 
                     className="w-4/5 mt-7 mx-4 py-3 bg-white rounded-lg justify-end self-center border border-rose-500"
-                    onPress={deleteAccount}
+                    onPress={deleteAllData}
                 >
                     <Text className="text-rose-500 font-semibold text-center">Delete Account</Text>
                 </TouchableOpacity>
