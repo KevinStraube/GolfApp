@@ -7,8 +7,9 @@ import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, FacebookAu
 import { Ionicons } from '@expo/vector-icons';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { collection, deleteDoc, doc, onSnapshot, query } from 'firebase/firestore';
-import { firestore } from '../../../firebase';
+import { collection, deleteDoc, doc, getDoc, onSnapshot, query } from 'firebase/firestore';
+import { firestore, storage } from '../../../firebase';
+import { deleteObject, ref } from 'firebase/storage';
 
 const DeleteAccount = () => {
     const [understand, setUnderstand] = useState(false);
@@ -86,9 +87,26 @@ const DeleteAccount = () => {
         )
     }
 
-    const deleteAllData = async () => {
-        await deleteAccount();
+    const deleteImages = async () => {
+        const docSnap = await getDoc(doc(firestore, 'users', user.uid));
 
+        if (docSnap.exists()) {
+            const images = docSnap.data().images;
+            for (let i = 0; i < images.length; i++) {
+                const imageName = images[i].url.substring(images[i].url.lastIndexOf('/')+1, images[i].url.lastIndexOf('?'));
+                const imageRef = ref(storage, imageName);
+
+                deleteObject(imageRef)
+                .catch((error) => {
+                    console.log("Error deleting image:", error);
+                });
+            }
+        }
+    }
+
+    const deleteAllData = async () => {
+        deleteImages();
+        await deleteAccount();
         deleteUser(user)
             .catch((error) => {
                 console.log("Error deleting user:", error);
@@ -230,10 +248,10 @@ const DeleteAccount = () => {
             {
                 understand && !loading &&
                 <TouchableOpacity 
-                    className="w-4/5 mt-7 mx-4 py-3 bg-white rounded-lg justify-end self-center border border-rose-500"
+                    className="w-4/5 mt-7 mx-4 py-4 bg-red-500 rounded-lg justify-end self-center"
                     onPress={deleteAllData}
                 >
-                    <Text className="text-rose-500 font-semibold text-center">Delete Account</Text>
+                    <Text className="text-white font-semibold text-center">Delete Account</Text>
                 </TouchableOpacity>
             }
             {
