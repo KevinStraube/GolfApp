@@ -44,7 +44,7 @@ const ChatRow = ({ matchDetails }) => {
         const userData = await getDoc(doc(firestore, 'users', user.uid));
         var unreadMessageCount = userData.data().unreadMessages;
         unreadMessageCount = unreadMessageCount - 1;
-        
+
         updateDoc(doc(firestore, 'users', user.uid), {
             unreadMessages: unreadMessageCount
         });
@@ -95,7 +95,7 @@ const ChatRow = ({ matchDetails }) => {
             {
                 (lastMessage?.read === "false" && lastMessage?.userId !== user.uid) && 
                 <View className="ml-auto">
-                    <Entypo name='dot-single' size={57} color="#5BE143" />
+                    <Entypo name='dot-single' size={57} color="#498E27" />
                 </View>
             }
         </TouchableOpacity>
