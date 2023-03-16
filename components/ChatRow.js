@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../hooks/useAuth';
 import getMatchedUserInfo from '../lib/getMatchedUserInfo';
-import { collection, doc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Entypo } from '@expo/vector-icons';
 
@@ -39,6 +39,17 @@ const ChatRow = ({ matchDetails }) => {
         console.log(lastMessageId);
     }, [lastMessage]);
 
+    const updateMessageCount = async () => {
+        //Update user's unread message count
+        const userData = await getDoc(doc(firestore, 'users', user.uid));
+        var unreadMessageCount = userData.data().unreadMessages;
+        unreadMessageCount = unreadMessageCount - 1;
+        
+        updateDoc(doc(firestore, 'users', user.uid), {
+            unreadMessages: unreadMessageCount
+        });
+    }
+
     return (
         <TouchableOpacity 
             className="flex-row border-slate-300 border-b items-center py-3 px-5"
@@ -49,7 +60,9 @@ const ChatRow = ({ matchDetails }) => {
                         //Update message to show it has been read
                         updateDoc(doc(firestore, 'matches', matchDetails.id, 'messages', lastMessageId), {
                             read: "true",
-                        })
+                        });
+
+                        updateMessageCount();
                     } catch (error) {
                         console.log("No messages yet");
                     }

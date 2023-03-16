@@ -88,14 +88,19 @@ const DeleteAccount = () => {
     }
 
     const deleteImages = async () => {
+        //Get user data from database
         const docSnap = await getDoc(doc(firestore, 'users', user.uid));
 
         if (docSnap.exists()) {
+            //Load all images
             const images = docSnap.data().images;
             for (let i = 0; i < images.length; i++) {
+                //Get image name from substring of complete URL
                 const imageName = images[i].url.substring(images[i].url.lastIndexOf('/')+1, images[i].url.lastIndexOf('?'));
+                //Create a reference to that image from storage
                 const imageRef = ref(storage, imageName);
 
+                //Delete the image
                 deleteObject(imageRef)
                 .catch((error) => {
                     console.log("Error deleting image:", error);
@@ -104,16 +109,18 @@ const DeleteAccount = () => {
         }
     }
 
+    //Called when user presses delete account button
     const deleteAllData = async () => {
         deleteImages();
         await deleteAccount();
         deleteUser(user)
-            .catch((error) => {
-                console.log("Error deleting user:", error);
-            });
+        .catch((error) => {
+            console.log("Error deleting user:", error);
+        });
     }
 
     const reauthenticateUser = () => {
+        //Have user re-enter password 
         const credential = EmailAuthProvider.credential(user.email, password);
         reauthenticateWithCredential(user, credential).then(() => {
             setAuthenticated(true);

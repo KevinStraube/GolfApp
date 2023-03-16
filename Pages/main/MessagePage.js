@@ -98,7 +98,7 @@ const MessagePage = ({ navigation }) => {
                         ]);
                     }
                     else if (index === 1) {
-                        Alert.alert("Error", "To report an account, please email...");
+                        Alert.alert("Report", "To report an account please email");
                     } else {
                         console.log("Cancelled");
                     }
