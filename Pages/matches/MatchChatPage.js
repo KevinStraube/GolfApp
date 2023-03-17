@@ -2,7 +2,7 @@ import { View, Text, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, F
 import React, { useEffect, useState } from 'react'
 import { useRoute } from '@react-navigation/native';
 import { firestore } from '../../firebase';
-import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot, serverTimestamp, query, orderBy, updateDoc, doc, increment } from 'firebase/firestore';
 import SenderMessage from '../../components/SenderMessage';
 import ReceiverMessage from '../../components/ReceiverMessage';
 import { useAuth } from '../../hooks/useAuth';
@@ -44,7 +44,7 @@ const MatchChatPage = () => {
     ), [matchDetails, firestore]);
     
     //Once a user sends a message, add message to database
-    const sendMessage = () => {
+    const sendMessage = async () => {
         addDoc(collection(firestore, 'matches', matchDetails.id, 'messages'), {
             timestamp: serverTimestamp(),
             userId: user.uid,
@@ -53,8 +53,15 @@ const MatchChatPage = () => {
             message: input,
             read: "false",
         });
+
+        //Update receiver's unread message count
+        const otherId = getMatchedUserInfo(matchDetails.users, user).uid;
+        await updateDoc(doc(firestore, 'users', otherId), {
+            unreadMessages: increment(1)
+        });
+
         //Send the receiving user a push notification
-        sendPushNotification(token, `${name}`, input);
+        sendPushNotification(token, name, input);
         //Clear the message field
         setInput("");
     };

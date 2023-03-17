@@ -4,7 +4,7 @@ import React from 'react'
 const ReceiverMessage = ({ message }) => {
     return (
         <View
-            className="bg-slate-400 rounded-lg rounded-tl-none px-4 py-3 mx-3 my-2 ml-6"
+            className="bg-slate-400 rounded-lg rounded-tl-none px-4 py-3 mx-3 my-1 ml-6"
             style={{alignSelf: "flex-start"}}
         >
             <Image

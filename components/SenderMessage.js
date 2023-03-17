@@ -4,7 +4,7 @@ import React from 'react'
 const SenderMessage = ({ message }) => {
     return (
         <View
-            className="bg-green-700 rounded-lg rounded-tr-none px-4 py-3 mx-3 my-2"
+            className="bg-green-700 rounded-lg rounded-tr-none px-4 py-3 mx-3 my-1"
             style={{alignSelf: "flex-start", marginLeft: "auto"}}
         >
             <Text className="text-white">
