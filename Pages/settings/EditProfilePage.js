@@ -16,6 +16,7 @@ const playStyleData = [
 ];
 
 const EditProfilePage = ({navigation}) => {
+    const [userData, setUserData] = useState(null);
     const [playStyle, setPlayStyle] = useState('');
     const [handicap, setHandicap] = useState(0);
     const [afterRound, setAfterRound] = useState('');
@@ -26,13 +27,28 @@ const EditProfilePage = ({navigation}) => {
     //Update the user's database after confirming changes to their profile
     const updateUserInfo = async () => {
         try {
+            //Update user's personal doc
             await updateDoc(doc(firestore, 'users', user.uid), {
                 playStyle: playStyle,
                 handicap: handicap,
                 afterRound, afterRound,
                 course, course,
             });
-            Alert.alert("Profile Updated", "Note: An app restart is required to see changes");
+
+            //Fetch all user's matches
+            const matchesArray = userData.matches;
+
+            //Update user's data stored in all matches
+            for (let i = 0; i < matchesArray.length; i++) {
+                await updateDoc(doc(firestore, 'matches', matchesArray[i]), {
+                    [`users.${user.uid}.playStyle`]: playStyle,
+                    [`users.${user.uid}.handicap`]: handicap,
+                    [`users.${user.uid}.afterRound`]: afterRound,
+                    [`users.${user.uid}.course`]: course
+                });
+            }
+
+            Alert.alert("Profile Updated");
             navigation.goBack();
         } catch (error) {
             console.log("Error updating data:", error);
@@ -50,6 +66,7 @@ const EditProfilePage = ({navigation}) => {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
+                    setUserData(data);
                     setPlayStyle(data.playStyle);
                     setHandicap(data.handicap);
                     setAfterRound(data.afterRound);
