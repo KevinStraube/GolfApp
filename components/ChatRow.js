@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../hooks/useAuth';
 import getMatchedUserInfo from '../lib/getMatchedUserInfo';
-import { collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, increment, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Entypo } from '@expo/vector-icons';
 
@@ -41,12 +41,8 @@ const ChatRow = ({ matchDetails }) => {
 
     const updateMessageCount = async () => {
         //Update user's unread message count
-        const userData = await getDoc(doc(firestore, 'users', user.uid));
-        var unreadMessageCount = userData.data().unreadMessages;
-        unreadMessageCount = unreadMessageCount - 1;
-
         updateDoc(doc(firestore, 'users', user.uid), {
-            unreadMessages: unreadMessageCount
+            unreadMessages: increment(-1)
         });
     }
 

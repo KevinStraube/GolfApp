@@ -3,7 +3,7 @@ import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, StyleSheet
 import { auth } from '../../firebase';
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
-import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp, limit } from "firebase/firestore";
+import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp, limit, updateDoc, arrayUnion } from "firebase/firestore";
 import generateId from '../../lib/generateId';
 import { distanceBetween } from "geofire-common";
 import { sendPushNotification } from "../../backend/NotificationFunctions";
@@ -177,8 +177,9 @@ const HomePage = ({ navigation }) => {
                         age: userSwiped.age,
                     });
 
+                    const generatedID = generateId(user.uid, userSwiped.uid);
                     //Add match to new matches collection. Doc ID are both user IDs concatenated
-                    setDoc(doc(db, 'matches', generateId(user.uid, userSwiped.uid)), {
+                    setDoc(doc(db, 'matches', generatedID), {
                         users: {
                             [user.uid]: loggedInUser,
                             [userSwiped.uid]: userSwiped,
@@ -186,6 +187,15 @@ const HomePage = ({ navigation }) => {
                         usersMatched: [user.uid, userSwiped.uid],
                         timestamp: serverTimestamp(),
                     });
+
+                    //Update user array containing their matches
+                    updateDoc(doc(db, 'users', user.uid), {
+                        matches: arrayUnion(generatedID)
+                    });
+
+                    updateDoc(doc(db, 'users', userSwiped.uid), {
+                        matches: arrayUnion(generatedID)
+                    })
 
                     //Display match screen
                     navigation.navigate("Match", {
