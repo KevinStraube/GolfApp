@@ -3,16 +3,15 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getMessaging, isSupported } from 'firebase/messaging';
-
-const FIREBASE_VAPID_KEY = "BHC05pvWI7f9f9wWsXpkDxa-FNoh8E2yjochJiDzhH4atsRVdb1zvrcS7RVPz7_XDpGzBJedO7zfKnVS00aCQco";
+import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } from "@env";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB2_QsBxQTljoHTVv9mn-u3nqD0qTYDjVE",
-  authDomain: "golfapp-ca492.firebaseapp.com",
-  projectId: "golfapp-ca492",
-  storageBucket: "golfapp-ca492.appspot.com",
-  messagingSenderId: "1013459442897",
-  appId: "1:1013459442897:web:3cf1564b1e72096653f9f0",
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();

@@ -7,6 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { doc, getDoc } from 'firebase/firestore';
+import { GOOGLE_WEB_CLIENT_ID, GOOGLE_IOS_CLIENT_ID } from '@env';
 
 /**
  * Function to remove device onboarding state
@@ -79,8 +80,8 @@ const SignUpPage = ({navigation}) => {
     const googleSignUp = async () => {
         //Set client IDs with app information from Google Cloud Console
         GoogleSignin.configure({
-            webClientId: '1013459442897-1kln95dv1g5ahsr9om89gomkbu06jl84.apps.googleusercontent.com',
-            iosClientId: '1013459442897-rfh4frat8l9f5u9hafc7hp735luvbdjr.apps.googleusercontent.com',
+            webClientId: GOOGLE_WEB_CLIENT_ID,
+            iosClientId: GOOGLE_IOS_CLIENT_ID,
         });
 
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
