@@ -263,8 +263,9 @@ const EditImagesPage = ({ navigation }) => {
     //Upload new images to both storage and database
     const uploadNewImages = async (filteredArray) => {
         const docRef = doc(firestore, 'users', user.uid);
+
         //Get user's data
-        await getDoc(docRef)
+        getDoc(docRef)
         .then((docSnap) => {
             //Convert all new image URLs to names. Compare database names to new list, delete from database if name does not exist in new list
             var filteredArrayNames = [];
@@ -327,7 +328,6 @@ const EditImagesPage = ({ navigation }) => {
                                                 url: url,
                                             }),
                                         })
-                                        
                                     })
                                     .catch((error) => {
                                         console.log("Error retrieving image download URL:", error);
@@ -348,7 +348,9 @@ const EditImagesPage = ({ navigation }) => {
     }
 
     //User presses apply button
-    const handleApply = () => {
+    const handleApply = async () => {
+        setLoading(true);
+
         var tempUrlArray = urlArray;
         
         //Remove empty strings from arrays if any exist
@@ -360,14 +362,14 @@ const EditImagesPage = ({ navigation }) => {
         
         //Call function to upload new images
         uploadNewImages(filteredUrlArray);
-        
+
         //Go back to main settings menu
         navigation.goBack();
         navigation.goBack();
 
         //Alert the user that the process has completed
         Alert.alert("Photos Updated");
-        
+        setLoading(false);   
     }
 
     return (

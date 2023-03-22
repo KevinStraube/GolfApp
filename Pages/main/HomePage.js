@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, StyleSheet, Alert, Button, Animated } from "react-native";
-import { auth } from '../../firebase';
+import { auth, firestore } from '../../firebase';
 import { AntDesign, MaterialCommunityIcons, Ionicons, MaterialIcons, Entypo } from '@expo/vector-icons';
 import { useAuth } from '../../hooks/useAuth';
 import { onSnapshot, getFirestore, doc, collection, setDoc, getDocs, query, where, getDoc, serverTimestamp, limit, updateDoc, arrayUnion } from "firebase/firestore";
@@ -8,6 +8,7 @@ import generateId from '../../lib/generateId';
 import { distanceBetween } from "geofire-common";
 import { sendPushNotification } from "../../backend/NotificationFunctions";
 import Paginator from "../../registration/Paginator";
+import { async } from "@firebase/util";
 
 const db = getFirestore();
 
@@ -72,6 +73,8 @@ const HomePage = ({ navigation }) => {
     
             fetchCards();
 
+            checkBirthday();
+
             return unsubscribe;
         }
     }, [user]);
@@ -125,7 +128,28 @@ const HomePage = ({ navigation }) => {
         if (profiles) {
             setImageData(profiles[index]?.images);
         }
-    }, [profiles, index])
+    }, [profiles, index]);
+
+    //Updates user's age if their birthday has passed
+    const checkBirthday = async () => {
+        const docRef = await getDoc(doc(db, 'users', user.uid));
+        const currentDob = docRef.data().birthday;
+        const prevAge = docRef.data().age;
+
+        var today = new Date();
+        var dob = new Date(currentDob);
+        var age_now = today.getFullYear() - dob.getFullYear();
+        var month = today.getMonth() - dob.getMonth();
+        if (month < 0 || (month === 0 && today.getDate() < dob.getDate())) {
+            age_now--;
+        }
+        
+        if (age_now > prevAge) {
+            updateDoc(doc(db, 'users', user.uid), {
+                age: age_now
+            })
+        }
+    }
 
     //User presses next on the profile they see
     const swipeLeft = () => {
