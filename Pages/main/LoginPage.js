@@ -71,7 +71,7 @@ const LoginPage = ({navigation}) => {
                                 secureTextEntry
                             />
                             <TouchableOpacity 
-                                className="ml-10 mt-3"
+                                className="ml-10 mt-3 w-1/2"
                                 onPress={() => navigation.navigate('Reset')}
                             >
                                 <Text className="underline">Forgot Password?</Text>
