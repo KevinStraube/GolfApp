@@ -21,7 +21,8 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": false,
-      "bundleIdentifier": "com.clubhousegolf.golf"
+      "bundleIdentifier": "com.clubhousegolf.golf",
+      "buildNumber": "2"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -48,8 +49,6 @@
           }
         }
       ],
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
       "@react-native-google-signin/google-signin",
       [
         "react-native-fbsdk-next",

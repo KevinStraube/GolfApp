@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, Button, KeyboardAvoidingView, 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginPage = ({navigation}) => {
