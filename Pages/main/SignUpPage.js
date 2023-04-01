@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvid
 import { auth, firestore } from '../../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+//import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { doc, getDoc } from 'firebase/firestore';
 import { GOOGLE_WEB_CLIENT_ID, GOOGLE_IOS_CLIENT_ID } from '@env';
@@ -76,6 +76,7 @@ const SignUpPage = ({navigation}) => {
         setEmailFields(!emailFields);
     }
 
+    /*
     //User signs up with Google
     const googleSignUp = async () => {
         //Set client IDs with app information from Google Cloud Console
@@ -95,6 +96,11 @@ const SignUpPage = ({navigation}) => {
         .catch((error) => {
             console.log("Error creating user with Google", error);
         });
+    }
+    */
+
+    const googleSignUp = () => {
+        console.log("Google");
     }
 
     //User signs up with Facebook
