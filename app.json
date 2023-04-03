@@ -2,7 +2,7 @@
   "expo": {
     "name": "Clubhouse Golf",
     "slug": "GolfApp",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/AppIcon.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,7 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": false,
       "bundleIdentifier": "com.clubhousegolf.golf",
-      "buildNumber": "2"
+      "buildNumber": "4"
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -49,7 +49,6 @@
           }
         }
       ],
-      "@react-native-google-signin/google-signin",
       [
         "react-native-fbsdk-next",
         {

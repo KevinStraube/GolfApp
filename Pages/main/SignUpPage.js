@@ -9,6 +9,12 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { doc, getDoc } from 'firebase/firestore';
 import { GOOGLE_WEB_CLIENT_ID, GOOGLE_IOS_CLIENT_ID } from '@env';
 
+/*
+ADD THIS PLUGIN BACK TO APP.JSON
+"@react-native-google-signin/google-signin",
+*/
+
+
 /**
  * Function to remove device onboarding state
  * Once removed, user will be shown the onboarding screens until they have completed the full flow
